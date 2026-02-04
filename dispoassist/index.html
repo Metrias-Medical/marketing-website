@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DispoAssist | Discharge Coordination as a Service | Metrias Medical</title>
+    <meta name="description"
+        content="DispoAssist handles discharge coordination between decision and patient exit. Remote expeditors execute the repetitive calls, follow-ups, and documentation — freeing your nurses and case managers.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="DispoAssist | Discharge Coordination as a Service">
+    <meta property="og:description"
+        content="Remote expeditors handle discharge logistics. Your clinical staff focus on patient care.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.metriasmedical.com/dispoassist">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1B3A7D;
+            --primary-dark: #122654;
+            --accent: #D4A84B;
+            --text: #1a1a2e;
+            --text-muted: #4a5568;
+            --bg: #ffffff;
+            --bg-subtle: #f8f9fc;
+            --border: #e2e8f0;
+            --gradient-start: #1B3A7D;
+            --gradient-end: #2d5299;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 36px;
+            width: auto;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(27, 58, 125, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(27, 58, 125, 0.4);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 1.5rem 4rem;
+            background: linear-gradient(180deg, var(--bg-subtle) 0%, var(--bg) 100%);
+        }
+
+        .hero-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--gradient-end));
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.75rem, 5vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        @media (min-width: 480px) {
+            .hero-cta {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 1.5rem;
+        }
+
+        .section-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Problem Section */
+        .problem {
+            background: var(--bg-subtle);
+        }
+
+        .problem-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Solution Section */
+        .solution-card {
+            background: linear-gradient(135deg, var(--primary), var(--gradient-end));
+            color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(27, 58, 125, 0.2);
+        }
+
+        .solution-card h2,
+        .solution-card p {
+            color: white;
+        }
+
+        .solution-card p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* ROI Section */
+        .roi-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 640px) {
+            .roi-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .roi-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .roi-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(27, 58, 125, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .roi-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), #e5b85c);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .roi-card h3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .roi-card p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Process Section */
+        .process {
+            background: var(--bg-subtle);
+        }
+
+        .process-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .process-flow {
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+
+        .process-step {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        @media (min-width: 768px) {
+            .process-step:not(:last-child)::after {
+                content: '→';
+                position: absolute;
+                right: -1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 1.5rem;
+                color: var(--primary);
+                font-weight: 600;
+            }
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .process-step h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-step p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Pilot Section */
+        .pilot-card {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .pilot-details {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        @media (min-width: 640px) {
+            .pilot-details {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .pilot-item {
+            padding: 1rem;
+        }
+
+        .pilot-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .pilot-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Closing Section */
+        .closing {
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-subtle) 100%);
+        }
+
+        .closing-text {
+            font-size: 1.15rem;
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            text-align: center;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* Email Capture */
+        .email-capture {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 500px;
+            margin: 3rem auto 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .email-capture h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-capture p {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .email-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 480px) {
+            .email-form {
+                flex-direction: row;
+            }
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .email-submit {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .email-submit:hover {
+            box-shadow: 0 4px 14px rgba(27, 58, 125, 0.3);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 5rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--gradient-end));
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section .cta-btn {
+            background: white;
+            color: var(--primary);
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+        }
+
+        .cta-section .cta-btn:hover {
+            background: var(--bg-subtle);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-logo {
+            height: 28px;
+            filter: brightness(0) invert(1);
+            margin-bottom: 1rem;
+        }
+
+        /* Utility */
+        .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <img src="https://www.metriasmedical.com/img/metrias-logo-horizontal.svg" alt="Metrias Medical"
+                class="logo">
+            <a href="https://calendar.app.google/yySEo6faCKXKNsnu6" class="cta-btn">Let's Talk</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="badge">Discharge Coordination as a Service</span>
+            <h1>Your patients are ready to leave. <br>The coordination isn't.</h1>
+            <p class="hero-subtitle">Case managers spend hours on phone tag — calling SNFs, arranging transport, chasing
+                authorizations. DispoAssist handles it so your clinical staff can focus on care.</p>
+            <div class="hero-cta">
+                <a href="https://calendar.app.google/yySEo6faCKXKNsnu6" class="cta-btn">Let's Talk →</a>
+                <a href="#how-it-works" class="secondary-btn">See How It Works</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="problem">
+        <div class="section-inner">
+            <p class="section-label">The Problem</p>
+            <h2>Patients ready for discharge, stuck waiting for coordination</h2>
+            <p class="problem-content">Every hospital faces the same challenge: patients medically ready for discharge,
+                but coordination takes hours. Case managers and nurses spend their day on phone tag — calling SNFs,
+                arranging transport, tracking family members, chasing authorizations. This procedural work pulls
+                clinical staff away from patient care.</p>
+        </div>
+    </section>
+
+    <section class="solution">
+        <div class="section-inner">
+            <div class="solution-card">
+                <p class="section-label" style="color: var(--accent);">The Solution</p>
+                <h2>DispoAssist handles everything between discharge decision and patient exit</h2>
+                <p>Remote expeditors execute the repetitive phone calls, follow-ups, and documentation — freeing your
+                    nurses and case managers to focus on patient care and complex cases.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="roi">
+        <div class="section-inner">
+            <p class="section-label">The ROI</p>
+            <h2>Two paths to measurable value</h2>
+            <div class="roi-grid">
+                <div class="roi-card">
+                    <div class="roi-icon">💰</div>
+                    <h3>Labor Arbitrage</h3>
+                    <p>Shift procedural tasks from <span class="highlight">$80+/hr clinical staff</span> to trained
+                        remote expeditors at a fraction of the cost.</p>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-icon">📈</div>
+                    <h3>Throughput Gains</h3>
+                    <p>Faster discharges = beds freed sooner = more admits = <span class="highlight">more
+                            revenue</span>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="process" id="how-it-works">
+        <div class="section-inner">
+            <p class="section-label">How It Works</p>
+            <h2>Three steps from decision to discharge</h2>
+            <div class="process-flow">
+                <div class="process-step">
+                    <span class="step-number">1</span>
+                    <h3>Handoff</h3>
+                    <p>Discharge decision triggers case assignment to Metrias team</p>
+                </div>
+                <div class="process-step">
+                    <span class="step-number">2</span>
+                    <h3>Coordinate</h3>
+                    <p>Remote expeditors execute calls, track status, document in your EHR</p>
+                </div>
+                <div class="process-step">
+                    <span class="step-number">3</span>
+                    <h3>Exit</h3>
+                    <p>Patient leaves with transport confirmed, receiving facility ready, family notified</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pilot">
+        <div class="section-inner">
+            <div class="pilot-card">
+                <p class="section-label">Pilot Program</p>
+                <h2>Low-risk way to prove the model</h2>
+                <div class="pilot-details">
+                    <div class="pilot-item">
+                        <div class="pilot-value">30-60 days</div>
+                        <div class="pilot-label">Duration</div>
+                    </div>
+                    <div class="pilot-item">
+                        <div class="pilot-value">Single Unit</div>
+                        <div class="pilot-label">Scope</div>
+                    </div>
+                    <div class="pilot-item">
+                        <div class="pilot-value">Measurable</div>
+                        <div class="pilot-label">Success Metrics</div>
+                    </div>
+                </div>
+                <p style="margin: 0; font-size: 0.95rem;">Track time-to-discharge, staff time recovered, and
+                    patient/family satisfaction</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="closing">
+        <div class="section-inner">
+            <p class="closing-text">"Metrias transforms scattered phone tag, sticky notes, and tribal knowledge into a
+                structured workflow with data capture. We give you visibility into bottlenecks, metrics, and patterns
+                you can act on."</p>
+
+            <div class="email-capture">
+                <h3>Want the full case for DispoAssist?</h3>
+                <p>Leave your email and we'll send it over.</p>
+                <form class="email-form" action="https://formspree.io/mene@metriasmedical.com" method="POST">
+                    <input type="email" name="email" class="email-input" placeholder="you@hospital.org" required>
+                    <button type="submit" class="email-submit">Send It</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="section-inner">
+            <h2>Ready to reclaim your team's time?</h2>
+            <a href="https://calendar.app.google/yySEo6faCKXKNsnu6" class="cta-btn">Let's Talk →</a>
+        </div>
+    </section>
+
+    <footer>
+        <img src="https://www.metriasmedical.com/img/metrias-logo-horizontal.svg" alt="Metrias Medical"
+            class="footer-logo">
+        <p>© 2025 Metrias Medical. All rights reserved.</p>
+        <p style="margin-top: 0.5rem;">HIPAA-compliant. US-based operations.</p>
+    </footer>
+</body>
+
+</html>
