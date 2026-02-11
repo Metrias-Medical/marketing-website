@@ -1,14 +1,14 @@
 1:"$Sreact.fragment"
-2:I[82791,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-3:I[73707,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-4:I[78105,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-5:I[34154,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-6:I[13955,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-7:I[349,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-8:I[89370,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
-9:I[58897,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/20d16b984fddfc4c.js"],"default"]
+2:I[82791,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+3:I[73707,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+4:I[78105,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+5:I[34154,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+6:I[13955,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+7:I[349,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+8:I[89370,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
+9:I[58897,["/_next/static/chunks/65c8e069ca08e704.js","/_next/static/chunks/242f9db788d864d9.js"],"default"]
 a:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"OutletBoundary"]
 b:"$Sreact.suspense"
-:HL["/_next/static/chunks/a95492b92c76ad00.css","style"]
-0:{"buildId":"i4SBkI2grJ0GyH9e1qCfD","rsc":["$","$1","c",{"children":[["$","main",null,{"className":"page-module___8aEwW__main","children":[["$","$L2",null,{}],["$","$L3",null,{}],["$","$L4",null,{}],["$","$L5",null,{"src":"/assets/hospital-hallway.jpeg","alt":"Hospital hallway with stretchers"}],["$","$L6",null,{}],["$","$L7",null,{}],["$","$L5",null,{"src":"/assets/patient-bed.jpeg","alt":"Patient in hospital bed"}],["$","$L8",null,{}],["$","$L9",null,{}]]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/a95492b92c76ad00.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/65c8e069ca08e704.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/20d16b984fddfc4c.js","async":true}]],["$","$La",null,{"children":["$","$b",null,{"name":"Next.MetadataOutlet","children":"$@c"}]}]]}],"loading":null,"isPartial":false}
+:HL["/_next/static/chunks/2d8237d83eb9238b.css","style"]
+0:{"buildId":"bwu_qmBXo7hwFmQoViavx","rsc":["$","$1","c",{"children":[["$","main",null,{"className":"page-module___8aEwW__main","children":[["$","$L2",null,{}],["$","$L3",null,{}],["$","$L4",null,{}],["$","$L5",null,{"src":"/assets/hospital-hallway.jpeg","alt":"Hospital hallway with stretchers"}],["$","$L6",null,{}],["$","$L7",null,{}],["$","$L5",null,{"src":"/assets/patient-bed.jpeg","alt":"Patient in hospital bed"}],["$","$L8",null,{}],["$","$L9",null,{}]]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2d8237d83eb9238b.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/65c8e069ca08e704.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/242f9db788d864d9.js","async":true}]],["$","$La",null,{"children":["$","$b",null,{"name":"Next.MetadataOutlet","children":"$@c"}]}]]}],"loading":null,"isPartial":false}
 c:null
