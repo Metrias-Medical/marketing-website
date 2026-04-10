@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/global/PageHero.astro';
+import PillarCards from '../components/product/PillarCards.astro';
+import StepFlow from '../components/product/StepFlow.astro';
+import IntegrationLogos from '../components/product/IntegrationLogos.astro';
+import BottomCTA from '../components/home/BottomCTA.astro';
+
+const portalUrl = 'https://app.metriasmedical.com';
+---
+
+<BaseLayout
+  title="Product & Client Portal — Metrias Medical"
+  description="Remote expeditors + AI intelligence + real-time visibility — in one unified discharge operations platform."
+>
+  <PageHero
+    badge="Product"
+    badgeColor="bg-provider-blue"
+    heading="The discharge operations platform."
+    subtitle="Remote expeditors + AI intelligence + real-time visibility — in one unified workflow."
+  >
+    <div slot="cta" class="flex flex-col gap-4 sm:flex-row sm:items-center">
+      <a
+        href="mailto:contact@metriasmedical.com?subject=Demo%20Request"
+        class="inline-block rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
+      >
+        Request Demo
+      </a>
+      <a
+        href={portalUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 font-body text-base font-medium text-white underline underline-offset-4 transition-colors hover:text-white/80"
+      >
+        Client Portal Login
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </PageHero>
+
+  <PillarCards />
+  <StepFlow />
+  <IntegrationLogos />
+
+  {/* Client Portal CTA Card */}
+  <section class="bg-off-white py-24 md:py-32">
+    <div class="mx-auto max-w-2xl px-6 lg:px-16">
+      <div class="rounded-2xl border border-border-gray bg-white p-10 text-center shadow-sm md:p-14">
+        <h3 class="font-heading text-2xl font-bold text-black md:text-[1.75rem]">
+          Existing client?
+        </h3>
+        <p class="mt-3 font-body text-base text-payer-slate md:text-lg">
+          Access your discharge dashboard, reports, and team management tools.
+        </p>
+        <a
+          href={portalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-6 inline-flex items-center gap-2 rounded-lg bg-provider-blue px-8 py-3 font-body text-base font-medium text-white transition-colors hover:bg-provider-blue/90"
+        >
+          Go to Client Portal
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <BottomCTA
+    heading="See it in action."
+    subtitle="15-minute demo — we'll show you projected ROI for your facility."
+  />
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+interface Props {
+  quote: string;
+  name: string;
+  title: string;
+  avatarSrc?: string;
+}
+
+const { quote, name, title, avatarSrc } = Astro.props;
+---
+
+<blockquote class="rounded-2xl border border-border-gray bg-white p-8 md:p-10">
+  <svg class="mb-4 h-8 w-8 text-ai-gold" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+    <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm14 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2V8z" />
+  </svg>
+
+  <p class="font-body text-lg leading-relaxed text-payer-slate md:text-xl">
+    {quote}
+  </p>
+
+  <footer class="mt-6 flex items-center gap-4">
+    {avatarSrc && (
+      <img
+        src={avatarSrc}
+        alt={name}
+        width="48"
+        height="48"
+        class="h-12 w-12 rounded-full object-cover"
+        loading="lazy"
+      />
+    )}
+    <div>
+      <cite class="block font-heading text-base font-bold not-italic text-black">
+        {name}
+      </cite>
+      <span class="font-body text-sm text-payer-slate">{title}</span>
+    </div>
+  </footer>
+</blockquote>

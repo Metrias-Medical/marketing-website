@@ -1,0 +1,29 @@
+---
+interface Props {
+  reverse?: boolean;
+  ratio?: '50/50' | '60/40';
+  bgColor?: string;
+}
+
+const {
+  reverse = false,
+  ratio = '50/50',
+  bgColor = 'bg-white',
+} = Astro.props;
+
+const leftCol = ratio === '60/40' ? 'lg:col-span-7' : 'lg:col-span-6';
+const rightCol = ratio === '60/40' ? 'lg:col-span-5' : 'lg:col-span-6';
+---
+
+<section class:list={[bgColor, 'py-24 md:py-32']}>
+  <div class:list={[
+    'mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-20 lg:px-16',
+  ]}>
+    <div class:list={[leftCol, reverse ? 'lg:order-2' : 'lg:order-1']}>
+      <slot name="image" />
+    </div>
+    <div class:list={[rightCol, reverse ? 'lg:order-1' : 'lg:order-2']}>
+      <slot name="content" />
+    </div>
+  </div>
+</section>

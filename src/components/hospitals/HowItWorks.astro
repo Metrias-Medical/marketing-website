@@ -1,0 +1,52 @@
+---
+const steps = [
+  {
+    number: '1',
+    icon: '📋',
+    title: 'We embed',
+    description: 'Remote discharge expeditors integrate into your EHR and rounding workflows — no onsite FTEs required.',
+  },
+  {
+    number: '2',
+    icon: '⚡',
+    title: 'AI accelerates',
+    description: 'Our platform learns from every discharge, identifies bottlenecks in real-time, and prioritizes the highest-impact actions.',
+  },
+  {
+    number: '3',
+    icon: '📈',
+    title: 'You see results',
+    description: 'Reduced LOS, faster throughput, recovered revenue — measurable within the first 30 days.',
+  },
+];
+---
+
+<section class="bg-off-white py-24 md:py-32" id="how-it-works">
+  <div class="mx-auto max-w-7xl px-6 lg:px-16">
+    <h2 class="font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+      How it works
+    </h2>
+
+    <div class="relative mt-16">
+      {/* Connecting line — hidden on mobile, visible on desktop */}
+      <div class="absolute top-12 left-12 hidden h-0.5 w-[calc(100%-6rem)] bg-border-gray md:block" aria-hidden="true"></div>
+
+      <div class="grid gap-12 md:grid-cols-3 md:gap-8">
+        {steps.map((step) => (
+          <div class="relative flex flex-col items-start md:items-center md:text-center">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-provider-blue font-heading text-lg font-bold text-white">
+              {step.number}
+            </div>
+            <div class="mt-2 text-3xl" aria-hidden="true">{step.icon}</div>
+            <h3 class="mt-4 font-heading text-xl font-bold text-black">
+              {step.title}
+            </h3>
+            <p class="mt-2 font-body text-base text-payer-slate">
+              {step.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

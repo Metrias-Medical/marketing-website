@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/global/PageHero.astro';
+import SplitSection from '../components/global/SplitSection.astro';
+import FeatureGrid from '../components/global/FeatureGrid.astro';
+import BottomCTA from '../components/home/BottomCTA.astro';
+---
+
+<BaseLayout
+  title="About Us — Metrias Medical"
+  description="Physician-founded, operator-built. Metrias Medical was built by a physician who saw discharge bottlenecks from the inside — and decided to fix them from the outside."
+>
+  <PageHero
+    badge="About Us"
+    badgeColor="bg-payer-slate"
+    heading="Physician-founded. Operator-built."
+    subtitle="Metrias Medical was built by a physician who saw discharge bottlenecks from the inside — and decided to fix them from the outside."
+  />
+
+  {/* Mission Statement */}
+  <section class="bg-off-white py-24 md:py-32">
+    <div class="mx-auto max-w-3xl px-6 text-center lg:px-16">
+      <h2 class="font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+        Our Mission
+      </h2>
+
+      <div class="mx-auto mt-8 max-w-24 border-t-2 border-ai-gold" aria-hidden="true"></div>
+
+      <p class="mt-8 font-body text-xl leading-relaxed font-medium text-payer-slate md:text-2xl">
+        To eliminate the administrative bottlenecks that delay patient discharges —
+        giving hospitals back their beds, their revenue, and their staff's time —
+        through the combination of skilled human operators and intelligent software.
+      </p>
+
+      <div class="mx-auto mt-8 max-w-24 border-t-2 border-ai-gold" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  {/* Founder Deep Dive */}
+  <SplitSection ratio="60/40" bgColor="bg-white">
+    <div slot="image" class="overflow-hidden rounded-2xl">
+      <img
+        src="/images/team/mene-avatar.png"
+        alt="Mene Demestihas, MD — Founder & CEO of Metrias Medical"
+        width="600"
+        height="600"
+        class="h-auto w-full object-cover"
+        loading="lazy"
+      />
+    </div>
+    <div slot="content">
+      <h2 class="font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+        Mene Demestihas, MD
+      </h2>
+      <p class="mt-1 font-body text-sm text-payer-slate">Founder & CEO</p>
+
+      <p class="mt-6 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+        As a physician, Mene saw the discharge bottleneck from the bedside — patients
+        medically ready to leave, waiting hours for insurance approvals, equipment
+        deliveries, and facility placements. The delay wasn't clinical. It was administrative.
+      </p>
+      <p class="mt-4 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+        That insight became the foundation of Metrias Medical: deploy skilled human
+        operators who know the workflows, arm them with purpose-built software, and
+        let every action feed an AI engine that gets smarter with each discharge.
+      </p>
+      <p class="mt-4 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+        Mene brings deep clinical training and operational experience to Metrias — the
+        rare combination of someone who understands both the medicine and the systems
+        that hospitals run on.
+      </p>
+
+      <a
+        href="https://www.linkedin.com/in/menedemestihas/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-6 inline-flex items-center gap-2 font-body text-base font-medium text-provider-blue transition-colors hover:text-provider-blue/80"
+        aria-label="Mene Demestihas on LinkedIn"
+      >
+        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+        Connect on LinkedIn
+      </a>
+    </div>
+  </SplitSection>
+
+  {/* Values */}
+  <section class="bg-off-white py-24 md:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-16">
+      <h2 class="mb-16 font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+        What drives us
+      </h2>
+
+      <FeatureGrid columns={3}>
+        <div class="rounded-xl border border-border-gray bg-white p-8">
+          <span class="font-heading text-4xl font-bold text-ai-gold" aria-hidden="true">01</span>
+          <h3 class="mt-4 font-heading text-xl font-bold text-black">Clinical rigor</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            Every decision is grounded in evidence and patient outcomes.
+          </p>
+        </div>
+        <div class="rounded-xl border border-border-gray bg-white p-8">
+          <span class="font-heading text-4xl font-bold text-ai-gold" aria-hidden="true">02</span>
+          <h3 class="mt-4 font-heading text-xl font-bold text-black">Operator empathy</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            We've been in the trenches. We build for how hospitals actually work.
+          </p>
+        </div>
+        <div class="rounded-xl border border-border-gray bg-white p-8">
+          <span class="font-heading text-4xl font-bold text-ai-gold" aria-hidden="true">03</span>
+          <h3 class="mt-4 font-heading text-xl font-bold text-black">Radical transparency</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            Our clients see every metric. No black boxes.
+          </p>
+        </div>
+      </FeatureGrid>
+    </div>
+  </section>
+
+  <BottomCTA
+    heading="Want to join the mission?"
+    subtitle="We're always looking for exceptional people who care about fixing healthcare operations."
+    secondaryText="Contact Us"
+    secondaryHref="mailto:contact@metriasmedical.com"
+    primaryText="View Open Roles"
+    primaryHref="https://www.linkedin.com/company/metrias-medical/jobs/"
+  />
+</BaseLayout>

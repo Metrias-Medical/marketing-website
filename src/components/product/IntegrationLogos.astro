@@ -1,0 +1,23 @@
+---
+const integrations = ['Epic', 'Cerner', 'Meditech'];
+---
+
+<section class="bg-light-gray py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 text-center lg:px-16">
+    <h2 class="font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+      Works with your existing systems
+    </h2>
+    <p class="mt-4 font-body text-base text-payer-slate md:text-lg">
+      Metrias integrates at the EHR layer — no middleware, no custom builds.
+    </p>
+
+    {/* Placeholder logos — YELLOW tier: confirm with Mene before using real logos */}
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-12">
+      {integrations.map((name) => (
+        <div class="flex h-16 w-40 items-center justify-center rounded-lg border border-border-gray bg-white font-body text-lg font-semibold text-payer-slate/60 transition-colors hover:text-payer-slate">
+          {name}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

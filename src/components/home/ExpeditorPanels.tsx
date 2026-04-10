@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface PanelData {
   title: string;
@@ -23,6 +23,15 @@ const panels: PanelData[] = [
 
 export default function ExpeditorPanels() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   return (
     <section className="bg-off-white py-20 md:py-32">
@@ -45,6 +54,7 @@ export default function ExpeditorPanels() {
           {panels.map((panel, i) => {
             const isHovered = hoveredIndex === i;
             const siblingHovered = hoveredIndex !== null && hoveredIndex !== i;
+            const showDescription = isMobile || isHovered;
 
             return (
               <div
@@ -66,10 +76,12 @@ export default function ExpeditorPanels() {
                     {panel.title}
                   </h3>
                   <p
-                    className={`mt-4 text-base text-white/80 transition-all duration-300 ${
-                      isHovered ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 md:max-h-0 md:opacity-0'
-                    } overflow-hidden`}
-                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="mt-4 overflow-hidden text-base text-white/80 transition-all duration-300"
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      maxHeight: showDescription ? '10rem' : '0',
+                      opacity: showDescription ? 1 : 0,
+                    }}
                   >
                     {panel.description}
                   </p>

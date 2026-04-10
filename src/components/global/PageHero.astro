@@ -1,0 +1,54 @@
+---
+interface Props {
+  badge?: string;
+  badgeColor?: string;
+  heading: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaHref?: string;
+  bgColor?: string;
+}
+
+const {
+  badge,
+  badgeColor = 'bg-payer-slate',
+  heading,
+  subtitle,
+  ctaText,
+  ctaHref,
+  bgColor = 'bg-provider-blue-dark',
+} = Astro.props;
+---
+
+<section class:list={[bgColor, 'py-24 md:py-32']}>
+  <div class="mx-auto max-w-7xl px-6 lg:px-16">
+    {badge && (
+      <span class:list={[badgeColor, 'mb-6 inline-block rounded-full px-4 py-1.5 font-body text-sm font-semibold text-white']}>
+        {badge}
+      </span>
+    )}
+
+    <h1 class="max-w-4xl font-heading text-[2rem] leading-tight font-bold text-white md:text-[3rem] md:leading-tight">
+      {heading}
+    </h1>
+
+    {subtitle && (
+      <p class="mt-6 max-w-2xl font-body text-lg text-white/80">
+        {subtitle}
+      </p>
+    )}
+
+    <div class="mt-8">
+      <slot name="cta">
+        {ctaText && ctaHref && (
+          <a
+            href={ctaHref}
+            class="inline-block rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
+          >
+            {ctaText}
+          </a>
+        )}
+      </slot>
+    </div>
+  </div>
+</section>

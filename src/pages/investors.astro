@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/global/PageHero.astro';
+import StatCard from '../components/global/StatCard.astro';
+import SplitSection from '../components/global/SplitSection.astro';
+import Timeline from '../components/investors/Timeline.astro';
+import BottomCTA from '../components/home/BottomCTA.astro';
+---
+
+<BaseLayout
+  title="For Investors — Metrias Medical"
+  description="The $49B discharge delay problem has a solution. Metrias Medical is building the operating system for hospital discharge operations."
+>
+  <PageHero
+    badge="For Investors"
+    badgeColor="bg-ai-gold"
+    heading="The $49B discharge delay problem has a solution."
+    subtitle="Metrias Medical is building the operating system for hospital discharge operations — starting with remote expeditors powered by AI."
+    ctaText="Request Data Room Access"
+    ctaHref="mailto:contact@metriasmedical.com?subject=Data%20Room%20Access%20Request"
+  />
+
+  {/* Market Opportunity */}
+  <section class="bg-off-white py-24 md:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-16">
+      <div class="grid gap-8 md:grid-cols-3">
+        <StatCard
+          value="$49B"
+          label="Annual addressable market"
+          source="Administrative discharge delays in US hospitals"
+          valueColor="text-provider-blue"
+        />
+        <StatCard
+          value="6,000+"
+          label="US hospitals"
+          source="Potential customers with 100+ beds"
+          valueColor="text-provider-blue"
+        />
+        <StatCard
+          value="0"
+          label="Scaled competitors"
+          source="No one owns this workflow at scale"
+          valueColor="text-provider-blue"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* Why Now */}
+  <section class="bg-white py-24 md:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-16">
+      <h2 class="mb-12 font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+        Three forces converging
+      </h2>
+
+      <div class="space-y-10">
+        <div class="flex gap-6">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-provider-blue font-heading text-base font-bold text-white">1</span>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-black">Staffing crisis</h3>
+            <p class="mt-2 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+              Hospitals can't hire enough case managers. Remote expeditors solve the labor gap.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-6">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-provider-blue font-heading text-base font-bold text-white">2</span>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-black">AI inflection</h3>
+            <p class="mt-2 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+              LLMs can now parse clinical documentation and recommend next-best-action in discharge workflows.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-6">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-provider-blue font-heading text-base font-bold text-white">3</span>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-black">Value-based care pressure</h3>
+            <p class="mt-2 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+              CMS penalties for readmissions and excess LOS make discharge optimization a P&L priority, not a nice-to-have.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Timeline />
+
+  {/* Founder Section */}
+  <SplitSection ratio="60/40" bgColor="bg-white">
+    <div slot="image" class="overflow-hidden rounded-2xl">
+      <img
+        src="/images/team/mene-avatar.png"
+        alt="Mene Demestihas, MD — Founder & CEO of Metrias Medical"
+        width="600"
+        height="600"
+        class="h-auto w-full object-cover"
+        loading="lazy"
+      />
+    </div>
+    <div slot="content">
+      <h2 class="font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+        Physician founded, built for Operators
+      </h2>
+      <p class="mt-6 font-body text-lg leading-relaxed text-payer-slate">
+        Dr. Mene Demestihas saw the discharge bottleneck firsthand — patients waiting hours
+        for paperwork while beds sat occupied and ERs backed up. With a medical degree and
+        deep operator experience, he founded Metrias Medical to bring clinical rigor to
+        discharge operations at scale.
+      </p>
+      <div class="mt-8">
+        <p class="font-heading text-lg font-bold text-black">Mene Demestihas, MD</p>
+        <p class="font-body text-base text-payer-slate">Founder & CEO</p>
+      </div>
+    </div>
+  </SplitSection>
+
+  <BottomCTA
+    heading="Let's talk."
+    subtitle="Mene is available for a 30-minute investor conversation."
+    secondaryText="Request Data Room"
+    secondaryHref="mailto:contact@metriasmedical.com?subject=Data%20Room%20Access%20Request"
+    primaryText="Schedule a Call"
+    primaryHref="mailto:contact@metriasmedical.com?subject=Investor%20Call%20Request"
+  />
+</BaseLayout>

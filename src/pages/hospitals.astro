@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/global/PageHero.astro';
+import StatCard from '../components/global/StatCard.astro';
+import HowItWorks from '../components/hospitals/HowItWorks.astro';
+import SplitSection from '../components/global/SplitSection.astro';
+import TestimonialCard from '../components/global/TestimonialCard.astro';
+import FeatureGrid from '../components/global/FeatureGrid.astro';
+import BottomCTA from '../components/home/BottomCTA.astro';
+---
+
+<BaseLayout
+  title="For Hospitals — Clear Discharge Bottlenecks | Metrias Medical"
+  description="Metrias deploys remote discharge expeditors backed by AI — reducing excess length of stay, recovering lost revenue, and freeing your clinical staff."
+>
+  <PageHero
+    badge="For Hospitals"
+    badgeColor="bg-patient-moss"
+    heading="Discharge delays are costing you millions. We fix that."
+    subtitle="Metrias deploys remote discharge expeditors backed by AI — reducing excess length of stay, recovering lost revenue, and freeing your clinical staff."
+    ctaText="See How It Works"
+    ctaHref="#how-it-works"
+  />
+
+  {/* Problem Stats */}
+  <section class="bg-off-white py-24 md:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-16">
+      <div class="grid gap-8 md:grid-cols-3">
+        <StatCard
+          value="$49B"
+          label="Annual cost of discharge delays in the US"
+          source="Navigant"
+        />
+        <StatCard
+          value="6.6 hrs"
+          label="Average discharge delay per patient"
+          source="Bai et al., Journal of Hospital Medicine, 2019"
+        />
+        <StatCard
+          value="38%"
+          label="Of delays are administrative, not clinical"
+          source="Rojas-Garcia et al., BMC Health Services Research, 2018"
+        />
+      </div>
+    </div>
+  </section>
+
+  <HowItWorks />
+
+  {/* Results / Social Proof */}
+  <SplitSection bgColor="bg-light-gray">
+    <div slot="image" class="flex items-center justify-center">
+      <div class="text-center">
+        <span class="block font-heading text-[5rem] leading-none font-bold text-provider-blue md:text-[7rem]">
+          2x
+        </span>
+        <p class="mt-4 font-body text-lg text-payer-slate md:text-xl">
+          Faster discharge throughput within 60 days
+        </p>
+      </div>
+    </div>
+    <div slot="content">
+      <TestimonialCard
+        quote="Metrias changed how we think about discharge operations."
+        name="VP of Patient Flow"
+        title="Partner Hospital"
+      />
+    </div>
+  </SplitSection>
+
+  {/* What You Get */}
+  <section class="bg-white py-24 md:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-16">
+      <h2 class="mb-16 font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+        What your team gets
+      </h2>
+
+      <FeatureGrid columns={2}>
+        <div class="rounded-xl border border-border-gray p-8 transition-shadow hover:shadow-md">
+          <div class="mb-4 text-3xl" aria-hidden="true">👥</div>
+          <h3 class="font-heading text-xl font-bold text-black">Dedicated Expeditors</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            Remote discharge specialists trained on your protocols.
+          </p>
+        </div>
+        <div class="rounded-xl border border-border-gray p-8 transition-shadow hover:shadow-md">
+          <div class="mb-4 text-3xl" aria-hidden="true">📊</div>
+          <h3 class="font-heading text-xl font-bold text-black">Real-Time Dashboard</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            Live bottleneck visibility across all units.
+          </p>
+        </div>
+        <div class="rounded-xl border border-border-gray p-8 transition-shadow hover:shadow-md">
+          <div class="mb-4 text-3xl" aria-hidden="true">🔗</div>
+          <h3 class="font-heading text-xl font-bold text-black">EHR Integration</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            Works with Epic, Cerner, Meditech — no IT project required.
+          </p>
+        </div>
+        <div class="rounded-xl border border-border-gray p-8 transition-shadow hover:shadow-md">
+          <div class="mb-4 text-3xl" aria-hidden="true">📈</div>
+          <h3 class="font-heading text-xl font-bold text-black">Monthly ROI Reports</h3>
+          <p class="mt-2 font-body text-base text-payer-slate">
+            Transparent metrics showing financial and operational impact.
+          </p>
+        </div>
+      </FeatureGrid>
+    </div>
+  </section>
+
+  <BottomCTA
+    heading="Ready to clear the bottleneck?"
+    subtitle="Schedule a 15-minute call to see projected ROI for your facility."
+  />
+</BaseLayout>

@@ -1,0 +1,55 @@
+---
+const steps = [
+  {
+    number: '01',
+    title: 'Connect',
+    description: 'We integrate with your EHR and configure discharge protocols. No IT project — typically live in under 2 weeks.',
+  },
+  {
+    number: '02',
+    title: 'Deploy',
+    description: 'Remote expeditors begin working your discharge queue, following your protocols and escalation paths.',
+  },
+  {
+    number: '03',
+    title: 'Learn',
+    description: 'The AI layer analyzes every action, identifies delay patterns, and surfaces recommendations to expeditors and your team.',
+  },
+  {
+    number: '04',
+    title: 'Optimize',
+    description: 'Monthly reviews with your ops team. Continuous protocol refinement. Measurable ROI reporting.',
+  },
+];
+---
+
+<section class="bg-white py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-16">
+    <h2 class="mb-16 font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+      From bottleneck to breakthrough
+    </h2>
+
+    <div class="space-y-16 md:space-y-24">
+      {steps.map((step, i) => (
+        <div class:list={[
+          'grid gap-8 md:grid-cols-2 md:items-center md:gap-16',
+          i % 2 !== 0 && 'md:direction-rtl',
+        ]}>
+          <div class:list={[i % 2 !== 0 ? 'md:order-2' : '']}>
+            <span class="font-heading text-[5rem] font-bold leading-none text-ai-gold/20 md:text-[7rem]" aria-hidden="true">
+              {step.number}
+            </span>
+          </div>
+          <div class:list={[i % 2 !== 0 ? 'md:order-1 md:text-right' : '']}>
+            <h3 class="font-heading text-2xl font-bold text-black md:text-[1.75rem]">
+              {step.title}
+            </h3>
+            <p class="mt-3 font-body text-base leading-relaxed text-payer-slate md:text-lg">
+              {step.description}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

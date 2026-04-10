@@ -1,0 +1,65 @@
+---
+const milestones = [
+  {
+    label: 'Founded',
+    year: '2024',
+    description: 'Physician-founded, operator-built',
+  },
+  {
+    label: 'Product',
+    year: 'MVP Live',
+    description: 'AI-augmented discharge workflow platform',
+  },
+  {
+    label: 'Customers',
+    year: 'Engaged',
+    description: 'First partner hospital engaged',
+  },
+  {
+    label: 'Team',
+    year: 'Growing',
+    description: 'Clinical + technical founding team',
+  },
+];
+---
+
+<section class="bg-off-white py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-16">
+    <h2 class="mb-16 font-heading text-[2rem] font-bold text-black md:text-[2.25rem]">
+      Where we are
+    </h2>
+
+    {/* Desktop: horizontal timeline */}
+    <div class="hidden md:block">
+      <div class="relative">
+        <div class="absolute top-6 left-0 h-0.5 w-full bg-provider-blue" aria-hidden="true"></div>
+        <div class="grid grid-cols-4 gap-8">
+          {milestones.map((m) => (
+            <div class="relative pt-12">
+              <div class="absolute top-3 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-provider-blue ring-4 ring-off-white" aria-hidden="true"></div>
+              <div class="text-center">
+                <span class="block font-heading text-lg font-bold text-provider-blue">{m.label}</span>
+                <span class="mt-1 block font-body text-sm font-semibold text-ai-gold">{m.year}</span>
+                <p class="mt-2 font-body text-sm text-payer-slate">{m.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Mobile: vertical timeline */}
+    <div class="md:hidden">
+      <div class="relative ml-4 border-l-2 border-provider-blue pl-8">
+        {milestones.map((m) => (
+          <div class="relative pb-10 last:pb-0">
+            <div class="absolute -left-[calc(2rem+5px)] top-1 h-3 w-3 rounded-full bg-provider-blue ring-4 ring-off-white" aria-hidden="true"></div>
+            <span class="block font-heading text-lg font-bold text-provider-blue">{m.label}</span>
+            <span class="mt-0.5 block font-body text-sm font-semibold text-ai-gold">{m.year}</span>
+            <p class="mt-1 font-body text-sm text-payer-slate">{m.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

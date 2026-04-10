@@ -1,4 +1,21 @@
 ---
+interface Props {
+  heading?: string;
+  subtitle?: string;
+  primaryText?: string;
+  primaryHref?: string;
+  secondaryText?: string;
+  secondaryHref?: string;
+}
+
+const {
+  heading = 'Ready to clear the bottleneck?',
+  subtitle = 'See how Metrias can accelerate your discharge throughput, recover revenue, and free your clinical team.',
+  primaryText = 'Request Demo',
+  primaryHref = 'mailto:contact@metriasmedical.com?subject=Demo%20Request',
+  secondaryText = 'Contact Us',
+  secondaryHref = 'mailto:contact@metriasmedical.com?subject=Contact%20Request',
+} = Astro.props;
 ---
 
 <section class="relative overflow-hidden bg-provider-blue-dark py-24 md:py-32">
@@ -6,26 +23,25 @@
 
   <div class="relative mx-auto max-w-4xl px-6 text-center lg:px-8">
     <h2 class="font-heading text-[32px] leading-tight font-bold text-white md:text-[52px] md:leading-tight">
-      Ready to clear the bottleneck?
+      {heading}
     </h2>
 
     <p class="mx-auto mt-6 max-w-2xl font-body text-lg text-white/80">
-      See how Metrias can accelerate your discharge throughput, recover revenue,
-      and free your clinical team.
+      {subtitle}
     </p>
 
     <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
       <a
-        href="mailto:contact@metriasmedical.com?subject=Contact%20Request"
+        href={secondaryHref}
         class="rounded-lg border-2 border-white/80 px-8 py-3 font-body text-base font-medium text-white transition-colors hover:bg-white/10"
       >
-        Contact Us
+        {secondaryText}
       </a>
       <a
-        href="mailto:contact@metriasmedical.com?subject=Demo%20Request"
+        href={primaryHref}
         class="rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
       >
-        Request Demo
+        {primaryText}
       </a>
     </div>
   </div>

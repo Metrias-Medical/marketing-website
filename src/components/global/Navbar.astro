@@ -6,6 +6,13 @@ const navLinks = [
   { label: 'About Us', href: '/about' },
   { label: 'Product & Portal', href: '/product' },
 ];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
 ---
 
 <header
@@ -31,7 +38,13 @@ const navLinks = [
         <li>
           <a
             href={link.href}
-            class="font-body text-base font-semibold text-payer-slate transition-colors hover:text-provider-blue"
+            class:list={[
+              'font-body text-base font-semibold transition-colors hover:text-provider-blue',
+              isActive(link.href)
+                ? 'text-provider-blue border-b-2 border-ai-gold pb-0.5'
+                : 'text-payer-slate',
+            ]}
+            aria-current={isActive(link.href) ? 'page' : undefined}
           >
             {link.label}
           </a>
@@ -69,7 +82,13 @@ const navLinks = [
         <li>
           <a
             href={link.href}
-            class="block rounded-lg px-4 py-3 font-body text-base font-semibold text-payer-slate transition-colors hover:bg-light-gray hover:text-provider-blue"
+            class:list={[
+              'block rounded-lg px-4 py-3 font-body text-base font-semibold transition-colors hover:bg-light-gray hover:text-provider-blue',
+              isActive(link.href)
+                ? 'bg-light-gray text-provider-blue'
+                : 'text-payer-slate',
+            ]}
+            aria-current={isActive(link.href) ? 'page' : undefined}
           >
             {link.label}
           </a>

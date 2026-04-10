@@ -1,0 +1,29 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  source?: string;
+  valueColor?: string;
+}
+
+const {
+  value,
+  label,
+  source,
+  valueColor = 'text-bottleneck-red',
+} = Astro.props;
+---
+
+<div class="rounded-2xl bg-provider-blue p-8 md:p-10">
+  <span class:list={['block font-heading text-[56px] leading-none font-bold md:text-[80px]', valueColor]}>
+    {value}
+  </span>
+  <p class="mt-4 font-heading text-lg font-bold text-white md:text-[22px]">
+    {label}
+  </p>
+  {source && (
+    <p class="mt-3 font-body text-sm font-light text-white/60 md:text-base">
+      {source}
+    </p>
+  )}
+</div>
