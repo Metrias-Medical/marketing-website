@@ -1,0 +1,81 @@
+# Metrias Medical — Marketing Website Build Rules
+
+## Identity
+You are building the marketing website for Metrias Medical (www.metriasmedical.com).
+Metrias deploys remote experts with proprietary software to clear hospital discharge delays.
+The aesthetic is clinical-clean: think Linear, Notion, Stripe — restrained color, precise typography, structured space.
+
+## Stack (Non-Negotiable)
+- **Astro** — Static-first framework. Ships zero JS by default.
+- **React** — ONLY for interactive islands (Grainient, hover-expand panels, video player). Everything else is `.astro` components.
+- **Tailwind CSS v4** — Use `@theme` block in `global.css` for design tokens. Do NOT use arbitrary values when a token exists.
+- **ReactBits** — `reactbits.dev` components installed via `jsrepo` CLI. Use for Grainient background.
+- **TypeScript** — Strict mode. No `any` types.
+
+## Design Tokens (Source of Truth)
+Use ONLY these brand colors. Never invent or approximate colors.
+
+```
+PROVIDER_BLUE:       #253780  (brand primary — deep navy)
+PROVIDER_BLUE_DARK:  #1D2C66  (dark sections, footer)
+AI_GOLD:             #DEAC31  (CTAs, accent, warmth)
+PATIENT_MOSS:        #738F73  (organic accent, sparingly)
+PAYER_SLATE:         #454A53  (neutral text, dark backgrounds)
+BOTTLENECK_RED:      #DC6843  (problem/stat signal, not error red)
+BLACK:               #020306
+OFF_WHITE:           #F8FAFC  (page background)
+LIGHT_GRAY:          #F2F2F2
+MID_GRAY:            #E9EBF2
+BORDER_GRAY:         #D9DADC
+```
+
+## Typography
+- **Headings:** DM Sans Bold (700) — self-hosted woff2 from `/public/fonts/`
+- **Body:** Manrope Regular/Medium/SemiBold — self-hosted woff2 from `/public/fonts/`
+- **NEVER** use system fonts as primary. Self-hosted fonts are in `public/fonts/`.
+- Follow the 8px spacing grid.
+
+## Architecture Rules
+1. **Astro components for static content.** Only use React (`.tsx`) when the component needs client-side interactivity (hover state, animation, video playback).
+2. **Use `client:visible` or `client:idle`** for React islands — never `client:load` unless critical path.
+3. **Colocate page sections** — each section of a page gets its own component in `src/components/{page}/`.
+4. **Shared components** go in `src/components/shared/`.
+5. **One layout** — `src/layouts/BaseLayout.astro` wraps all pages.
+
+## Deployment Guardrails
+- **NEVER force-push to `gh-pages`** — branch protection is active, this will fail and is dangerous.
+- **Preserve `public/CNAME`** — must contain `www.metriasmedical.com`. If you delete this, the live site goes down.
+- **Work on the `dev` branch** — merge to `gh-pages` via PR only.
+- The `main` branch is broken. Ignore it entirely.
+
+## Image Handling
+- All images in `public/images/` organized by section.
+- Use WebP/AVIF format with `loading="lazy"` for below-fold images.
+- Always provide `width` and `height` attributes to prevent layout shift.
+- OG images: 1200×630 per page in `public/images/og/`.
+
+## SEO
+- Every page needs unique `<title>`, `<meta description>`, OG tags, Twitter Card tags.
+- Add `Schema.org Organization` on Home page.
+- Canonical URLs on every page.
+
+## Performance Targets
+- Lighthouse Performance: >95
+- First Contentful Paint: <1.5s
+- Total JS shipped: <50KB (only React islands)
+
+## Code Style
+- Prefer semantic HTML (`<section>`, `<article>`, `<nav>`, `<header>`, `<footer>`).
+- Use ARIA labels where semantics are ambiguous.
+- Tailwind classes ordered: layout → spacing → sizing → typography → color → effects.
+- No inline styles. No `!important`.
+- Descriptive component names based on content, not layout (e.g., `ProblemStats` not `ThreeColumnGrid`).
+
+## Information Security
+- The `/investors` page is YELLOW tier — reference business model and market size, but NEVER include specific valuation, cap table, or investor conversation details.
+- No PHI anywhere. All patient references use fake/demo data.
+
+## When Unsure
+- Check the Figma file via Figma MCP before guessing layout or spacing.
+- Ask for clarification rather than hallucinating component behavior.
+- If a design token doesn't exist for your use case, use the nearest semantic token and flag it in a code comment.

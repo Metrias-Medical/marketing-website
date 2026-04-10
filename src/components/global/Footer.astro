@@ -1,0 +1,78 @@
+---
+const currentYear = new Date().getFullYear();
+
+const footerLinks = [
+  {
+    heading: 'Company',
+    links: [
+      { label: 'Home', href: '/' },
+      { label: 'About Us', href: '/about' },
+      { label: 'Product & Portal', href: '/product' },
+    ],
+  },
+  {
+    heading: 'Solutions',
+    links: [
+      { label: 'For Hospitals', href: '/hospitals' },
+      { label: 'For Investors', href: '/investors' },
+    ],
+  },
+  {
+    heading: 'Connect',
+    links: [
+      { label: 'Contact', href: 'mailto:contact@metriasmedical.com' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/company/metrias-medical/', target: '_blank' },
+      { label: 'Client Portal', href: 'https://app.metriasmedical.com', target: '_blank' },
+    ],
+  },
+];
+---
+
+<footer class="bg-provider-blue-dark pt-16 pb-8">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="grid gap-12 md:grid-cols-4">
+      <div>
+        <a href="/" class="flex items-center gap-3" aria-label="Metrias Medical home">
+          <img
+            src="/images/logo-stacked-white.svg"
+            alt="Metrias Medical"
+            width="140"
+            height="60"
+            class="h-12 w-auto"
+          />
+        </a>
+        <p class="mt-4 font-body text-sm text-white/60">
+          Clearing hospital discharge bottlenecks with remote experts and intelligent software.
+        </p>
+      </div>
+
+      {footerLinks.map((group) => (
+        <div>
+          <h3 class="font-heading text-base font-bold text-ai-gold">
+            {group.heading}
+          </h3>
+          <ul class="mt-4 flex flex-col gap-3">
+            {group.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  target={link.target}
+                  rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                  class="font-body text-sm text-white/70 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-16 border-t border-white/10 pt-8">
+      <p class="font-body text-sm text-white/40 text-center">
+        &copy; {currentYear} Metrias Medical. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>

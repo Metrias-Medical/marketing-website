@@ -1,0 +1,47 @@
+---
+const stats = [
+  {
+    value: '6.6',
+    label: 'Average hours per discharge delay',
+    source: 'Bai et al., Journal of Hospital Medicine, 2019',
+  },
+  {
+    value: '2 days',
+    label: 'Average excess length of stay from discharge delays',
+    source: 'Rojas-Garcia et al., BMC Health Services Research, 2018',
+  },
+  {
+    value: '2-3x',
+    label: 'Higher readmission risk for delayed discharges',
+    source: 'Hendy et al., BMJ Open, 2012',
+  },
+];
+---
+
+<section class="bg-provider-blue-dark py-20 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <span class="inline-block rounded-full bg-bottleneck-red/20 px-4 py-1.5 font-body text-base font-semibold text-bottleneck-red">
+      Problem
+    </span>
+
+    <h2 class="mt-6 max-w-3xl font-heading text-[32px] leading-tight font-bold text-white md:text-[52px] md:leading-tight">
+      The $49 billion administrative discharge delay problem
+    </h2>
+
+    <div class="mt-16 grid gap-8 md:grid-cols-3">
+      {stats.map((stat) => (
+        <div class="rounded-2xl bg-provider-blue p-8 md:p-10">
+          <span class="block font-heading text-[56px] leading-none font-bold text-bottleneck-red md:text-[80px]">
+            {stat.value}
+          </span>
+          <p class="mt-4 font-heading text-lg font-bold text-white md:text-[22px]">
+            {stat.label}
+          </p>
+          <p class="mt-3 font-body text-sm font-light text-white/60 md:text-base">
+            {stat.source}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

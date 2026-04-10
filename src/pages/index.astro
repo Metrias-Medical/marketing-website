@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroGrainient from '../components/home/HeroGrainient';
+import ProblemStats from '../components/home/ProblemStats.astro';
+import ExpeditorPanels from '../components/home/ExpeditorPanels';
+import FounderSection from '../components/home/FounderSection.astro';
+import BottomCTA from '../components/home/BottomCTA.astro';
+---
+
+<BaseLayout
+  title="Metrias Medical — Clear Hospital Discharge Bottlenecks"
+  description="Metrias deploys remote experts with proprietary software to clear hospital discharge delays — accelerating patient flow, recovering revenue, and freeing clinical staff."
+>
+  <HeroGrainient client:visible />
+  <ProblemStats />
+  <ExpeditorPanels client:visible />
+  <FounderSection />
+  <BottomCTA />
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Metrias Medical",
+    "url": "https://www.metriasmedical.com",
+    "logo": "https://www.metriasmedical.com/images/logo-icon.svg",
+    "description": "Metrias deploys remote experts with proprietary software to clear hospital discharge delays.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "contact@metriasmedical.com",
+      "contactType": "sales"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/metrias-medical/"
+    ]
+  })} />
+</BaseLayout>
