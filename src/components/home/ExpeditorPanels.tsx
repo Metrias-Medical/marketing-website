@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 interface PanelData {
   title: string;
   description: string;
-  gradient: string;
+  image: string;
+  imagePosition: string;
 }
 
 const panels: PanelData[] = [
@@ -11,13 +12,15 @@ const panels: PanelData[] = [
     title: 'Real people handling the work that matters',
     description:
       'Our remote expeditors integrate with your discharge team, handling insurance verifications, prior authorizations, DME coordination, and facility placements — so your clinical staff can focus on patient care.',
-    gradient: 'from-provider-blue to-provider-blue-dark',
+    image: '/images/Gemini_Generated_Image_ (2).png',
+    imagePosition: 'center center',
   },
   {
     title: 'AI learns from every action taken',
     description:
       'Every discharge our team processes feeds our AI engine. Over time, SENSOCEL automates the most repetitive workflows — reducing turnaround times and scaling capacity without adding headcount.',
-    gradient: 'from-provider-blue-dark to-payer-slate',
+    image: '/images/Gemini_Generated_Image_ (7).png',
+    imagePosition: 'right center',
   },
 ];
 
@@ -59,7 +62,7 @@ export default function ExpeditorPanels() {
             return (
               <div
                 key={i}
-                className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${panel.gradient} cursor-pointer transition-all duration-300 ease-out`}
+                className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 ease-out"
                 style={{
                   flex: isHovered ? '2 1 0%' : siblingHovered ? '1 1 0%' : '1 1 0%',
                   minHeight: '400px',
@@ -67,7 +70,17 @@ export default function ExpeditorPanels() {
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="absolute inset-0 bg-black/20" />
+                {/* Background image */}
+                <div
+                  className="absolute inset-0 bg-cover transition-transform duration-500 ease-out"
+                  style={{
+                    backgroundImage: `url("${panel.image}")`,
+                    backgroundPosition: panel.imagePosition,
+                    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                />
+                {/* Dark overlay for text legibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="relative flex h-full flex-col justify-end p-8 md:p-10">
                   <h3
                     className="text-xl font-bold text-white md:text-[22px]"

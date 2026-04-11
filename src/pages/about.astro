@@ -15,7 +15,17 @@ import BottomCTA from '../components/home/BottomCTA.astro';
     badgeColor="bg-payer-slate"
     heading="Physician-founded. Operator-built."
     subtitle="Metrias Medical was built by a physician who saw discharge bottlenecks from the inside — and decided to fix them from the outside."
-  />
+  >
+    <div slot="below" class="mt-12 max-w-5xl overflow-hidden rounded-2xl">
+      <img
+        src="/images/Gemini_Generated_Image_ (6).png"
+        alt="Healthcare professionals collaborating on discharge operations"
+        width="1200"
+        height="675"
+        class="h-auto w-full object-cover"
+      />
+    </div>
+  </PageHero>
 
   {/* Mission Statement */}
   <section class="bg-off-white py-24 md:py-32">
@@ -94,22 +104,19 @@ import BottomCTA from '../components/home/BottomCTA.astro';
 
       <FeatureGrid columns={3}>
         <div class="rounded-xl border border-border-gray bg-white p-8">
-          <span class="font-heading text-4xl font-bold text-ai-gold" aria-hidden="true">01</span>
-          <h3 class="mt-4 font-heading text-xl font-bold text-black">Clinical rigor</h3>
+          <h3 class="font-heading text-xl font-bold text-black">Clinical rigor</h3>
           <p class="mt-2 font-body text-base text-payer-slate">
             Every decision is grounded in evidence and patient outcomes.
           </p>
         </div>
         <div class="rounded-xl border border-border-gray bg-white p-8">
-          <span class="font-heading text-4xl font-bold text-ai-gold" aria-hidden="true">02</span>
-          <h3 class="mt-4 font-heading text-xl font-bold text-black">Operator empathy</h3>
+          <h3 class="font-heading text-xl font-bold text-black">Operator empathy</h3>
           <p class="mt-2 font-body text-base text-payer-slate">
             We've been in the trenches. We build for how hospitals actually work.
           </p>
         </div>
         <div class="rounded-xl border border-border-gray bg-white p-8">
-          <span class="font-heading text-4xl font-bold text-ai-gold" aria-hidden="true">03</span>
-          <h3 class="mt-4 font-heading text-xl font-bold text-black">Radical transparency</h3>
+          <h3 class="font-heading text-xl font-bold text-black">Radical transparency</h3>
           <p class="mt-2 font-body text-base text-payer-slate">
             Our clients see every metric. No black boxes.
           </p>
@@ -123,7 +130,5 @@ import BottomCTA from '../components/home/BottomCTA.astro';
     subtitle="We're always looking for exceptional people who care about fixing healthcare operations."
     secondaryText="Contact Us"
     secondaryHref="mailto:contact@metriasmedical.com"
-    primaryText="View Open Roles"
-    primaryHref="https://www.linkedin.com/company/metrias-medical/jobs/"
   />
 </BaseLayout>

@@ -1,10 +1,10 @@
 ---
 const navLinks = [
   { label: 'Home', href: '/' },
-  { label: 'For Hospitals', href: '/hospitals' },
-  { label: 'For Investors', href: '/investors' },
+  // { label: 'For Hospitals', href: '/hospitals' },
+  // { label: 'For Investors', href: '/investors' },
   { label: 'About Us', href: '/about' },
-  { label: 'Product & Portal', href: '/product' },
+  // { label: 'Product & Portal', href: '/product' },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -20,17 +20,14 @@ function isActive(href: string): boolean {
   class="fixed top-0 left-0 right-0 z-50 h-18 bg-white/95 backdrop-blur-sm transition-shadow duration-300"
 >
   <nav class="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Main navigation">
-    <a href="/" class="flex shrink-0 items-center gap-3" aria-label="Metrias Medical home">
+    <a href="/" class="shrink-0" aria-label="Metrias Medical home">
       <img
-        src="/images/logo-icon.svg"
+        src="/images/Metrias Medical _ Stacled-edge-OG.png"
         alt="Metrias Medical"
-        width="36"
-        height="36"
-        class="h-9 w-9"
+        width="120"
+        height="48"
+        class="h-12 w-auto"
       />
-      <span class="hidden font-heading text-lg font-bold text-provider-blue sm:block">
-        Metrias Medical
-      </span>
     </a>
 
     <ul class="hidden items-center gap-8 lg:flex">
