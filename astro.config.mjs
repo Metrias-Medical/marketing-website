@@ -6,6 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://www.metriasmedical.com',
   output: 'static',
+  redirects: {
+    // QR code target (e.g. business card). Swap destination as needed.
+    '/connect/mene': '/about',
+  },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
