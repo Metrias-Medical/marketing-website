@@ -1,0 +1,24 @@
+%% Metrias Marketing Website — Inner Page User Flows
+%% UX.agent | 2026-04-10
+
+%% === HOSPITALS PAGE FLOW ===
+%% Primary path: Hospital operator lands → understands problem → sees solution → requests demo
+
+flowchart TD
+    H1["🏥 /hospitals PageHero"] --> H2["📊 Problem Stats"]
+    H2 --> H3["⚡ How It Works (3 steps)"]
+    H3 --> H4["📈 Results / Social Proof"]
+    H4 --> H5["✅ What You Get (Feature Grid)"]
+    H5 --> H6["🔘 Bottom CTA"]
+    H6 -->|"Request Demo"| DEMO["📧 Calendly / mailto"]
+    H6 -->|"Contact Us"| CONTACT["📧 Contact email"]
+    H1 -->|"See How It Works"| H3
+
+    style H1 fill:#1D2C66,color:#fff,stroke:none
+    style H2 fill:#F8FAFC,color:#020306,stroke:#D9DADC
+    style H3 fill:#F8FAFC,color:#020306,stroke:#D9DADC
+    style H4 fill:#F2F2F2,color:#020306,stroke:#D9DADC
+    style H5 fill:#fff,color:#020306,stroke:#D9DADC
+    style H6 fill:#1D2C66,color:#fff,stroke:none
+    style DEMO fill:#DEAC31,color:#020306,stroke:none
+    style CONTACT fill:#253780,color:#fff,stroke:none
