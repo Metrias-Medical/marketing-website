@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/global/PageHero.astro';
+import FundingModel from '../components/investors/FundingModel.tsx';
+---
+
+<BaseLayout
+  title="Funding Model — Metrias Medical"
+  description="Interactive seed-round model for Metrias Medical. Drag the check size, pre-money cap, and burn to see dilution, runway, and milestone fit live."
+>
+  <PageHero
+    badge="For Investors"
+    badgeColor="bg-ai-gold"
+    heading="Model the round, live."
+    subtitle="Drag the inputs to see dilution, runway, and milestone fit update in real time. No data is stored. Everything runs in your browser."
+  />
+
+  <section class="bg-off-white py-12 md:py-20">
+    <div class="mx-auto max-w-7xl px-6 lg:px-16">
+      <FundingModel client:load />
+
+      <div class="mx-auto mt-12 max-w-3xl font-body text-sm leading-relaxed text-payer-slate">
+        <h3 class="font-heading text-base font-bold text-black">Assumptions</h3>
+        <ul class="mt-3 list-disc space-y-1.5 pl-5">
+          <li>Valuation uses <strong>post-money caps</strong> (YC 2018+ SAFE convention) — matches every instrument on the Metrias cap table. Investor ownership at conversion = check / cap, directly.</li>
+          <li>Founder ownership pre-round: <strong>99.5%</strong> (State 1 today). Series A dilution range reflects typical 18–25% on a priced A.</li>
+          <li>Healthtech post-money seed comp band: <strong>$5M–$10M</strong>. AI-native post-money band: <strong>$10M–$18M</strong>. Defensibility is a comp-band test, not a price recommendation.</li>
+          <li>Use-of-funds reshuffles by tier — first $250K to core ops, next $150K to AI BD tooling, next $250K split 60/40 AI BD / R&D, marginal above $650K splits 40/60 advisor / pilot expansion buffer.</li>
+          <li>Milestone fit assumes the round must fund <strong>1 paid pilot + 60 days of data</strong> before approaching seed.</li>
+          <li>Implied ARR multiple uses a <strong>$500K seed ARR target</strong> as the denominator.</li>
+          <li><strong>Not modeled:</strong> Seed round dilution, ESOP refreshes (5% at Seed, 10% at A), and MOHARA equity vs cash paths. Founder % post-A is a ceiling — true number is lower once the full waterfall closes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
