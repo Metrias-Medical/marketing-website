@@ -18,7 +18,7 @@ const panels: PanelData[] = [
   {
     title: 'AI learns from every action taken',
     description:
-      'Every discharge our team processes feeds our AI engine. Over time, SENSOCEL automates the most repetitive workflows — reducing turnaround times and scaling capacity without adding headcount.',
+      'Every discharge our team processes feeds our AI engine. Over time, it automates the most repetitive workflows — reducing turnaround times and scaling capacity without adding headcount.',
     image: '/images/Gemini_Generated_Image_ (7).png',
     imagePosition: 'right center',
   },
