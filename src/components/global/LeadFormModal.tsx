@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
-const LEAD_ENDPOINT = '/api/lead';
+// Dedicated proxied Worker subdomain (Path B). Same-origin /api/lead won't work because the
+// GitHub Pages records are DNS-only; the Worker lives on lead.metriasmedical.com (CORS allows www).
+const LEAD_ENDPOINT = 'https://lead.metriasmedical.com/api/lead';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';

@@ -4,14 +4,13 @@ compatibility_date = "2026-01-01"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = false
 
-# Production routes — bind /api/lead on both www (where the site + form live) and the apex.
+# Path B — dedicated subdomain via Workers Custom Domain. Auto-creates the proxied (orange-cloud)
+# DNS record + edge cert for lead.metriasmedical.com, leaving the GitHub Pages www/apex records
+# untouched. The site form POSTs cross-origin to https://lead.metriasmedical.com/api/lead (CORS
+# allow-origin = www, handled by the Worker).
 [[routes]]
-pattern = "www.metriasmedical.com/api/lead*"
-zone_name = "metriasmedical.com"
-
-[[routes]]
-pattern = "metriasmedical.com/api/lead*"
-zone_name = "metriasmedical.com"
+pattern = "lead.metriasmedical.com"
+custom_domain = true
 
 # KV: rate-limiting, CSRF replay protection, MX cache, and Attio-outage replay queue.
 # Create with: wrangler kv namespace create LEADS_KV  (and  --preview)
