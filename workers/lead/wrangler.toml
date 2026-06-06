@@ -4,28 +4,32 @@ compatibility_date = "2026-01-01"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = false
 
-# Production route — bind the Worker to the apex /api/lead path.
-# Requires the metriasmedical.com zone to be on this Cloudflare account.
-# Uncomment and deploy with `wrangler deploy` once the zone + KV exist.
-# [[routes]]
-# pattern = "metriasmedical.com/api/lead*"
-# zone_name = "metriasmedical.com"
+# Production routes — bind /api/lead on both www (where the site + form live) and the apex.
+[[routes]]
+pattern = "www.metriasmedical.com/api/lead*"
+zone_name = "metriasmedical.com"
+
+[[routes]]
+pattern = "metriasmedical.com/api/lead*"
+zone_name = "metriasmedical.com"
 
 # KV: rate-limiting, CSRF replay protection, MX cache, and Attio-outage replay queue.
 # Create with: wrangler kv namespace create LEADS_KV  (and  --preview)
 [[kv_namespaces]]
 binding = "LEADS_KV"
-id = "REPLACE_WITH_KV_ID"
-preview_id = "REPLACE_WITH_PREVIEW_KV_ID"
+id = "4728b1c86d6645b199628ef08e19c3e6"
+preview_id = "99229744a4944eb3b04942e704ec8f56"
 
 [vars]
 POSTHOG_HOST = "https://us.i.posthog.com"
 ALLOWED_ORIGIN = "https://www.metriasmedical.com"
 RATE_LIMIT_PER_HOUR = "5"
 
-# Replay any Attio-queued leads every 5 minutes (per Lead Capture → Attio Wiring spec).
-[triggers]
-crons = ["*/5 * * * *"]
+# NOTE: Attio-outage replay cron deferred — the schedules API rejected the trigger on this
+# account/plan. The scheduled() handler stays in code; on outage, leads queue to KV and can be
+# replayed manually (`wrangler dev` + curl /cdn-cgi/handler/scheduled) or re-enable crons later.
+# [triggers]
+# crons = ["*/5 * * * *"]
 
 # Secrets (NEVER commit) — set with `wrangler secret put <NAME>`:
 #   ATTIO_API_TOKEN      op://Metrias/ATTIO_API_TOKEN/credential
