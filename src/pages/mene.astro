@@ -1,0 +1,238 @@
+---
+// Persona page for Mene Demestihas (per Notion: "About Mene (personal) — page spec").
+// Narrative copy delivered by VPstrategy.agent handoff 2026-06-06 (GREEN-tier, QA-passed).
+// Sections are inlined rather than split into src/components/mene/* — same structure, less
+// fragmentation for prose-only sections. Connect CTA reuses the shared LeadFormModal
+// (data-lead-intent="mene"). Copy is intentionally em-dash-free (voice choice, do not "fix").
+//
+// OPEN (per spec): hero-quality 1600x1000 headshot + a section-3 contextual photo still needed
+// (using the existing square avatar as a stand-in); custom OG image; Mene's personal LinkedIn URL
+// for Person.sameAs (company page used as a placeholder below).
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
+---
+
+<BaseLayout
+  title="Mene Demestihas — Founder of Metrias Medical | Metrias Medical"
+  description="Physician, operator, founder of Metrias Medical. The story of why Metrias exists and what we're solving in hospital discharge coordination."
+>
+  {/* 1 — Hero (muted; not Grainient, which is reserved for home) */}
+  <section class="bg-provider-blue-dark">
+    <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 py-20 lg:grid-cols-[1.4fr_1fr] lg:gap-16 lg:px-8 lg:py-28">
+      <div>
+        <p class="font-body text-base font-semibold text-ai-gold">Physician, operator, founder of Metrias Medical</p>
+        <h1 class="mt-4 font-heading text-[2.5rem] leading-tight font-bold text-white md:text-[3.25rem]">
+          Mene Demestihas, MD
+        </h1>
+        <p class="mt-6 max-w-xl font-body text-lg leading-relaxed text-white/80">
+          I left the bedside to fix the part of discharge no one would claim. This is the short
+          version of why.
+        </p>
+        <div class="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <button
+            type="button"
+            data-lead-trigger
+            data-lead-intent="mene"
+            class="rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Stay in touch
+          </button>
+          <a
+            href="/about"
+            class="font-body text-base font-medium text-white underline underline-offset-4 transition-colors hover:text-white/80"
+          >
+            More about Metrias &rarr;
+          </a>
+        </div>
+      </div>
+      <div class="order-first overflow-hidden rounded-2xl lg:order-none">
+        <img
+          src="/images/team/mene-avatar.png"
+          alt="Mene Demestihas, MD — Founder & CEO of Metrias Medical"
+          width="600"
+          height="600"
+          class="h-auto w-full object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* 2 — The clinical question */}
+  <section class="bg-white py-20 md:py-28">
+    <div class="mx-auto max-w-3xl px-6 lg:px-8">
+      <h2 class="font-heading text-[2rem] leading-tight font-bold text-black md:text-[2.25rem]">
+        The clinical question that didn't go away
+      </h2>
+      <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
+        <p>
+          I would walk into a room and find someone dressed, bag packed, sitting on the edge of a
+          made bed. Medically, they were done. There was no order left to write. They were ready to
+          go home, and they were still there the next morning, and the morning after that. Not for
+          any reason I could treat. Because someone hadn't finished the phone calls.
+        </p>
+        <p>
+          The hold was always administrative. A skilled nursing facility that hadn't called back. A
+          SNF that reviewed the chart and said no. A prior auth still pending. An insurance approval
+          that never came through. Transport nobody had booked. The patient was ready and the system
+          around them was not, and the gap had nothing to do with medicine. It was coordination work
+          that simply hadn't been done by anyone.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* 3 — The transition */}
+  <section class="bg-off-white py-20 md:py-28">
+    <div class="mx-auto max-w-3xl px-6 lg:px-8">
+      <h2 class="font-heading text-[2rem] leading-tight font-bold text-black md:text-[2.25rem]">
+        From the bedside to the systems above it
+      </h2>
+      <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
+        <p>
+          What made it a clinical problem, not just something I carried home, was the bed itself. A
+          bed held by a patient who is ready to leave is a bed the next person can't have. The delay
+          doesn't only sit on the person in the room. It lands on the patient downstairs, waiting on
+          a stretcher for the bed that won't open. I was watching one person's discharge friction
+          become another person's delayed care.
+        </p>
+        <p>
+          When I moved into operator roles, I expected to find a team that needed fixing. Instead I
+          found the same pattern on every unit and across the whole system. Not one slow floor. A
+          structural gap, work everyone quietly assumed belonged to someone else. Nationally,
+          case-manager vacancies run around twenty percent, and the people still in the seats spend
+          much of the day on work that never needed a clinical license. You can't make an empty seat
+          more efficient. The work just isn't getting done.
+        </p>
+        <p>
+          I didn't go looking for a problem to build a company around. I lived this one, from inside
+          the room. So I left the bedside to fix the part of it no one would claim.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* 4 — Why Metrias */}
+  <section class="bg-white py-20 md:py-28">
+    <div class="mx-auto max-w-3xl px-6 lg:px-8">
+      <h2 class="font-heading text-[2rem] leading-tight font-bold text-black md:text-[2.25rem]">
+        We built the role that was missing
+      </h2>
+      <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
+        <p>
+          So I built what was missing at the bedside: a person to actually do the work. Metrias puts
+          a dedicated, remote, non-clinical discharge specialist onto the care team, an expeditor
+          whose only job is the coordination that holds patients in beds. The phone tag with SNFs,
+          the rejections, the prior auths, the transport, the insurance holds. Not a tool that tells
+          already-stretched staff what to do next. A person who picks up the calls and finishes
+          them, and who stays out of the clinical staff's way on purpose. That's the role I'd have
+          wanted on my floor.
+        </p>
+        <p>
+          While the expeditor works, the software quietly records what actually happens: every call
+          placed, every SNF that says no, and where each hold lands. You get a real, structured
+          picture of where patients actually get stuck, not just what eventually got typed into a
+          chart. Most tools read what already got written down and tell staff what to do. We do the
+          work and measure the friction itself: data the EHR can't see.
+        </p>
+        <p>
+          The work comes first. The data is what the work leaves behind, and over time it becomes
+          the thing the EHR never could, a map of where care actually stalls. That map is what
+          eventually tells us what to automate, because we measured it instead of guessing. The
+          person is the wedge. Everything after that follows from the work getting done.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* 5 — What I'm working on now */}
+  <section class="bg-off-white py-20 md:py-28">
+    <div class="mx-auto max-w-3xl px-6 lg:px-8">
+      <h2 class="font-heading text-[2rem] leading-tight font-bold text-black md:text-[2.25rem]">
+        What I'm working on right now
+      </h2>
+      <ul class="mt-6 space-y-4">
+        <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
+          <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+          <span>
+            Building the expeditor role around the calls care teams actually dread: the hard,
+            unglamorous coordination work, not the parts that are easy to put in a pitch.
+          </span>
+        </li>
+        <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
+          <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+          <span>
+            Turning the captured friction into a clear read on where patients actually get held up,
+            the picture a hospital can't pull from its EHR.
+          </span>
+        </li>
+        <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
+          <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+          <span>
+            Keeping the build honest to the bedside. The deliverable is the finished work, not
+            another piece of software that points at the problem and tells staff what to do. Out of
+            clinical staff's way, by design.
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* 6 — How to reach me */}
+  <section class="bg-provider-blue-dark py-20 md:py-28">
+    <div class="mx-auto max-w-3xl px-6 text-center lg:px-8">
+      <h2 class="font-heading text-[2rem] leading-tight font-bold text-white md:text-[2.25rem]">
+        Reach me directly
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl font-body text-lg text-white/80">
+        Scanned my card, or found me on LinkedIn? Leave a note and I'll get back to you.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <button
+          type="button"
+          data-lead-trigger
+          data-lead-intent="mene"
+          class="rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          Stay in touch
+        </button>
+        <a
+          href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-lg border-2 border-white/80 px-8 py-3 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          Connect on LinkedIn
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Mene Demestihas',
+      jobTitle: 'Founder & CEO',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'Metrias Medical',
+        url: 'https://www.metriasmedical.com',
+      },
+      sameAs: ['https://www.linkedin.com/company/metrias-medical/'],
+    })}
+  />
+
+  {/* PostHog: mene_page_cta_clicked (form open). Successful submits are captured server-side by the
+      lead Worker as lead_captured with source_slug='mene'. */}
+  <script is:inline>
+    document.addEventListener('click', (e) => {
+      const t = e.target;
+      if (t && t.closest && t.closest('[data-lead-trigger]') && window.posthog) {
+        window.posthog.capture('mene_page_cta_clicked');
+      }
+    });
+  </script>
+</BaseLayout>

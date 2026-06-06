@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local `wrangler dev`. NEVER commit .dev.vars.
+# In production these are set with `wrangler secret put <NAME>`.
+ATTIO_API_TOKEN=dev-attio-token
+POSTHOG_API_KEY=phc_dev_key
+CSRF_SECRET=dev-csrf-secret-change-me-please
+NOTIFY_WEBHOOK_URL=

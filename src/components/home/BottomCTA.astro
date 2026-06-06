@@ -4,18 +4,27 @@ interface Props {
   subtitle?: string;
   primaryText?: string;
   primaryHref?: string;
+  primaryIntent?: string;
   secondaryText?: string;
   secondaryHref?: string;
+  secondaryIntent?: string;
 }
 
 const {
   heading = 'Ready to clear the bottleneck?',
   subtitle = 'See how Metrias can accelerate your discharge throughput, recover revenue, and free your clinical team.',
-  primaryText = 'Request Demo',
-  primaryHref = 'mailto:contact@metriasmedical.com?subject=Demo%20Request',
-  secondaryText = 'Contact Us',
-  secondaryHref = 'mailto:contact@metriasmedical.com?subject=Contact%20Request',
+  primaryText = 'Request a Workflow Assessment',
+  primaryHref,
+  primaryIntent = 'website',
+  secondaryText = 'Contact',
+  secondaryHref,
+  secondaryIntent = 'website',
 } = Astro.props;
+
+const secondaryClass =
+  'rounded-lg border-2 border-white/80 px-8 py-3 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+const primaryClass =
+  'rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 ---
 
 <section class="relative overflow-hidden bg-provider-blue-dark py-24 md:py-32">
@@ -31,18 +40,20 @@ const {
     </p>
 
     <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-      <a
-        href={secondaryHref}
-        class="rounded-lg border-2 border-white/80 px-8 py-3 font-body text-base font-medium text-white transition-colors hover:bg-white/10"
-      >
-        {secondaryText}
-      </a>
-      <a
-        href={primaryHref}
-        class="rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
-      >
-        {primaryText}
-      </a>
+      {secondaryHref ? (
+        <a href={secondaryHref} class={secondaryClass}>{secondaryText}</a>
+      ) : (
+        <button type="button" data-lead-trigger data-lead-intent={secondaryIntent} class={secondaryClass}>
+          {secondaryText}
+        </button>
+      )}
+      {primaryHref ? (
+        <a href={primaryHref} class={primaryClass}>{primaryText}</a>
+      ) : (
+        <button type="button" data-lead-trigger data-lead-intent={primaryIntent} class={primaryClass}>
+          {primaryText}
+        </button>
+      )}
     </div>
   </div>
 </section>

@@ -6,6 +6,7 @@ interface Props {
   subtitle?: string;
   ctaText?: string;
   ctaHref?: string;
+  ctaIntent?: string;
   bgColor?: string;
 }
 
@@ -16,8 +17,12 @@ const {
   subtitle,
   ctaText,
   ctaHref,
+  ctaIntent = 'website',
   bgColor = 'bg-provider-blue-dark',
 } = Astro.props;
+
+const ctaClass =
+  'inline-block rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 ---
 
 <section class:list={[bgColor, 'py-24 md:py-32']}>
@@ -41,12 +46,14 @@ const {
     <div class="mt-8">
       <slot name="cta">
         {ctaText && ctaHref && (
-          <a
-            href={ctaHref}
-            class="inline-block rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
-          >
+          <a href={ctaHref} class={ctaClass}>
             {ctaText}
           </a>
+        )}
+        {ctaText && !ctaHref && (
+          <button type="button" data-lead-trigger data-lead-intent={ctaIntent} class={ctaClass}>
+            {ctaText}
+          </button>
         )}
       </slot>
     </div>

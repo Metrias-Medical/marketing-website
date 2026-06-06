@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# lighthouse audit artifacts (raw JSON is large; baseline.md keeps the scores)
+.audit-baselines/**/*.json
+
 # generated types
 .astro/
 

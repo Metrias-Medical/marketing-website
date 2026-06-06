@@ -1,10 +1,8 @@
 ---
 const navLinks = [
   { label: 'Home', href: '/' },
-  // { label: 'For Hospitals', href: '/hospitals' },
-  // { label: 'For Investors', href: '/investors' },
+  { label: 'For Hospitals', href: '/hospitals' },
   { label: 'About Us', href: '/about' },
-  // { label: 'Product & Portal', href: '/product' },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -50,12 +48,13 @@ function isActive(href: string): boolean {
     </ul>
 
     <div class="flex items-center gap-4">
-      <a
-        href="mailto:contact@metriasmedical.com?subject=Demo%20Request"
-        class="hidden rounded-lg bg-ai-gold px-5 py-2.5 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 sm:inline-block"
+      <button
+        type="button"
+        data-lead-trigger
+        class="hidden rounded-lg bg-ai-gold px-5 py-2.5 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-provider-blue sm:inline-block"
       >
-        Request Demo
-      </a>
+        Request Assessment
+      </button>
 
       <button
         id="mobile-menu-toggle"
@@ -92,12 +91,13 @@ function isActive(href: string): boolean {
         </li>
       ))}
       <li class="mt-2">
-        <a
-          href="mailto:contact@metriasmedical.com?subject=Demo%20Request"
-          class="block rounded-lg bg-ai-gold px-4 py-3 text-center font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
+        <button
+          type="button"
+          data-lead-trigger
+          class="block w-full rounded-lg bg-ai-gold px-4 py-3 text-center font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-provider-blue"
         >
-          Request Demo
-        </a>
+          Request Assessment
+        </button>
       </li>
     </ul>
   </div>

@@ -20,12 +20,13 @@ const portalUrl = 'https://app.metriasmedical.com';
     subtitle="Remote expeditors + AI intelligence + real-time visibility — in one unified workflow."
   >
     <div slot="cta" class="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <a
-        href="mailto:contact@metriasmedical.com?subject=Demo%20Request"
+      <button
+        type="button"
+        data-lead-trigger
         class="inline-block rounded-lg bg-ai-gold px-8 py-3 font-body text-base font-medium text-provider-blue transition-colors hover:bg-ai-gold/90"
       >
-        Request Demo
-      </a>
+        Request a Workflow Assessment
+      </button>
       <a
         href={portalUrl}
         target="_blank"

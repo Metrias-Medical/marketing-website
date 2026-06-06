@@ -1,0 +1,78 @@
+---
+// DRAFT — compliance posture wording pending SGR (Riesen) review (per ClickUp Phase 3).
+// Honest framing only: "in progress" where not yet certified; never "compliant" before audit.
+import LegalLayout from '../layouts/LegalLayout.astro';
+---
+
+<LegalLayout
+  title="Security & Compliance — Metrias Medical"
+  description="How Metrias Medical approaches security, HIPAA, SOC 2, EHR integration, and PHI handling. The posture a hospital IT and security reviewer needs, in one place."
+  heading="Security & Compliance"
+  lastUpdated="June 6, 2026"
+>
+  <p>
+    Metrias builds discharge-operations software for hospitals. Patient privacy and data
+    security are foundational to that work. This page summarizes our current posture so a
+    hospital IT or security reviewer has what they need to begin an evaluation. We describe
+    only what is true today and label work that is still in progress.
+  </p>
+
+  <h2>HIPAA</h2>
+  <p>
+    Metrias handles Protected Health Information (PHI) only under a signed
+    <strong>Business Associate Agreement (BAA)</strong>. BAAs are available for paid pilots and
+    production engagements. This marketing website collects no PHI, and PHI never flows through
+    it.
+  </p>
+
+  <h2>SOC 2</h2>
+  <p>
+    Our SOC 2 program is <strong>in progress</strong>. We are building and documenting the
+    control set required for examination; we will share our report status with prospective
+    partners under NDA. We do not represent ourselves as SOC 2 certified prior to completing an
+    audit.
+  </p>
+
+  <h2>EHR integration model</h2>
+  <p>
+    Metrias integrates with major electronic health record systems — including
+    <strong>Epic, Oracle Health (Cerner), and MEDITECH</strong> — using industry-standard
+    <strong>HL7 v2</strong> and <strong>FHIR</strong> interfaces. Integrations use
+    least-privilege access scoped to the discharge workflow, and are bidirectional where the
+    source system supports it, so clinical teams avoid double-documentation.
+  </p>
+
+  <h2>Data hosting & residency</h2>
+  <p>
+    Production data is hosted on established United States cloud infrastructure. Data processed
+    on behalf of partners is stored and processed in the United States.
+  </p>
+
+  <h2>Encryption</h2>
+  <ul>
+    <li><strong>In transit:</strong> TLS for all connections.</li>
+    <li><strong>At rest:</strong> encryption for stored data.</li>
+  </ul>
+
+  <h2>PHI handling philosophy</h2>
+  <ul>
+    <li><strong>Minimum necessary.</strong> We request and process only the data required for the discharge workflow.</li>
+    <li><strong>Segregation.</strong> PHI is kept separate from marketing and analytics systems. No PHI is collected in lead forms or sent to analytics.</li>
+    <li><strong>Non-production data.</strong> Development and testing use synthetic or de-identified data, not real PHI.</li>
+    <li><strong>Auditability.</strong> Access to PHI is role-based and audit-logged.</li>
+  </ul>
+
+  <h2>Responsible disclosure</h2>
+  <p>
+    If you believe you have found a security issue, please email
+    <a href="mailto:contact@metriasmedical.com">contact@metriasmedical.com</a>. We appreciate
+    coordinated disclosure and will work with you to validate and address valid reports.
+  </p>
+
+  <h2>For reviewers</h2>
+  <p>
+    Need our security package, BAA, or to start a vendor review? Reach us at
+    <a href="mailto:contact@metriasmedical.com">contact@metriasmedical.com</a> and we will route
+    you to the right person.
+  </p>
+</LegalLayout>

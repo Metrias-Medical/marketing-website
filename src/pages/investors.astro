@@ -9,15 +9,15 @@ import BottomCTA from '../components/home/BottomCTA.astro';
 
 <BaseLayout
   title="For Investors — Metrias Medical"
-  description="The $49B discharge delay problem has a solution. Metrias Medical is building the operating system for hospital discharge operations."
+  description="The $27–78B care-coordination waste problem has a solution. Metrias Medical is building the operating system for hospital discharge operations."
 >
   <PageHero
     badge="For Investors"
     badgeColor="bg-ai-gold"
-    heading="The $49B discharge delay problem has a solution."
+    heading="The $27–78B care-coordination waste problem has a solution."
     subtitle="Metrias Medical is building the operating system for hospital discharge operations — starting with remote expeditors powered by AI."
     ctaText="Request Data Room Access"
-    ctaHref="mailto:contact@metriasmedical.com?subject=Data%20Room%20Access%20Request"
+    ctaIntent="investor"
   />
 
   {/* Market Opportunity */}
@@ -25,9 +25,9 @@ import BottomCTA from '../components/home/BottomCTA.astro';
     <div class="mx-auto max-w-7xl px-6 lg:px-16">
       <div class="grid gap-8 md:grid-cols-3">
         <StatCard
-          value="$49B"
-          label="Annual addressable market"
-          source="Administrative discharge delays in US hospitals"
+          value="$27–78B"
+          label="Annual U.S. care-coordination waste"
+          source="Shrank et al., JAMA, 2019"
           valueColor="text-provider-blue"
         />
         <StatCard
@@ -120,8 +120,8 @@ import BottomCTA from '../components/home/BottomCTA.astro';
     heading="Let's talk."
     subtitle="Model the round live, or skip straight to a 30-minute investor conversation."
     secondaryText="Run the funding model"
-    secondaryHref="/model"
+    secondaryHref="/investors/model"
     primaryText="Schedule a Call"
-    primaryHref="mailto:contact@metriasmedical.com?subject=Investor%20Call%20Request"
+    primaryIntent="investor"
   />
 </BaseLayout>
