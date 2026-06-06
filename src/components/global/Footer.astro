@@ -2,9 +2,8 @@
 const currentYear = new Date().getFullYear();
 
 // Physical address — Stanford-credibility signal (Conversion & Credibility Audit 2026-05-28, Phase 3).
-// Decision: publish the Delaware registered-agent address. Set this constant to the exact
-// agent address string to render it. Left null until confirmed — we do not publish a placeholder.
-const companyAddress: string | null = null;
+// Delaware registered-agent address (confirmed by Mene 2026-06-06).
+const companyAddress: string | null = '131 Continental Dr, Ste 305, Newark, DE 19713';
 
 const footerColumns: {
   heading: string;
@@ -36,7 +35,8 @@ const footerColumns: {
   },
 ];
 
-// Compliance posture — honest framing only (pending SGR review). Never "compliant" before audit.
+// Compliance posture — honest framing only (SGR post-publish review tracked in ClickUp Backlog).
+// Never "compliant" before audit.
 const compliance = [
   'HIPAA — BAA available for paid pilots',
   'SOC 2 — in progress',
