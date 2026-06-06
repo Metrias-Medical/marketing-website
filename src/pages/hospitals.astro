@@ -4,7 +4,6 @@ import PageHero from '../components/global/PageHero.astro';
 import StatCard from '../components/global/StatCard.astro';
 import HowItWorks from '../components/hospitals/HowItWorks.astro';
 import SplitSection from '../components/global/SplitSection.astro';
-import TestimonialCard from '../components/global/TestimonialCard.astro';
 import FeatureGrid from '../components/global/FeatureGrid.astro';
 import BottomCTA from '../components/home/BottomCTA.astro';
 ---
@@ -27,9 +26,9 @@ import BottomCTA from '../components/home/BottomCTA.astro';
     <div class="mx-auto max-w-7xl px-6 lg:px-16">
       <div class="grid gap-8 md:grid-cols-3">
         <StatCard
-          value="$49B"
-          label="Annual cost of discharge delays in the US"
-          source="Navigant"
+          value="$27–78B"
+          label="Annual U.S. care-coordination waste"
+          source="Shrank, Rogstad, Parekh. Waste in the US Health Care System: Estimated Costs and Potential for Savings. JAMA. 2019."
         />
         <StatCard
           value="6.6 hrs"
@@ -47,24 +46,31 @@ import BottomCTA from '../components/home/BottomCTA.astro';
 
   <HowItWorks />
 
-  {/* Results / Social Proof */}
+  {/* Why I built this — founder statement (replaces removed pre-pilot fabricated proof) */}
   <SplitSection bgColor="bg-light-gray">
-    <div slot="image" class="flex items-center justify-center">
-      <div class="text-center">
-        <span class="block font-heading text-[5rem] leading-none font-bold text-provider-blue md:text-[7rem]">
-          2x
-        </span>
-        <p class="mt-4 font-body text-lg text-payer-slate md:text-xl">
-          Faster discharge throughput within 60 days
-        </p>
-      </div>
+    <div slot="image" class="overflow-hidden rounded-2xl">
+      <img
+        src="/images/team/mene-avatar.png"
+        alt="Mene Demestihas, MD — Founder & CEO of Metrias Medical"
+        width="600"
+        height="600"
+        class="h-auto w-full object-cover"
+        loading="lazy"
+      />
     </div>
     <div slot="content">
-      <TestimonialCard
-        quote="Metrias changed how we think about discharge operations."
-        name="VP of Patient Flow"
-        title="Partner Hospital"
-      />
+      <span class="inline-block rounded-full bg-patient-moss/15 px-4 py-1.5 font-body text-sm font-semibold text-patient-moss">
+        Why I built this
+      </span>
+      <blockquote class="mt-6 font-heading text-[1.5rem] leading-snug font-bold text-black md:text-[1.75rem]">
+        “I watched patients wait hours for discharge paperwork while beds sat occupied and the
+        ER backed up. The bottleneck is administrative, not clinical — and it's fixable. I built
+        Metrias to bring clinical rigor to discharge operations.”
+      </blockquote>
+      <div class="mt-6">
+        <p class="font-heading text-lg font-bold text-black">Mene Demestihas, MD</p>
+        <p class="font-body text-base text-payer-slate">Founder &amp; CEO, Metrias Medical</p>
+      </div>
     </div>
   </SplitSection>
 

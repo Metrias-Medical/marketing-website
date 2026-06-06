@@ -1,27 +1,52 @@
 ---
 const currentYear = new Date().getFullYear();
 
-const footerLinks = [
+// Physical address — Stanford-credibility signal (Conversion & Credibility Audit 2026-05-28, Phase 3).
+// Delaware registered-agent address (confirmed by Mene 2026-06-06).
+const companyAddress: string | null = '131 Continental Dr, Ste 305, Newark, DE 19713';
+
+const footerColumns: {
+  heading: string;
+  links: { label: string; href?: string; target?: string; trigger?: boolean }[];
+}[] = [
   {
     heading: 'Company',
     links: [
       { label: 'Home', href: '/' },
+      { label: 'For Hospitals', href: '/hospitals' },
+      { label: 'Product', href: '/product' },
       { label: 'About Us', href: '/about' },
+    ],
+  },
+  {
+    heading: 'Trust',
+    links: [
+      { label: 'Security & Compliance', href: '/security' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Service', href: '/terms' },
     ],
   },
   {
     heading: 'Connect',
     links: [
-      { label: 'Contact', href: 'mailto:contact@metriasmedical.com?subject=Website%20Inquiry' },
+      { label: 'Contact', trigger: true },
       { label: 'LinkedIn', href: 'https://www.linkedin.com/company/metrias-medical/', target: '_blank' },
     ],
   },
+];
+
+// Compliance posture — honest framing only (SGR post-publish review tracked in ClickUp Backlog).
+// Never "compliant" before audit.
+const compliance = [
+  'HIPAA — BAA available for paid pilots',
+  'SOC 2 — in progress',
+  'Integrates via HL7 / FHIR',
 ];
 ---
 
 <footer class="bg-provider-blue-dark pt-16 pb-8">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="grid gap-12 md:grid-cols-3">
+    <div class="grid gap-12 md:grid-cols-4">
       <div>
         <a href="/" class="inline-block rounded-lg bg-white/90 p-3" aria-label="Metrias Medical home">
           <img
@@ -35,9 +60,14 @@ const footerLinks = [
         <p class="mt-4 font-body text-sm text-white/60">
           Clearing hospital discharge bottlenecks with remote experts and intelligent software.
         </p>
+        {companyAddress && (
+          <address class="mt-4 font-body text-sm not-italic leading-relaxed text-white/50">
+            {companyAddress}
+          </address>
+        )}
       </div>
 
-      {footerLinks.map((group) => (
+      {footerColumns.map((group) => (
         <div>
           <h3 class="font-heading text-base font-bold text-ai-gold">
             {group.heading}
@@ -45,14 +75,24 @@ const footerLinks = [
           <ul class="mt-4 flex flex-col gap-3">
             {group.links.map((link) => (
               <li>
-                <a
-                  href={link.href}
-                  target={link.target}
-                  rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                  class="font-body text-sm text-white/70 transition-colors hover:text-white"
-                >
-                  {link.label}
-                </a>
+                {link.trigger ? (
+                  <button
+                    type="button"
+                    data-lead-trigger
+                    class="rounded font-body text-sm text-white/70 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ai-gold"
+                  >
+                    {link.label}
+                  </button>
+                ) : (
+                  <a
+                    href={link.href}
+                    target={link.target}
+                    rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                    class="rounded font-body text-sm text-white/70 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ai-gold"
+                  >
+                    {link.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
@@ -60,9 +100,21 @@ const footerLinks = [
       ))}
     </div>
 
-    <div class="mt-16 border-t border-white/10 pt-8">
-      <p class="font-body text-sm text-white/40 text-center">
-        &copy; {currentYear} Metrias Medical. All rights reserved.
+    {/* Compliance posture strip */}
+    <div class="mt-14 flex flex-wrap gap-x-3 gap-y-2 border-t border-white/10 pt-8">
+      {compliance.map((item) => (
+        <span class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 font-body text-xs font-medium text-white/70">
+          {item}
+        </span>
+      ))}
+    </div>
+
+    <div class="mt-8 flex flex-col items-center justify-between gap-3 sm:flex-row">
+      <p class="font-body text-sm text-white/40">
+        &copy; {currentYear} Metrias Medical, Inc. All rights reserved.
+      </p>
+      <p class="font-body text-xs text-white/30">
+        No patient information (PHI) is collected on this website.
       </p>
     </div>
   </div>

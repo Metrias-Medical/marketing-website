@@ -1,0 +1,111 @@
+---
+// Closes the "black box SaaS" gap on the home page (Conversion & Credibility Audit 2026-05-28,
+// Phase 5): a 3-step chronological flow, one stylized product-UI view, and an EHR callout.
+// The product card uses synthetic, illustrative data only — no PHI, no claimed metrics.
+const steps = [
+  {
+    label: 'Admission',
+    body: 'Metrias connects to your EHR and starts tracking each patient’s expected discharge from day one.',
+  },
+  {
+    label: 'Stay',
+    body: 'AI flags the administrative blockers — pending consults, paperwork, SNF placement — before they stall the discharge.',
+  },
+  {
+    label: 'Discharge',
+    body: 'Remote expeditors clear the flagged blockers and write the result back to the chart. No double-documentation.',
+  },
+];
+---
+
+<section class="bg-white py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <span class="inline-block rounded-full bg-provider-blue/10 px-4 py-1.5 font-body text-base font-semibold text-provider-blue">
+      How it works
+    </span>
+    <h2 class="mt-6 max-w-3xl font-heading text-[32px] leading-tight font-bold text-black md:text-[52px] md:leading-tight">
+      From admission to discharge, in one workflow
+    </h2>
+
+    <div class="mt-16 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      {/* Left — chronological steps */}
+      <div>
+        <ol class="relative ml-3 border-l-2 border-border-gray pl-8">
+          {steps.map((step, i) => (
+            <li class="relative pb-10 last:pb-0">
+              <span
+                class="absolute -left-[calc(2rem+9px)] top-0 flex h-9 w-9 items-center justify-center rounded-full bg-provider-blue font-heading text-sm font-bold text-white ring-4 ring-white"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <h3 class="font-heading text-xl font-bold text-black">{step.label}</h3>
+              <p class="mt-2 font-body text-base leading-relaxed text-payer-slate">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+
+        {/* EHR integration callout */}
+        <div class="mt-8 rounded-xl border border-border-gray bg-off-white p-5">
+          <p class="font-body text-base font-semibold text-black">
+            Bidirectional with Epic, Cerner &amp; Meditech
+          </p>
+          <p class="mt-1 font-body text-sm text-payer-slate">
+            Standard HL7 / FHIR integration — your team works in one place, with no double-documentation.
+          </p>
+        </div>
+      </div>
+
+      {/* Right — stylized product UI (illustrative; synthetic data, no PHI) */}
+      <div
+        class="rounded-2xl border border-border-gray bg-off-white p-3 shadow-xl md:p-4"
+        role="img"
+        aria-label="Illustrative Metrias discharge workflow interface showing a live discharge watchlist with example patients and their status. Synthetic data — no patient information."
+      >
+        <div class="rounded-xl bg-white p-5 md:p-6">
+          <div class="flex items-center justify-between">
+            <p class="font-heading text-base font-bold text-black">Discharge Watchlist</p>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-patient-moss/20 px-2.5 py-1 font-body text-xs font-semibold text-provider-blue-dark">
+              <span class="h-1.5 w-1.5 rounded-full bg-patient-moss"></span> Live
+            </span>
+          </div>
+
+          <div class="mt-4 space-y-2.5">
+            {/* Row 1 — blocked */}
+            <div class="flex items-center justify-between rounded-lg border border-border-gray px-3 py-2.5">
+              <div>
+                <p class="font-body text-sm font-semibold text-black">Bed 4B · Est. discharge today</p>
+                <p class="mt-0.5 font-body text-xs text-payer-slate">Next best action: page PT for sign-off</p>
+              </div>
+              <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-bottleneck-red/15 px-2.5 py-1 font-body text-xs font-semibold text-provider-blue-dark">
+                <span class="h-1.5 w-1.5 rounded-full bg-bottleneck-red" aria-hidden="true"></span> Awaiting PT
+              </span>
+            </div>
+            {/* Row 2 — in progress */}
+            <div class="flex items-center justify-between rounded-lg border border-border-gray px-3 py-2.5">
+              <div>
+                <p class="font-body text-sm font-semibold text-black">Bed 7A · Est. discharge tomorrow</p>
+                <p class="mt-0.5 font-body text-xs text-payer-slate">Expeditor confirming SNF placement</p>
+              </div>
+              <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ai-gold/25 px-2.5 py-1 font-body text-xs font-semibold text-provider-blue-dark">
+                <span class="h-1.5 w-1.5 rounded-full bg-ai-gold" aria-hidden="true"></span> In progress
+              </span>
+            </div>
+            {/* Row 3 — ready */}
+            <div class="flex items-center justify-between rounded-lg border border-border-gray px-3 py-2.5">
+              <div>
+                <p class="font-body text-sm font-semibold text-black">Bed 2C · Cleared</p>
+                <p class="mt-0.5 font-body text-xs text-payer-slate">Orders complete · written back to chart</p>
+              </div>
+              <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-patient-moss/20 px-2.5 py-1 font-body text-xs font-semibold text-provider-blue-dark">
+                <span class="h-1.5 w-1.5 rounded-full bg-patient-moss" aria-hidden="true"></span> Ready
+              </span>
+            </div>
+          </div>
+
+          <p class="mt-4 font-body text-xs text-payer-slate">Illustrative interface. Synthetic data — no patient information.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

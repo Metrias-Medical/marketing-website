@@ -7,8 +7,11 @@ export default defineConfig({
   site: 'https://www.metriasmedical.com',
   output: 'static',
   redirects: {
-    // QR code target (e.g. business card). Swap destination as needed.
-    '/connect/mene': '/about',
+    // Business-card QR → the founder persona page (built 2026-06-06). UTM tags the offline source.
+    '/connect/mene': '/mene?utm_source=card&utm_medium=offline&utm_campaign=biz-card-2026',
+    // Funding/dilution model relocated off the apex (off-thesis for the primary
+    // hospital-COO visitor); now lives under /investors. See Conversion & Credibility Audit 2026-05-28.
+    '/model': '/investors/model',
   },
   integrations: [react()],
   vite: {

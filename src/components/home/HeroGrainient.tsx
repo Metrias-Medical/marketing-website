@@ -92,20 +92,22 @@ export default function HeroGrainient() {
             Solve Hospital Discharge Throughput Now
           </h2>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <a
-              href="mailto:contact@metriasmedical.com?subject=Contact%20Request"
-              className="rounded-lg border-2 border-white/80 px-8 py-3 text-base font-medium text-white transition-colors hover:bg-white/10"
+            <button
+              type="button"
+              data-lead-trigger
+              className="rounded-lg border-2 border-white/80 px-8 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               Contact
-            </a>
-            <a
-              href="mailto:contact@metriasmedical.com?subject=Demo%20Request"
-              className="rounded-lg bg-[#DEAC31] px-8 py-3 text-base font-medium text-[#253780] transition-colors hover:bg-[#DEAC31]/90"
+            </button>
+            <button
+              type="button"
+              data-lead-trigger
+              className="rounded-lg bg-[#DEAC31] px-8 py-3 text-base font-medium text-[#253780] transition-colors hover:bg-[#DEAC31]/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               style={{ fontFamily: 'var(--font-body)' }}
             >
-              Request Demo
-            </a>
+              Request a Workflow Assessment
+            </button>
           </div>
         </div>
       </div>
