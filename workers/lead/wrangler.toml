@@ -35,3 +35,7 @@ RATE_LIMIT_PER_HOUR = "5"
 #   POSTHOG_API_KEY      PostHog project API key (server-side capture)
 #   CSRF_SECRET          any long random string (openssl rand -hex 32)
 #   NOTIFY_WEBHOOK_URL   optional — POST target for new-lead notifications (iMessage/email bridge)
+#   LINKEDIN_CAPI_ACCESS_TOKEN   optional — OAuth token (rw_conversions scope) for the LinkedIn
+#                                Conversions API; server-side TLA attribution. No-op if unset.
+#   LINKEDIN_CONVERSION_RULE_ID  optional — numeric id of the Campaign Manager conversion rule.
+#   LINKEDIN_API_VERSION         optional — LinkedIn-Version header (YYYYMM), defaults to 202601.

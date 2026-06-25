@@ -17,6 +17,11 @@ export interface Env {
   ALLOWED_ORIGIN: string;
   RATE_LIMIT_PER_HOUR: string;
   NOTIFY_WEBHOOK_URL?: string;
+  // LinkedIn Conversions API (server-side TLA/sponsored-content attribution). Optional — the
+  // conversion push is a no-op until both the access token and rule id are set. (MMDEV-332)
+  LINKEDIN_CAPI_ACCESS_TOKEN?: string;
+  LINKEDIN_CONVERSION_RULE_ID?: string;
+  LINKEDIN_API_VERSION?: string;
 }
 
 const ATTIO_BASE = 'https://api.attio.com/v2';
@@ -42,7 +47,9 @@ interface LeadPayload {
   _utm_source?: string;
   _utm_medium?: string;
   _utm_campaign?: string;
+  _utm_content?: string;
   _referrer?: string;
+  _ext_referrer?: string;
 }
 
 // ---------- crypto helpers ----------
@@ -210,7 +217,8 @@ async function createNote(env: Env, personId: string, d: ValidationResult['data'
     d.message ? `\nMessage:\n${d.message}` : null,
     `\nSource: ${meta._source_slug || 'website'}`,
     `Landing page: ${meta._referrer || 'n/a'}`,
-    `Attribution: utm_source=${meta._utm_source || '-'} utm_medium=${meta._utm_medium || '-'} utm_campaign=${meta._utm_campaign || '-'}`,
+    meta._ext_referrer ? `Referrer: ${meta._ext_referrer}` : null,
+    `Attribution: utm_source=${meta._utm_source || '-'} utm_medium=${meta._utm_medium || '-'} utm_campaign=${meta._utm_campaign || '-'} utm_content=${meta._utm_content || '-'}`,
   ].filter(Boolean);
   await attioFetch(env, '/notes', {
     method: 'POST',
@@ -242,6 +250,37 @@ async function posthogCapture(env: Env, distinctId: string, props: Record<string
     });
   } catch {
     /* analytics gap acceptable */
+  }
+}
+
+// ---------- LinkedIn Conversions API (server-side) ----------
+
+/**
+ * Push a website conversion to LinkedIn for TLA / sponsored-content attribution. This is the
+ * server-side path that bypasses any pixel-level healthcare restriction on the Insight Tag.
+ * No-op unless both LINKEDIN_CAPI_ACCESS_TOKEN and LINKEDIN_CONVERSION_RULE_ID are set.
+ * `emailSha256` is the SHA-256 hex of the lowercased, trimmed email — exactly LinkedIn's
+ * SHA256_EMAIL match key, and the same value already computed for the PostHog distinct_id.
+ */
+async function linkedinCapiConversion(env: Env, emailSha256: string, happenedAtMs: number): Promise<void> {
+  if (!env.LINKEDIN_CAPI_ACCESS_TOKEN || !env.LINKEDIN_CONVERSION_RULE_ID) return;
+  try {
+    await fetch('https://api.linkedin.com/rest/conversionEvents', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${env.LINKEDIN_CAPI_ACCESS_TOKEN}`,
+        'linkedin-version': env.LINKEDIN_API_VERSION || '202601',
+        'x-restli-protocol-version': '2.0.0',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        conversion: `urn:lla:llaPartnerConversion:${env.LINKEDIN_CONVERSION_RULE_ID}`,
+        conversionHappenedAt: happenedAtMs,
+        user: { userIds: [{ idType: 'SHA256_EMAIL', idValue: emailSha256 }] },
+      }),
+    });
+  } catch {
+    /* attribution gap acceptable — server-side conversion is best-effort */
   }
 }
 
@@ -323,6 +362,7 @@ async function handleLead(request: Request, env: Env, ctx: ExecutionContext): Pr
     utm_source: payload._utm_source || null,
     utm_medium: payload._utm_medium || null,
     utm_campaign: payload._utm_campaign || null,
+    utm_content: payload._utm_content || null,
     company: v.data.company || null,
   };
 
@@ -339,6 +379,7 @@ async function handleLead(request: Request, env: Env, ctx: ExecutionContext): Pr
 
   // 7) Analytics + notification (non-blocking)
   ctx.waitUntil(posthogCapture(env, distinctId, phProps));
+  ctx.waitUntil(linkedinCapiConversion(env, distinctId, Date.now()));
   ctx.waitUntil(notify(env, v.data));
 
   return json({ ok: true }, 200, env);
