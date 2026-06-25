@@ -41,14 +41,62 @@ const COPY: Record<string, { heading: string; subtitle: string; messageLabel: st
   },
 };
 
+// LinkedIn client-side conversion id (Campaign Manager → Conversions). PUBLIC, build-time, optional
+// — the server-side Conversions API in workers/lead is the primary conversion signal; this is the
+// belt-and-suspenders pixel track. 0 = inert. (MMDEV-332)
+const LINKEDIN_LEAD_CONVERSION_ID =
+  Number((import.meta.env.PUBLIC_LINKEDIN_LEAD_CONVERSION_ID as string | undefined) ?? '') || 0;
+
+// First-touch attribution. UTM params live on the LANDING url, but this is an Astro MPA — query
+// params vanish once a visitor navigates to another page before opening the form. So we persist the
+// first-seen UTM set to sessionStorage on first load and reuse it at submit time. This is what
+// stamps the acquisition channel onto the Attio lead + PostHog conversion (MMDEV-221 / MMDEV-223).
+const ATTRIB_KEY = 'mm_first_touch';
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'] as const;
+
+function captureFirstTouch() {
+  if (typeof window === 'undefined') return;
+  try {
+    if (sessionStorage.getItem(ATTRIB_KEY)) return; // first touch wins
+    const q = new URLSearchParams(window.location.search);
+    const hasUtm = UTM_KEYS.some((k) => q.get(k));
+    const referrer = document.referrer || '';
+    // Only lock in a first-touch when there's a real signal (a UTM or an external referrer), so a
+    // plain direct visit doesn't pin an empty record and mask a later UTM'd entry in the same tab.
+    if (!hasUtm && !referrer) return;
+    sessionStorage.setItem(
+      ATTRIB_KEY,
+      JSON.stringify({
+        utm_source: q.get('utm_source') || '',
+        utm_medium: q.get('utm_medium') || '',
+        utm_campaign: q.get('utm_campaign') || '',
+        utm_content: q.get('utm_content') || '',
+        landing_path: window.location.pathname,
+        referrer,
+      }),
+    );
+  } catch {
+    /* sessionStorage blocked (private mode) — fall back to the live URL at submit time */
+  }
+}
+
 function getAttribution() {
   if (typeof window === 'undefined') return {};
+  let ft: Record<string, string> = {};
+  try {
+    ft = JSON.parse(sessionStorage.getItem(ATTRIB_KEY) || '{}');
+  } catch {
+    /* ignore */
+  }
   const q = new URLSearchParams(window.location.search);
+  const pick = (k: string) => ft[k] || q.get(k) || '';
   return {
-    _utm_source: q.get('utm_source') || '',
-    _utm_medium: q.get('utm_medium') || '',
-    _utm_campaign: q.get('utm_campaign') || '',
+    _utm_source: pick('utm_source'),
+    _utm_medium: pick('utm_medium'),
+    _utm_campaign: pick('utm_campaign'),
+    _utm_content: pick('utm_content'),
     _referrer: window.location.pathname,
+    _ext_referrer: ft.referrer || (typeof document !== 'undefined' ? document.referrer : ''),
   };
 }
 
@@ -91,6 +139,12 @@ export default function LeadFormModal() {
     }
     if (lastFocused.current instanceof HTMLElement) lastFocused.current.focus();
   }
+
+  // Record first-touch attribution as soon as the page loads — this component mounts on
+  // client:load even while the modal is closed, so UTMs are captured before any in-site navigation.
+  useEffect(() => {
+    captureFirstTouch();
+  }, []);
 
   // Global trigger: any [data-lead-trigger] element opens the form.
   useEffect(() => {
@@ -171,6 +225,34 @@ export default function LeadFormModal() {
         }),
       });
       if (r.ok) {
+        const attr = getAttribution() as Record<string, string>;
+        // PostHog conversion event — fires with the browser's own distinct_id so the
+        // pageview → lead_submitted funnel stitches (the server-side `lead_captured` is keyed on
+        // an email hash and won't join the anonymous pageview chain). (MMDEV-228)
+        try {
+          (window as unknown as { posthog?: { capture?: (e: string, p?: Record<string, unknown>) => void } }).posthog?.capture?.(
+            'lead_submitted',
+            {
+              source_slug: intent,
+              utm_source: attr._utm_source || null,
+              utm_medium: attr._utm_medium || null,
+              utm_campaign: attr._utm_campaign || null,
+              utm_content: attr._utm_content || null,
+            },
+          );
+        } catch {
+          /* analytics is non-blocking */
+        }
+        // LinkedIn pixel conversion (no-op unless the Insight Tag loaded and a conversion id is set).
+        try {
+          if (LINKEDIN_LEAD_CONVERSION_ID) {
+            (window as unknown as { lintrk?: (a: string, b: { conversion_id: number }) => void }).lintrk?.('track', {
+              conversion_id: LINKEDIN_LEAD_CONVERSION_ID,
+            });
+          }
+        } catch {
+          /* non-blocking */
+        }
         setStatus('success');
         return;
       }

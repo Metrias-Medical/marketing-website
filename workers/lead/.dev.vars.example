@@ -4,3 +4,9 @@ ATTIO_API_TOKEN=dev-attio-token
 POSTHOG_API_KEY=phc_dev_key
 CSRF_SECRET=dev-csrf-secret-change-me-please
 NOTIFY_WEBHOOK_URL=
+# LinkedIn Conversions API (server-side TLA attribution) — optional; leave blank to disable.
+# Token: OAuth access token with the rw_conversions scope, scoped to ad account 536870100.
+# Rule id: numeric id of a "Conversions API" conversion rule created in Campaign Manager.
+LINKEDIN_CAPI_ACCESS_TOKEN=
+LINKEDIN_CONVERSION_RULE_ID=
+LINKEDIN_API_VERSION=202601
