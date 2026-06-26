@@ -15,13 +15,15 @@ interface Props {
 const { title, description, ogImage, ogType } = Astro.props;
 
 // LinkedIn Insight Tag (MMDEV-332). The Partner ID is a PUBLIC, client-side value — NOT a secret
-// (it ships in the page HTML for every visitor). Set PUBLIC_LINKEDIN_PARTNER_ID at build time
-// (repo Actions variable) to switch the tag on. Empty = the tag renders nothing and stays inert,
-// so this is safe to ship before the ID is provisioned in Campaign Manager.
+// (it ships in the page HTML for every visitor), so it is hardcoded here as the default the same
+// way the PostHog project key below is. Provisioned in Campaign Manager (ad account 536870100) on
+// 2026-06-25. PUBLIC_LINKEDIN_PARTNER_ID still overrides it at build time if ever needed; set it to
+// an empty string to disable the tag for a given build.
 // metriasmedical.com is a B2B site for healthcare professionals → within LinkedIn's permitted
 // category (consumer-health pages are the blocked ones). Server-side LinkedIn Conversions API is
 // the durable backstop, wired in workers/lead.
-const LINKEDIN_PARTNER_ID = (import.meta.env.PUBLIC_LINKEDIN_PARTNER_ID as string | undefined) ?? '';
+const LINKEDIN_PARTNER_ID =
+  (import.meta.env.PUBLIC_LINKEDIN_PARTNER_ID as string | undefined) ?? '9277874';
 ---
 
 <!doctype html>
