@@ -53,6 +53,7 @@ BORDER_GRAY:         #D9DADC
 - Use WebP/AVIF format with `loading="lazy"` for below-fold images.
 - Always provide `width` and `height` attributes to prevent layout shift.
 - OG images: 1200×630 per page in `public/images/og/`.
+- **EXCEPTION — `public/images/brand/`** — these are hotlinked from live email signatures. NEVER convert them to WebP/AVIF, run them through an optimizer, move, rename, or delete them. Converting the animated GIFs strips the animation, and any path change breaks every email already sent.
 
 ## SEO
 - Every page needs unique `<title>`, `<meta description>`, OG tags, Twitter Card tags.
