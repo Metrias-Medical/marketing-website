@@ -116,12 +116,27 @@ import BottomCTA from '../components/home/BottomCTA.astro';
     </div>
   </SplitSection>
 
+  {/* Primary CTA points at the /connect/30min stub rather than the raw calendar URL, so the
+      booking link lives in exactly one place (astro.config.mjs). The subtitle has promised a
+      30-minute conversation since launch; before 2026-08-12 the button opened the lead form
+      instead. Secondary "Contact" stays on the form — it's the only path that writes to Attio. */}
   <BottomCTA
     heading="Let's talk."
     subtitle="Schedule a 30-minute investor conversation."
     primaryText="Schedule a Call"
-    primaryIntent="investor"
+    primaryHref="/connect/30min"
     secondaryText="Contact"
     secondaryIntent="investor"
   />
+
+  {/* PostHog: the booking click is the LAST thing we can measure — the stub hops straight to
+      Google Calendar, so no landing pageview follows. Fire before the browser leaves. */}
+  <script is:inline>
+    document.addEventListener('click', (e) => {
+      const t = e.target;
+      if (t && t.closest && t.closest('a[href="/connect/30min"]') && window.posthog) {
+        window.posthog.capture('investor_booking_cta_clicked');
+      }
+    });
+  </script>
 </BaseLayout>
