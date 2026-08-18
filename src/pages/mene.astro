@@ -185,7 +185,8 @@ const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
         Reach me directly
       </h2>
       <p class="mx-auto mt-4 max-w-xl font-body text-lg text-white/80">
-        Scanned my card, or found me on LinkedIn? Leave a note and I'll get back to you.
+        Scanned my card, or found me on LinkedIn? Save my details, or leave a note and
+        I'll get back to you.
       </p>
       <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
         <button
@@ -196,6 +197,16 @@ const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
         >
           Stay in touch
         </button>
+        {/* No download attribute on purpose: iOS Safari opens a text/x-vcard response with an
+            "Add to Contacts" sheet, which is what a card-scanner wants. download= saves it to
+            Files instead and buries the contact. GitHub Pages serves .vcf as text/x-vcard. */}
+        <a
+          href="/mene.vcf"
+          data-vcard
+          class="rounded-lg border-2 border-white/80 px-8 py-3 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          Save my contact
+        </a>
         <a
           href={linkedin}
           target="_blank"
@@ -232,6 +243,9 @@ const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
       const t = e.target;
       if (t && t.closest && t.closest('[data-lead-trigger]') && window.posthog) {
         window.posthog.capture('mene_page_cta_clicked');
+      }
+      if (t && t.closest && t.closest('[data-vcard]') && window.posthog) {
+        window.posthog.capture('mene_vcard_saved');
       }
     });
   </script>
