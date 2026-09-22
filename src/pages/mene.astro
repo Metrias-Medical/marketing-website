@@ -5,12 +5,12 @@
 // fragmentation for prose-only sections. Connect CTA reuses the shared LeadFormModal
 // (data-lead-intent="mene"). Copy is intentionally em-dash-free (voice choice, do not "fix").
 //
-// OPEN (per spec): hero-quality 1600x1000 headshot + a section-3 contextual photo still needed
-// (using the existing square avatar as a stand-in); custom OG image; Mene's personal LinkedIn URL
-// for Person.sameAs (company page used as a placeholder below).
+// OPEN (per spec): a section-3 contextual photo and a custom OG image. The hero uses the
+// 1000x1000 square headshot (mene-headshot-v1.webp) rather than the spec's 1600x1000 crop.
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
+// Mene's personal profile. Used for the "Connect on LinkedIn" CTA and Person.sameAs below.
+const linkedin = 'https://www.linkedin.com/in/menedemestihas/';
 ---
 
 <BaseLayout
@@ -48,10 +48,10 @@ const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
       </div>
       <div class="order-first overflow-hidden rounded-2xl lg:order-none">
         <img
-          src="/images/team/mene-avatar.png"
+          src="/images/team/mene-headshot-v1.webp"
           alt="Mene Demestihas, MD — Founder & CEO of Metrias Medical"
-          width="600"
-          height="600"
+          width="1000"
+          height="1000"
           class="h-auto w-full object-cover"
         />
       </div>
@@ -232,7 +232,7 @@ const linkedin = 'https://www.linkedin.com/company/metrias-medical/';
         name: 'Metrias Medical',
         url: 'https://www.metriasmedical.com',
       },
-      sameAs: ['https://www.linkedin.com/company/metrias-medical/'],
+      sameAs: [linkedin],
     })}
   />
 
