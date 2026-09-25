@@ -1,0 +1,43 @@
+---
+// Access request form for the gated model origin. Built to workers/model/assets/request.html;
+// the Worker serves it for "/" to visitors without a valid session.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RequestAccessForm from '../components/model/RequestAccessForm';
+
+const OG_IMAGE = 'https://www.metriasmedical.com/images/Metrias%20Medical%20_%20Open%20Graph.png';
+---
+
+<BaseLayout
+  title="Request access to the model | Metrias Medical"
+  description="Request a one-time access link to the Metrias Medical pre-seed round model."
+  ogImage={OG_IMAGE}
+  chrome={false}
+>
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+  <section class="min-h-screen bg-provider-blue-dark py-12 md:py-20">
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-5 lg:gap-16 lg:px-16">
+      <div class="lg:col-span-2">
+        <a href="https://www.metriasmedical.com/" class="inline-block rounded-lg bg-white/90 p-3" aria-label="Metrias Medical home">
+          <img src="/images/brand/metrias-logo-static-v1.png" alt="Metrias Medical" width="40" height="40" class="h-10 w-10 object-contain" />
+        </a>
+        <span class="mt-8 mb-5 block w-fit rounded-full bg-ai-gold px-4 py-1.5 font-body text-sm font-semibold text-white">
+          For Investors
+        </span>
+        <h1 class="font-heading text-[2rem] leading-tight font-bold text-white md:text-[2.75rem]">
+          The pre-seed round model
+        </h1>
+        <p class="mt-6 font-body text-lg leading-relaxed text-white/80">
+          An interactive model of the round: check size, cap, dilution, runway and use of funds. It is shared by
+          invitation while it is a working draft.
+        </p>
+        <p class="mt-4 font-body text-base leading-relaxed text-white/70">
+          Tell us who you are and we will email you a one-time link. The link works once and expires after
+          15 minutes; the session it opens lasts 30 days on that browser.
+        </p>
+      </div>
+      <div class="lg:col-span-3">
+        <RequestAccessForm client:load />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

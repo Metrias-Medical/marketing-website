@@ -1,0 +1,21 @@
+---
+// Gated model page, served by workers/model only to viewers with a valid session cookie.
+// Built by astro.model.config.mjs into workers/model/assets/index.html.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DraftBanner from '../components/model/DraftBanner.astro';
+import ModelPage from '../components/model/ModelPage';
+
+const OG_IMAGE = 'https://www.metriasmedical.com/images/Metrias%20Medical%20_%20Open%20Graph.png';
+---
+
+<BaseLayout
+  title="Pre-seed round model (draft) | Metrias Medical"
+  description="Interactive pre-seed round model for invited investors and partners. Draft."
+  ogImage={OG_IMAGE}
+  chrome={false}
+>
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+  <meta slot="head" name="referrer" content="no-referrer" />
+  <DraftBanner />
+  <ModelPage client:load />
+</BaseLayout>
