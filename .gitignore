@@ -32,3 +32,10 @@ pnpm-debug.log*
 .claude/
 *.swp
 *.swo
+
+# Cloudflare Workers: local secrets, wrangler state, and the model page build output
+# (produced by `npm run build:model`; only the placeholder is committed)
+.dev.vars
+.wrangler/
+workers/model/assets/*
+!workers/model/assets/.gitkeep
