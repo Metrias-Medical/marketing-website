@@ -234,7 +234,8 @@ async function handleRequest(request: Request, env: Env, ctx: ExecutionContext):
     org_domain: emailDomain(v.data.email),
     role: v.data.role,
     linkedin: v.data.linkedin || prev?.linkedin,
-    stage: advanceStage(prev?.stage, 'Requested'),
+    // Revocation was checked above, so a Revoked summary here means access was restored.
+    stage: prev?.stage === 'Revoked' ? 'Requested' : advanceStage(prev?.stage, 'Requested'),
     requested_at: isoNow(now),
     request_source: clean(payload._source_slug, 100) || 'model_gate',
     utm_source: clean(payload._utm_source, 200) || prev?.utm_source,

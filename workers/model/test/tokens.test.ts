@@ -186,6 +186,13 @@ describe('session cookies', () => {
     expect(again.status).toBe(200);
     expect(await again.json()).toEqual({ ok: true });
     expect(mock.resend()).toHaveLength(sentBefore);
+
+    // Restoring access (runbook: delete the revoked key) lets a new request through as Requested.
+    await makeEnv().MODEL_KV.delete(`revoked:${hash}`);
+    await postRequest(requestBody({ email: 'revoke.me@capital.example' }), { ip: '203.0.113.98' });
+    expect(mock.resend()).toHaveLength(sentBefore + 1);
+    const last = mock.listEntries();
+    expect(last[last.length - 1].body.data.entry_values.stage).toBe('Requested');
   });
 
   it('a link issued before revocation cannot be used after it', async () => {
