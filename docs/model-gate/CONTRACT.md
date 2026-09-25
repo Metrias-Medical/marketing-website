@@ -79,7 +79,7 @@ Build output layout (from the page chip): `index.html` and `request.html` at the
 
 - Worker: vitest with `@cloudflare/vitest-pool-workers`: token issue/verify/single-use/expiry, cookie sign/verify/revocation, request validation (honeypot, csrf, disposable domain, PHI guard on free text, consent required), rate limits, gate behavior for `/` and assets with and without cookie, engagement stage transitions with a mocked Attio.
 - Page: `npm run build` (public site) still succeeds and emits no `/model` page; `npm run build:model` emits `workers/model/assets/index.html` and `request.html`; `npx astro check` clean for new files.
-- `grep -rn $'—' docs/model-gate src/components/model src/lib/modelTelemetry.ts workers/model workers/lib` returns nothing.
+- a grep for the em-dash character (U+2014) across docs/model-gate, src/components/model, src/lib/modelTelemetry.ts, workers/model and workers/lib returns nothing.
 
 ## Done means
 
