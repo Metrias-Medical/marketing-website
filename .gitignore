@@ -1,7 +1,5 @@
 # build output
 dist/
-# gated model page build output (npm run build:model), served by workers/model
-workers/model/assets/
 
 # lighthouse audit artifacts (raw JSON is large; baseline.md keeps the scores)
 .audit-baselines/**/*.json
@@ -33,8 +31,8 @@ pnpm-debug.log*
 *.swp
 *.swo
 
-# Cloudflare Workers: local secrets, wrangler state, and the model page build output
-# (produced by `npm run build:model`; only the placeholder is committed)
+# Cloudflare Workers: local secrets, wrangler state, and the gated model page build output
+# (produced by `npm run build:model`, served by workers/model; only the placeholder is committed)
 .dev.vars
 .wrangler/
 workers/model/assets/*
