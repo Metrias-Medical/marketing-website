@@ -36,9 +36,9 @@ docs/model-gate/             SPEC.md, CONTRACT.md, RUNBOOK.md (deploy steps, wri
 | POST | `/api/request` | body: first_name, last_name, email, organization, role, persona, linkedin?, consent (true), _honeypot, _csrf_token, first-touch fields as in LeadFormModal. Validates, rate-limits (5/IP/hour, 3 links/email/day), upserts Attio person, upserts Model Access list entry stage Requested, stores KV `ml:<nonce>` {email_hash, issued_at} TTL 900 s, sends link via Resend (or logs it when `EMAIL_TRANSPORT=log`), captures `model_access_requested`. Returns `{ok:true}` regardless of whether the email exists (no enumeration). |
 | GET | `/auth?t=<nonce>.<hmac>` | verifies HMAC over nonce, loads and deletes KV nonce (single use), sets cookie `mm_model_session` (HttpOnly, Secure, SameSite=Lax, Path=/, Max-Age 2592000, value `<email_hash>.<issued_at>.<hmac>`), stamps Attio stage Verified, captures `model_access_verified`, 302 to `/`. Expired or reused token: 302 to `/?state=expired` and capture `model_link_reuse_attempt`. |
 | GET | `/me` | requires valid cookie; returns `{email_hash, email, first_name, persona, org_domain, visit_count}`. |
-| POST | `/api/engagement` | requires valid cookie; body `{engaged_seconds, sections_seen, final_scenario, cta}`; updates KV person summary and Attio list entry (Viewed on first call, Engaged when engaged_seconds >= 180 or cta set). Accepts `navigator.sendBeacon`. |
+| POST | `/api/engagement` | requires valid cookie; body `{engaged_seconds: number (per-beacon delta, sum it), sections_seen: string[] (distinct names), final_scenario: string or null, cta: string or null}` via `navigator.sendBeacon`; updates the KV person summary (total engaged seconds, union of sections, last scenario, last cta, last_seen, visit_count incremented per calendar day on `/me` success) and the Attio list entry (Viewed on first `/me` success, Engaged when total engaged seconds >= 180 or any cta). |
 | POST | `/api/revoke` | requires header `x-admin-token` = `ADMIN_TOKEN` secret; body `{email}`; sets KV `revoked:<email_hash>`. |
-| GET | `/*` | static assets with `run_worker_first = true`. No valid cookie: serve `request.html` (the form) for `/`, 401 JSON for anything else. Valid cookie: serve asset, add `Cache-Control: private, no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer`. |
+| GET | `/*` | static assets with `run_worker_first = true`. Unauthenticated allowlist, served without a cookie: `/request.html`, `/_astro/*`, `/fonts/*`, `/favicon.svg`, `/favicon.ico`, `/images/brand/metrias-logo-static-v1.png`; `/` without a cookie serves the request page. Everything else (including `/index.html` and `/_model/*`, the gated page's JS) requires the cookie: 401 JSON for fetches, 302 to `/request.html` for navigations. With a cookie: serve asset, add `Cache-Control: private, no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer`. |
 
 `email_hash` = sha256 hex of lowercased trimmed email (same as lead worker's distinct_id).
 
@@ -67,6 +67,8 @@ Client init: `posthog.identify(email_hash, {persona, org_domain, first_name})` a
 Person properties set server-side on `/api/engagement`: `model_visit_count`, `model_last_seen`, `model_total_engaged_seconds`, `model_sections_seen`, `model_final_scenario`.
 
 ## Page
+
+Build output layout (from the page chip): `index.html` and `request.html` at the assets root, public-safe JS under `_astro/`, gated JS under `_model/`, CSS inlined into both HTML files.
 
 - `src/pages-model/index.astro` renders `DraftBanner` + `ModelPage` (client:load) which mounts `FundingModel.tsx` unchanged, wrapped in `<section data-model-section="...">` blocks so telemetry can observe them. Watermark the viewer's email (from `/me`) in the banner and as a low-opacity repeated overlay.
 - `request.html` (the form) is a second Astro page in the same build, `src/pages-model/request.astro`, using `RequestAccessForm.tsx` (fields per Decisions; copy the CSRF, honeypot and first-touch logic from `LeadFormModal.tsx`).
