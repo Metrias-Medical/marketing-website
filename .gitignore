@@ -1,5 +1,7 @@
 # build output
 dist/
+# gated model page build output (npm run build:model), served by workers/model
+workers/model/assets/
 
 # lighthouse audit artifacts (raw JSON is large; baseline.md keeps the scores)
 .audit-baselines/**/*.json
