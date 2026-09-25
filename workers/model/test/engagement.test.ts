@@ -159,6 +159,8 @@ describe('POST /api/engagement', () => {
     const hash = await emailHash('hook@capital.example');
     const bad = await call(beacon(undefined, { email_hash: hash, cta: 'email_mene' }, { 'x-admin-token': 'wrong' }));
     expect(bad.status).toBe(401);
+    const view = await call(beacon(undefined, { email_hash: hash, cta: 'null' }, { 'x-admin-token': SECRETS.ADMIN_TOKEN }));
+    expect(await view.json()).toMatchObject({ stage: 'Viewed' });
     const ok = await call(beacon(undefined, { email_hash: hash, cta: 'email_mene' }, { 'x-admin-token': SECRETS.ADMIN_TOKEN }));
     expect(ok.status).toBe(200);
     expect(await ok.json()).toMatchObject({ stage: 'Engaged' });

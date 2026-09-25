@@ -399,6 +399,11 @@ interface EngagementPayload {
   email_hash?: unknown;
 }
 
+/** Webhook templates render a missing property as "null" or "undefined"; treat those as absent. */
+function present(v: string): string {
+  return v === 'null' || v === 'undefined' ? '' : v;
+}
+
 function adminOk(request: Request, env: Env): boolean {
   const given = request.headers.get('x-admin-token') || '';
   return !!env.ADMIN_TOKEN && !!given && constantTimeEqual(given, env.ADMIN_TOKEN);
@@ -431,9 +436,9 @@ async function handleEngagement(request: Request, env: Env, ctx: ExecutionContex
     ? body.sections_seen.map((x) => clean(x, 64)).filter(Boolean)
     : [];
   p.sections_seen = [...new Set([...(p.sections_seen || []), ...sections])].slice(0, 100);
-  const scenario = clean(body.final_scenario, 100);
+  const scenario = present(clean(body.final_scenario, 100));
   if (scenario) p.final_scenario = scenario;
-  const cta = clean(body.cta, 64);
+  const cta = present(clean(body.cta, 64));
   if (cta) p.last_cta = cta;
 
   p.total_engaged_seconds = (p.total_engaged_seconds || 0) + delta;
