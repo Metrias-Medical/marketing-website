@@ -91,13 +91,15 @@ const PORTRAIT = { vb: [1080, 1920], flow: [0, 1],
   at: { str: [540, 370], cell: [540, 790], ip: [990, 1046], dc: [740, 1340], evs: [161, 1270] },
   ipIn: [990, 1046], homeEnd: [540, 1960], evsOut: e => [276, e[1]], dcOut: (b, p) => [p.x, b.y + 74] };
 const LANDSCAPE = { vb: [1920, 1080], flow: [1, 0],
+  // Main row keeps the tall boxes; INPATIENT (above) and EVS (below) are wide and short, so the bed
+  // cycle runs clockwise: BEDS -> up to INPATIENT -> down into DISCHARGE -> down to EVS -> up into BEDS.
   box: { pre: [110, 340, 200, 400, 'left'], ed: [370, 340, 300, 400], beds: [790, 340, 260, 400],
-    evs: [1000, 64, 270, 246], ip: [1000, 770, 270, 246], dc: [1200, 340, 250, 400], pa: [1580, 340, 200, 400, 'right'] },
+    ip: [880, 64, 500, 236], evs: [880, 780, 500, 236], dc: [1200, 340, 250, 400], pa: [1580, 340, 200, 400, 'right'] },
   paths: { in: 'M-30 540H370', home: 'M640 340V300L900 40H1440L1530 130V460L1580 510L1610 540', admit: 'M670 540H790',
-    b2ip: 'M932 740V990H1000', ip2dc: 'M1270 896H1400V740', dc2evs: 'M1400 340V185H1270', evs2b: 'M1000 280H932V340', dc2pa: 'M1450 540H1960' },
-  str: [504, 468, 78, 72, 2], exit: [633, 540], cell: [932, 478, 62, 62, 3], ips: [1162, 850, 62, 62, 3], dcs: [1320, 540, 0, 68], evs: [1196, 185, 0, 70],
-  at: { str: [370, 540], cell: [790, 540], ip: [1046, 990], dc: [1400, 740], evs: [1270, 185] },
-  ipIn: [1046, 990], homeEnd: [1960, 540], evsOut: e => [e[0], 280], dcOut: (b, p) => [b.x + 74, p.y] };
+    b2ip: 'M932 340V300', ip2dc: 'M1330 300V340', dc2evs: 'M1330 740V780', evs2b: 'M932 780V740', dc2pa: 'M1450 540H1960' },
+  str: [504, 468, 78, 72, 2], exit: [633, 540], cell: [932, 478, 62, 62, 3], ips: [1130, 150, 62, 62, 3], dcs: [1320, 540, 0, 68], evs: [1000, 900, 70, 0],
+  at: { str: [370, 540], cell: [790, 540], ip: [932, 300], dc: [1330, 340], evs: [1330, 780] },
+  ipIn: [932, 300], homeEnd: [1960, 540], evsOut: e => [e[0], 780], dcOut: (b, p) => [b.x + 74, p.y] };
 const pickLayout = () => { const o = CONFIG.orientation; return o === 'landscape' || (o !== 'portrait' && innerWidth / innerHeight >= 1.2) ? LANDSCAPE : PORTRAIT; };
 const grid = (n, [cx, y0, px, py, c]) => Array.from({ length: n }, (_, i) => [cx + (i % c - (c - 1) / 2) * px, y0 + Math.floor(i / c) * py]);
 const row = (n, [cx, cy, dx, dy]) => Array.from({ length: n }, (_, i) => { const o = i - (n - 1) / 2; return [cx + o * dx, cy + o * dy]; });
