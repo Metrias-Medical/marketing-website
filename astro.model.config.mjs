@@ -1,7 +1,8 @@
 // @ts-check
 // Second Astro build target: the gated model origin (model.metriasmedical.com).
 //
-// Build:  npm run build:model   (emits workers/model/assets/index.html and request.html)
+// Build:  npm run build:model   (emits workers/model/assets/index.html, request.html and the
+//         self-contained gated pages under src/pages-model/static, e.g. steady.html)
 // Dev:    npm run dev:model     (no Worker in front, so /me and /api/* are not served)
 //
 // Astro has no "pages directory" option, so this config points srcDir at src/pages-model,
@@ -32,6 +33,9 @@ const PUBLIC_FILES = [
   'images/brand/metrias-logo-static-v1.png',
 ];
 
+/** Self-contained gated pages copied verbatim to the build root (served only with a session). */
+const GATED_STATIC_DIR = 'src/pages-model/static';
+
 /** Module paths whose code must only ever be served behind the session cookie. */
 const GATED_MODULE_RE =
   /(src\/components\/investors\/FundingModel|src\/components\/model\/(ModelPage|DraftBanner)|src\/lib\/(modelTelemetry|modelViewer))/;
@@ -52,6 +56,7 @@ function modelRoutes() {
         injectRoute({ pattern: '/request', entrypoint: './src/pages-model/request.astro' });
       },
       'astro:build:done': async ({ dir }) => {
+        await cp(fileURLToPath(new URL(GATED_STATIC_DIR, root)), fileURLToPath(dir), { recursive: true });
         for (const rel of PUBLIC_FILES) {
           const from = fileURLToPath(new URL(`public/${rel}`, root));
           const to = fileURLToPath(new URL(rel, dir));

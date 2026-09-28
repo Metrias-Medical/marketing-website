@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Steady state</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0a0f17}
+body{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+#reel{display:block;height:min(calc(100vh - 48px),177.78vw);height:min(calc(100svh - 48px),177.78vw);width:min(100vw,calc((100vh - 48px)*.5625));width:min(100vw,calc((100svh - 48px)*.5625))}
+#mode{display:flex;gap:8px;font:12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:1.5px}
+#mode button{background:none;border:1px solid var(--line);color:var(--label);padding:8px 14px;border-radius:999px;font:inherit;letter-spacing:inherit;cursor:pointer}
+#mode button.on{color:var(--patient);border-color:var(--patient)}
+#mode button:focus-visible{outline:1px solid var(--patient);outline-offset:2px}
+#reel text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+</style>
+</head>
+<body>
+<div id="mode" role="group" aria-label="Mode"><button type="button" data-mode="walkthrough">WALKTHROUGH</button><button type="button" data-mode="steady">STEADY STATE</button></div>
+<svg id="reel" viewBox="0 0 1080 1920" role="img" aria-label="A hospital at steady state: patients flow from pre-hospital through the ED, beds, inpatient and discharge to post-acute while beds cycle through environmental services">
+<g id="gs"></g><g id="gb"></g><g id="gp"></g>
+<g id="play" visibility="hidden"><circle cx="540" cy="960" r="58" stroke-width="2"/><path d="M522 930L566 960L522 990Z"/></g>
+</svg>
+<script>
+'use strict';
+// ============================== CONFIG (edit by hand) ==============================
+// Steady-state arithmetic at these defaults:
+//   arrivals 1/3 per s; admits 0.4 x 1/3 = 0.133 per s.
+//   ED: 6 stretchers, ~5.6 s each (dwell + walk) -> ~1.9 in use, utilisation ~0.31.
+//   Bed cycle: close 0.5 + travel ~0.7 + LOS 24 + ~0.6 + discharge ~3.6 (3 hold + 0.6 slide, then both leave at once) + ~0.7 + EVS 0.4 + open 0.3 + ~0.7 ~= 31 s
+//     -> 0.133 x 40 ~= 5.4 of 9 beds busy, utilisation ~0.60 (about 3-4 clean U's waiting in BEDS on average).
+//   DISCHARGE: 2 slots x ~4.4 s -> utilisation ~0.29.  EVS: 2 slots x ~3.5 s -> ~0.23.  Nothing backs up.
+const CONFIG = {
+  seed: 20260927,          // RNG seed: same seed, same film
+  mode: 'walkthrough',     // start mode: 'walkthrough' (one patient and one bed, repeating) or 'steady' (the running hospital); the selector above the reel switches it
+  walkthroughPause: 1.2,   // s the picture rests between walkthrough repeats
+  steadyWarmup: 45,        // s of simulated time run silently before STEADY STATE is shown, so it starts already populated
+  speed: 900,              // ONE travel speed for every movement, viewBox px per second (~0.5-0.8 s per leg; was 300)
+  stepHz: 60,              // fixed simulation steps per second
+  maxFrameDt: 0.1,         // cap on real time per frame, s (tab switches never jump the film)
+  stretchers: 6,           // ED stretchers (rows of 3; layout drawn for 6)
+  beds: 9,                 // beds = BEDS grid positions = INPATIENT slots (rows of 3; layout drawn for 9)
+  dischargeSlots: 2,       // beds DISCHARGE can separate at once
+  evsSlots: 2,             // beds EVS can clean at once
+  arrivalEvery: 3,         // s between arrivals at PRE-HOSPITAL
+  arrivalJitter: 0.2,      // +/- fraction on each arrival gap
+  edDwell: 5,              // s a patient lies on a stretcher
+  edJitter: 0.2,           // +/- fraction on ED dwell
+  admitProb: 0.4,          // share admitted (admit hold); the rest go home via the outer loop
+  los: 24,                 // s length of stay in INPATIENT
+  losJitter: 0.15,         // +/- fraction on LOS
+  close: 0.5,              // s for a clean U to close around an admitted dot
+  discharge: 3,            // s the full square rests in DISCHARGE with the dot still inside: the rate-limiting delay
+  separateSlide: 0.6,      // s the dot takes to slide out of the square (the visible separation)
+  separateOffset: 60,      // viewBox px the dot slides down, out of the square
+  separateRest: 0,         // s dot and empty square rest side by side before they part (0: leave at once)
+  separateGap: 0,          // s the empty square waits after the dot leaves, before heading to EVS (0: leave at once)
+  evs: 0.4,                // s EVS spends on a dirty square before it opens (minimal)
+  open: 0.3,               // s for the square to open back into a clean U
+  intro: { start: 0.6, edDwell: 0.6, los: 1.0, discharge: 1.2, rest: 0, evs: 0.3 }, // s; one patient + one bed walk the full cycle alone (~16 s), then steady state
+  stillAt: 75,             // s of simulated time shown as the still frame under prefers-reduced-motion
+  labelSize: 20,           // label font size, viewBox px
+  colors: {
+    bg: '#0a0f17',         // near-black navy background (page + reel)
+    node: '#0e141e',       // node fill, a shade above the background
+    line: '#273040',       // node outlines
+    path: '#3a4557',       // dotted paths, exit slot, empty inpatient slots
+    label: '#76829a',      // labels and play affordance
+    stretcher: '#566378',  // ED stretcher lines
+    bed: '#c3ccd8',        // beds (U / full square), pale slate
+    patient: '#74d6f4'     // patient dots, cyan glow
+  },
+  labels: { pre: 'PRE-HOSPITAL', ed: 'ED', beds: 'BEDS', ip: 'INPATIENT', dc: 'DISCHARGE', evs: 'ENVIRONMENTAL SERVICES', pa: 'POST-ACUTE' } // exactly these seven
+};
+// ====================================================================================
+
+const C = CONFIG.colors, NS = 'http://www.w3.org/2000/svg', STEP = 1 / CONFIG.stepHz, S = 44, HS = S / 2, PERIM = 4 * S;
+document.documentElement.style.background = document.body.style.background = C.bg;
+for (const k of ['line', 'label', 'patient']) document.documentElement.style.setProperty('--' + k, C[k]);
+
+// ---- layout, viewBox 1080 x 1920 ----
+const BOX = { pre: [340, 150, 400, 130, 'top'], ed: [340, 370, 400, 300], beds: [340, 790, 400, 260],
+  evs: [64, 1000, 240, 270], ip: [776, 1000, 240, 270], dc: [340, 1200, 400, 250], pa: [340, 1580, 400, 150, 'bottom'] };
+const PATHS = { in: 'M540 -30V370', home: 'M340 640H300L40 900V1440L130 1530H460L510 1580L540 1610', admit: 'M540 670V790',
+  b2ip: 'M740 932H990V1000', ip2dc: 'M896 1270V1340H740', dc2evs: 'M340 1340H161V1270', evs2b: 'M276 1000V932H340', dc2pa: 'M540 1450V1960' };
+const grid = (n, cx, y0, px, py) => Array.from({ length: n }, (_, i) => [cx + (i % 3 - 1) * px, y0 + Math.floor(i / 3) * py]);
+const row = (n, cx, y, px) => Array.from({ length: n }, (_, i) => [cx + (i - (n - 1) / 2) * px, y]);
+const STR = grid(CONFIG.stretchers, 540, 465, 72, 78);   // dot positions on stretchers (line 13 px below)
+const EXIT = [540, 633];                                  // ED exit slot (admit hold)
+const CELL = grid(CONFIG.beds, 540, 870, 62, 62);         // BEDS positions
+const IPS = grid(CONFIG.beds, 876, 1084, 62, 62);         // INPATIENT slots
+const DCS = row(CONFIG.dischargeSlots, 540, 1320, 68);
+const EVS = row(CONFIG.evsSlots, 161, 1176, 70);
+const order = (pts, [x, y]) => pts.map((p, i) => [Math.hypot(p[0] - x, p[1] - y), i]).sort((a, b) => a[0] - b[0]).map(a => a[1]);
+const O_STR = order(STR, [540, 370]), O_CELL = order(CELL, [540, 790]), O_IP = order(IPS, [990, 1046]), O_DC = order(DCS, [740, 1340]), O_EVS = order(EVS, [161, 1270]);
+
+// ---- static drawing ----
+let h = `<defs><radialGradient id="gl"><stop offset="0" stop-color="${C.patient}" stop-opacity=".55"/><stop offset=".4" stop-color="${C.patient}" stop-opacity=".16"/><stop offset="1" stop-color="${C.patient}" stop-opacity="0"/></radialGradient></defs>`;
+const LS = CONFIG.labelSize, CW = LS * 0.6 + 1;
+for (const k in BOX) {
+  const [x, y, w, bh, open] = BOX[k];
+  const r = 10, yb = y + bh; // open-ended source/sink boxes are drawn without their outer edge
+  h += open === 'top' ? `<path d="M${x} ${y}V${yb - r}Q${x} ${yb} ${x + r} ${yb}H${x + w - r}Q${x + w} ${yb} ${x + w} ${yb - r}V${y}"`
+    : open === 'bottom' ? `<path d="M${x} ${yb}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + w - r}Q${x + w} ${y} ${x + w} ${y + r}V${yb}"`
+    : `<rect x="${x}" y="${y}" width="${w}" height="${bh}" rx="${r}"`;
+  h += ` fill="${C.node}" stroke="${C.line}" stroke-width="2"/>`;
+  const t = CONFIG.labels[k], lines = t.length * CW > w - 28 ? t.split(' ') : [t];
+  h += `<text y="${y + 30}" font-size="${LS}" letter-spacing="1" fill="${C.label}">` + lines.map((l, i) => `<tspan x="${x + 14}" dy="${i ? LS * 1.3 : 0}">${l}</tspan>`).join('') + '</text>';
+}
+for (const k in PATHS) h += `<path id="p_${k}" d="${PATHS[k]}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 10"/>`;
+for (const [x, y] of STR) h += `<line x1="${x - 24}" y1="${y + 13}" x2="${x + 24}" y2="${y + 13}" stroke="${C.stretcher}" stroke-width="3" stroke-linecap="round"/>`;
+h += `<line x1="${EXIT[0] - 24}" y1="${EXIT[1] + 13}" x2="${EXIT[0] + 24}" y2="${EXIT[1] + 13}" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
+for (const [x, y] of IPS) h += `<rect class="ips" x="${x - HS}" y="${y - HS}" width="${S}" height="${S}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
+document.getElementById('gs').innerHTML = h;
+const IPEL = [...document.querySelectorAll('.ips')];
+const play = document.getElementById('play');
+play.firstChild.setAttribute('fill', C.bg); play.firstChild.setAttribute('fill-opacity', '.85'); play.firstChild.setAttribute('stroke', C.label);
+play.lastChild.setAttribute('fill', C.label);
+
+// sample every path once with getPointAtLength; movement walks these polylines at one speed
+const PTS = {};
+for (const k in PATHS) {
+  const el = document.getElementById('p_' + k), L = el.getTotalLength(), n = Math.max(1, Math.ceil(L / 4)), a = [];
+  for (let i = 0; i <= n; i++) { const q = el.getPointAtLength(L * i / n); a.push([q.x, q.y]); }
+  PTS[k] = a;
+}
+
+// ---- deterministic RNG ----
+let seed = CONFIG.seed >>> 0;
+const rng = () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const jit = f => 1 + f * (2 * rng() - 1);
+
+// ---- entities ----
+const mk = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const a in at) e.setAttribute(a, at[a]); parent.appendChild(e); return e; };
+const GB = document.getElementById('gb'), GP = document.getElementById('gp');
+const P = Array.from({ length: 48 }, () => {
+  const el = mk('g', { visibility: 'hidden' }, GP);
+  mk('circle', { r: 20, fill: 'url(#gl)' }, el); mk('circle', { r: 7, fill: C.patient }, el);
+  return { el, on: false, x: 0, y: -99, st: '', t: 0, mv: null, bed: null, s: -1, admit: false, rx: NaN, ry: NaN, ro: NaN };
+});
+const BED_D = `M0 ${-HS}H${HS}V${HS}H${-HS}V${-HS}Z`;
+const cell = new Array(CELL.length).fill(null), ipSlot = new Array(IPS.length).fill(null),
+  dcSlot = new Array(DCS.length).fill(null), evsSlot = new Array(EVS.length).fill(null), stretch = new Array(STR.length).fill(null);
+let exitSlot = null;
+const B = Array.from({ length: CONFIG.beds }, (_, i) => {
+  const c = O_CELL[i];
+  const b = { el: mk('path', { d: BED_D, fill: 'none', stroke: C.bed, 'stroke-width': 3 }, GB), x: CELL[c][0], y: CELL[c][1],
+    st: 'clean', since: i - 1e3, k: 0, t: 0, mv: null, cell: c, ip: -1, dc: -1, ev: -1, pt: null, rx: NaN, ry: NaN, rk: NaN };
+  cell[c] = b; return b;
+});
+const firstFree = (arr, ord) => { for (const i of ord) if (!arr[i]) return i; return -1; };
+
+// ---- movement: polyline at CONFIG.speed ----
+function go(e, parts, done) {
+  const pts = [[e.x, e.y]];
+  for (const p of parts) if (typeof p === 'string') pts.push(...PTS[p]); else pts.push(p);
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  e.mv = { pts, cum, d: 0, i: 0, done };
+}
+function advance(e, dt) {
+  const m = e.mv, L = m.cum[m.cum.length - 1];
+  m.d += CONFIG.speed * dt;
+  if (m.d >= L) { const p = m.pts[m.pts.length - 1]; e.x = p[0]; e.y = p[1]; e.mv = null; m.done(); return; }
+  while (m.cum[m.i + 1] < m.d) m.i++;
+  const a = m.pts[m.i], b = m.pts[m.i + 1], s = m.cum[m.i + 1] - m.cum[m.i], t = s ? (m.d - m.cum[m.i]) / s : 0;
+  e.x = a[0] + (b[0] - a[0]) * t; e.y = a[1] + (b[1] - a[1]) * t;
+}
+
+// ---- simulation ----
+let T = 0, phase = 'intro', introSpawned = false, nextArr = 0, repeatAt = null;
+const intro = () => phase === 'intro';
+
+function spawn(forceAdmit) {
+  const s = firstFree(stretch, O_STR), p = P.find(q => !q.on);
+  if (s < 0 || !p) return false;
+  stretch[s] = p;
+  Object.assign(p, { on: true, x: 540, y: -30, s, bed: null, st: 'toED', admit: forceAdmit || rng() < CONFIG.admitProb, rx: NaN, ro: NaN });
+  p.el.setAttribute('visibility', 'visible');
+  go(p, ['in', STR[s]], () => { p.st = 'ed'; p.t = intro() ? CONFIG.intro.edDwell : CONFIG.edDwell * jit(CONFIG.edJitter); });
+  return true;
+}
+function release(p) { p.on = false; p.st = ''; p.el.setAttribute('visibility', 'hidden'); }
+
+function upPatient(p, dt) {
+  if (p.mv) advance(p, dt);
+  if (p.st === 'ed') {
+    p.t -= dt;
+    if (p.t > 0) return;
+    if (!p.admit) {                                    // treat-and-release: outer loop to POST-ACUTE
+      stretch[p.s] = null; p.st = 'out'; go(p, ['home', [540, 1960]], () => release(p));
+    } else if (!exitSlot) {                            // admit hold: take the single exit slot
+      stretch[p.s] = null; exitSlot = p; p.st = 'toSlot'; go(p, [EXIT], () => { p.st = 'hold'; });
+    }                                                  // else: stays on its stretcher until the slot frees
+  } else if (p.st === 'hold') {                        // traverse ED -> BEDS only when a clean U is free
+    let b = null;
+    for (const q of B) if (q.st === 'clean' && (!b || q.since < b.since)) b = q;
+    if (!b) return;
+    b.st = 'reserved'; exitSlot = null; p.bed = b; p.st = 'toBed';
+    go(p, ['admit', [b.x, b.y]], () => { p.st = 'ride'; b.pt = p; b.st = 'closing'; });
+  } else if (p.st === 'ride') { p.x = p.bed.x; p.y = p.bed.y; }
+}
+
+function upBed(b, dt) {
+  if (b.mv) advance(b, dt);
+  switch (b.st) {
+    case 'closing': {                                  // U closes into a full square around the dot
+      b.k = Math.min(1, b.k + dt / CONFIG.close);
+      const s = b.k < 1 ? -1 : firstFree(ipSlot, O_IP);
+      if (s < 0) break;
+      ipSlot[s] = b; cell[b.cell] = null; b.cell = -1; b.ip = s; b.st = 'toIP';
+      go(b, ['b2ip', [990, 1046], IPS[s]], () => { b.st = 'ip'; b.t = intro() ? CONFIG.intro.los : CONFIG.los * jit(CONFIG.losJitter); IPEL[s].setAttribute('visibility', 'hidden'); });
+      break;
+    }
+    case 'ip': {                                       // length of stay
+      b.t -= dt;
+      const s = b.t > 0 ? -1 : firstFree(dcSlot, O_DC);
+      if (s < 0) break;
+      dcSlot[s] = b; ipSlot[b.ip] = null; IPEL[b.ip].setAttribute('visibility', 'visible'); b.dc = s; b.st = 'toDC';
+      go(b, ['ip2dc', DCS[s]], () => { b.st = 'dc'; b.t = intro() ? CONFIG.intro.discharge : CONFIG.discharge; });
+      break;
+    }
+    case 'dc': {                                       // discharge: hold, then the dot separates from the bed
+      b.t -= dt;
+      if (b.t > 0) break;
+      b.st = 'sliding'; b.s = 0; b.pt.st = 'held';     // 'held': the bed positions the dot until they part
+      break;
+    }
+    case 'sliding': {                                  // the dot slides out of the square: the visible rate-limiting step
+      b.s = Math.min(1, b.s + dt / CONFIG.separateSlide);
+      const e = b.s * (2 - b.s);                       // ease-out
+      b.pt.x = b.x; b.pt.y = b.y + CONFIG.separateOffset * e;
+      if (b.s < 1) break;
+      b.st = 'resting'; b.t = intro() ? CONFIG.intro.rest : CONFIG.separateRest;
+      break;
+    }
+    case 'resting': {                                  // dot and empty square rest side by side, then part
+      b.t -= dt;
+      if (b.t > 0) break;
+      const p = b.pt; b.pt = null; p.bed = null; p.st = 'out';
+      go(p, [[p.x, b.y + 74], 'dc2pa'], () => release(p));
+      b.st = 'sep'; b.t = CONFIG.separateGap;
+      break;
+    }
+    case 'sep': {                                      // empty square heads to EVS
+      b.t -= dt;
+      const s = b.t > 0 ? -1 : firstFree(evsSlot, O_EVS);
+      if (s < 0) break;
+      evsSlot[s] = b; dcSlot[b.dc] = null; b.ev = s; b.st = 'toEVS';
+      go(b, ['dc2evs', EVS[s]], () => { b.st = 'evs'; b.t = intro() ? CONFIG.intro.evs : CONFIG.evs; });
+      break;
+    }
+    case 'evs': b.t -= dt; if (b.t <= 0) b.st = 'opening'; break;
+    case 'opening': {                                  // square opens back into a clean U, returns to BEDS
+      b.k = Math.max(0, b.k - dt / CONFIG.open);
+      const c = b.k > 0 ? -1 : firstFree(cell, O_CELL);
+      if (c < 0) break;
+      cell[c] = b; evsSlot[b.ev] = null; b.cell = c; b.st = 'toBeds';
+      go(b, [[276, EVS[b.ev][1]], 'evs2b', CELL[c]], () => {
+        b.st = 'clean'; b.since = T;
+        if (intro()) repeatAt = T + CONFIG.walkthroughPause;   // walkthrough: rest, then play the cycle again
+      });
+      break;
+    }
+  }
+}
+
+function step(dt) {
+  if (repeatAt !== null && T + dt >= repeatAt) { reset(); return; }
+  T += dt;
+  if (intro()) { if (!introSpawned && T >= CONFIG.intro.start) introSpawned = spawn(true); }
+  else if (T >= nextArr && spawn(false)) nextArr = T + CONFIG.arrivalEvery * jit(CONFIG.arrivalJitter);
+  for (const b of B) upBed(b, dt);
+  for (const p of P) if (p.on) upPatient(p, dt);
+}
+
+// ---- render: write only what changed ----
+const fade = y => y < 40 ? Math.max(0, (y + 30) / 70) : y > 1720 ? Math.max(0, 1 - (y - 1720) / 200) : 1;
+function render() {
+  for (const b of B) {
+    if (b.x !== b.rx || b.y !== b.ry) { b.el.setAttribute('transform', `translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})`); b.rx = b.x; b.ry = b.y; }
+    if (b.k !== b.rk) {
+      const g = S * (1 - b.k);
+      b.el.setAttribute('stroke-dasharray', b.k >= 1 ? 'none' : `0 ${(g / 2).toFixed(2)} ${(PERIM - g).toFixed(2)} ${(g / 2).toFixed(2)}`);
+      b.rk = b.k;
+    }
+  }
+  for (const p of P) {
+    if (!p.on) continue;
+    if (p.x !== p.rx || p.y !== p.ry) { p.el.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`); p.rx = p.x; p.ry = p.y; }
+    const o = fade(p.y);
+    if (o !== p.ro) { p.el.setAttribute('opacity', o.toFixed(2)); p.ro = o; }
+  }
+}
+
+// ---- loop: fixed-step accumulator decoupled from rAF ----
+let paused = false, last = null, acc = 0;
+function setPaused(v) { paused = v; play.setAttribute('visibility', v ? 'visible' : 'hidden'); last = null; }
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (paused) return;
+  const dt = last === null ? 0 : Math.min((now - last) / 1000, CONFIG.maxFrameDt);
+  last = now; acc += dt;
+  while (acc >= STEP) { step(STEP); acc -= STEP; }
+  render();
+}
+// ---- modes: reset the whole picture, then either walk one patient through or warm up to steady state ----
+function reset() {
+  T = 0; seed = CONFIG.seed >>> 0; introSpawned = false; repeatAt = null; exitSlot = null; acc = 0; last = null;
+  phase = CONFIG.mode === 'steady' ? 'steady' : 'intro'; nextArr = 0.6;
+  for (const a of [stretch, cell, ipSlot, dcSlot, evsSlot]) a.fill(null);
+  for (const p of P) { p.on = false; p.st = ''; p.mv = null; p.bed = null; p.y = -99; p.rx = p.ry = p.ro = NaN; p.el.setAttribute('visibility', 'hidden'); }
+  B.forEach((b, i) => {
+    const c = O_CELL[i];
+    Object.assign(b, { x: CELL[c][0], y: CELL[c][1], st: 'clean', since: i - 1e3, k: 0, s: 0, t: 0, mv: null, cell: c, ip: -1, dc: -1, ev: -1, pt: null, rx: NaN, ry: NaN, rk: NaN });
+    cell[c] = b;
+  });
+  for (const el of IPEL) el.setAttribute('visibility', 'visible');
+  if (phase === 'steady') while (T < CONFIG.steadyWarmup) step(STEP);
+  render();
+}
+const modeBar = document.getElementById('mode');
+function setMode(m) {
+  CONFIG.mode = m;
+  for (const b of modeBar.querySelectorAll('button')) b.classList.toggle('on', b.dataset.mode === m);
+  reset();
+  if (paused && !matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(false);
+}
+modeBar.addEventListener('pointerdown', e => e.stopPropagation());
+modeBar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMode(b.dataset.mode); });
+addEventListener('pointerdown', () => setPaused(!paused));
+setMode(CONFIG.mode);
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  while (T < CONFIG.stillAt) step(STEP);
+  setPaused(true);
+}
+render();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
