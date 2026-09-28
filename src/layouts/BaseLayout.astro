@@ -1,6 +1,7 @@
 ---
 import SEOHead from '../components/global/SEOHead.astro';
 import Navbar from '../components/global/Navbar.astro';
+import CompactHeader from '../components/global/CompactHeader.astro';
 import Footer from '../components/global/Footer.astro';
 import LeadFormModal from '../components/global/LeadFormModal';
 import '../styles/global.css';
@@ -10,9 +11,23 @@ interface Props {
   description: string;
   ogImage?: string;
   ogType?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+  viewportFitCover?: boolean;
+  /** Render the 56px logo strip instead of the full Navbar (founder contact page). */
+  compactHeader?: boolean;
 }
 
-const { title, description, ogImage, ogType } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  ogType,
+  canonicalUrl,
+  noindex = false,
+  viewportFitCover = false,
+  compactHeader = false,
+} = Astro.props;
 
 // LinkedIn Insight Tag (MMDEV-332). The Partner ID is a PUBLIC, client-side value — NOT a secret
 // (it ships in the page HTML for every visitor), so it is hardcoded here as the default the same
@@ -34,6 +49,9 @@ const LINKEDIN_PARTNER_ID =
       description={description}
       ogImage={ogImage}
       ogType={ogType}
+      canonicalUrl={canonicalUrl}
+      noindex={noindex}
+      viewportFitCover={viewportFitCover}
     />
   </head>
   <body class="min-h-screen bg-off-white text-black font-body">
@@ -43,7 +61,7 @@ const LINKEDIN_PARTNER_ID =
     >
       Skip to content
     </a>
-    <Navbar />
+    {compactHeader ? <CompactHeader /> : <Navbar />}
     <main id="main-content">
       <slot />
     </main>
