@@ -28,7 +28,7 @@ const HEADSHOT = '/images/team/mene-headshot-v1.webp';
 const QR = '/images/qr/mene-c-qr.svg';
 
 const actionClass =
-  'flex min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg bg-white/10 px-1 py-2 font-body text-xs font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+  'flex min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg bg-white/10 px-3 py-2 font-body text-[13px] font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 const ctaSecondary =
   'inline-flex min-h-12 items-center justify-center rounded-lg border-2 border-white/80 px-6 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 ---
@@ -40,7 +40,7 @@ const ctaSecondary =
       class="contact-card flex flex-col bg-provider-blue-dark text-white min-[600px]:mx-auto min-[600px]:my-10 min-[600px]:w-full min-[600px]:max-w-[520px] min-[600px]:rounded-2xl min-[600px]:shadow-lg lg:sticky lg:top-8 lg:my-0 lg:max-w-[420px]"
       aria-label="Contact card"
     >
-      <div class="contact-card-body">
+      <div class="my-auto">
         <div class="flex items-center gap-4">
           <img
             src={AVATAR}
@@ -49,10 +49,10 @@ const ctaSecondary =
             height="320"
             decoding="async"
             fetchpriority="high"
-            class="h-[88px] w-[88px] shrink-0 rounded-full object-cover ring-2 ring-ai-gold/80 min-[600px]:h-[112px] min-[600px]:w-[112px]"
+            class="h-[88px] w-[88px] shrink-0 rounded-full object-cover ring-2 ring-ai-gold ring-offset-[3px] ring-offset-provider-blue-dark min-[600px]:h-[112px] min-[600px]:w-[112px]"
           />
           <div class="min-w-0">
-            <h1 class="font-heading text-[1.5rem] leading-tight font-bold text-white min-[600px]:text-[1.75rem] lg:text-[1.5rem]">
+            <h1 class="font-heading text-[1.5rem] leading-tight font-bold text-white min-[600px]:text-[1.75rem]">
               Mene Demestihas,&nbsp;MD
             </h1>
             <p class="mt-1 font-body text-sm font-semibold text-ai-gold min-[600px]:text-base lg:text-sm">
@@ -61,9 +61,16 @@ const ctaSecondary =
           </div>
         </div>
 
-        <p class="mt-4 font-body text-base leading-relaxed text-white/85">
+        <p class="mt-4 max-w-[44ch] font-body text-lg leading-relaxed text-balance text-white/85 min-[600px]:text-base">
           I left the bedside to fix the part of discharge no one would claim.
         </p>
+
+        {/* Desktop: the QR is the primary path from a laptop to a phone, so it sits first and
+            carries the gold accent; Save Contact drops to a secondary style at lg. */}
+        <div class="mt-5 hidden items-center gap-4 rounded-xl bg-white p-3 ring-2 ring-ai-gold lg:flex">
+          <img src={QR} alt="QR code that opens this page on your phone" width="112" height="112" class="h-28 w-28 shrink-0" />
+          <p class="font-body text-base font-semibold text-provider-blue">Scan to save to your phone</p>
+        </div>
 
         {/* No download attribute on purpose: iOS Safari opens a text/x-vcard response with an
             "Add to Contacts" sheet, which is what a card-scanner wants. download= saves it to
@@ -71,7 +78,7 @@ const ctaSecondary =
         <a
           href="/mene.vcf"
           data-action="save_contact"
-          class="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-lg bg-ai-gold font-body text-base font-semibold text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          class="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-lg bg-ai-gold font-body text-base font-semibold text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:border-2 lg:border-white/80 lg:bg-transparent lg:text-white lg:hover:bg-white/10"
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
@@ -82,7 +89,7 @@ const ctaSecondary =
           Tip: open in Safari for one-tap save.
         </p>
 
-        <ul class:list={['mt-4 grid gap-2', SMS_NUMBER ? 'grid-cols-4' : 'grid-cols-3']} role="list">
+        <ul class:list={['mt-4 grid gap-2', SMS_NUMBER ? 'grid-cols-[1fr_1fr_1fr_1.35fr]' : 'grid-cols-[1fr_1fr_1.35fr]']} role="list">
           {SMS_NUMBER && (
             <li>
               <a href={`sms:${SMS_NUMBER}`} data-action="contact_action" data-channel="sms" class={actionClass}>
@@ -119,16 +126,11 @@ const ctaSecondary =
           </li>
         </ul>
 
-        {/* Desktop: the QR is the primary path from a laptop to a phone */}
-        <div class="mt-6 hidden items-center gap-4 rounded-xl bg-white p-3 lg:flex">
-          <img src={QR} alt="QR code that opens this page on your phone" width="112" height="112" class="h-28 w-28 shrink-0" />
-          <p class="font-body text-sm font-semibold text-provider-blue">Scan to save to your phone</p>
-        </div>
       </div>
 
       <a
         href="#story"
-        class="mt-auto self-center pt-6 font-body text-sm font-medium text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline min-[600px]:hidden"
+        class="mt-auto self-center rounded-lg px-5 py-3 font-body text-[15px] font-medium text-white underline-offset-4 transition-colors hover:bg-white/10 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white min-[600px]:hidden"
       >
         Read the story &darr;
       </a>
@@ -140,7 +142,7 @@ const ctaSecondary =
         {/* 2 — The clinical question */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.75rem] leading-tight font-bold text-black min-[600px]:text-[2rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
               The clinical question that didn't go away
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
@@ -164,7 +166,7 @@ const ctaSecondary =
         {/* 3 — The transition */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.75rem] leading-tight font-bold text-black min-[600px]:text-[2rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
               From the bedside to the systems above it
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
@@ -194,7 +196,7 @@ const ctaSecondary =
         {/* 4 — Why Metrias */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.75rem] leading-tight font-bold text-black min-[600px]:text-[2rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
               We built the role that was missing
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
@@ -227,7 +229,7 @@ const ctaSecondary =
         {/* 5 — What I'm working on now */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.75rem] leading-tight font-bold text-black min-[600px]:text-[2rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
               What I'm working on right now
             </h2>
             <ul class="mt-6 space-y-4">
