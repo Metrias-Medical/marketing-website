@@ -12,6 +12,9 @@ export default defineConfig({
     // (These emit an Astro meta-refresh page, not a server 301 — GitHub Pages can't issue one.)
     // Business-card QR → the founder persona page (built 2026-06-06). UTM tags the offline source.
     '/connect/mene': '/mene?utm_source=card&utm_medium=offline&utm_campaign=biz-card-2026',
+    // dot.card NFC tap → founder page (2026-09-28). Own slug so taps and printed-QR scans stay
+    // distinguishable in PostHog and the lead Worker (slug === utm_source; same campaign).
+    '/connect/dot': '/mene?utm_source=dot&utm_medium=offline&utm_campaign=biz-card-2026',
     // Email-signature link → founder page (MMDEV-332 cleanup 2026-06-26).
     '/connect/email-sig': '/mene?utm_source=email-sig&utm_medium=email&utm_campaign=evergreen',
     // Printed one-pager / leave-behind → hospitals (ICP buyer) page (MMDEV-332 cleanup 2026-06-26).
