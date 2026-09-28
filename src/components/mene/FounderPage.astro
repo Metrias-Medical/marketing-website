@@ -28,13 +28,13 @@ const HEADSHOT = '/images/team/mene-headshot-v1.webp';
 const QR = '/images/qr/mene-c-qr.svg';
 
 const actionClass =
-  'flex min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg bg-white/10 px-3 py-2 font-body text-[13px] font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+  'flex min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg border border-white/30 bg-white/12 px-3 py-2 font-body text-[13px] font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 const ctaSecondary =
   'inline-flex min-h-12 items-center justify-center rounded-lg border-2 border-white/80 px-6 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 ---
 
 <div class="bg-off-white">
-  <div class="mx-auto max-w-7xl lg:grid lg:grid-cols-[420px_minmax(0,1fr)] lg:items-start lg:gap-16 lg:px-8 lg:pt-10">
+  <div class="mx-auto max-w-[1188px] lg:grid lg:grid-cols-[420px_minmax(0,1fr)] lg:items-start lg:gap-16 lg:px-8 lg:pt-10">
     {/* Identity card: the whole first screen on phones, a card on tablet, sticky on desktop */}
     <aside
       class="contact-card flex flex-col bg-provider-blue-dark text-white min-[600px]:mx-auto min-[600px]:my-10 min-[600px]:w-full min-[600px]:max-w-[520px] min-[600px]:rounded-2xl min-[600px]:shadow-lg lg:sticky lg:top-8 lg:my-0 lg:max-w-[420px]"
@@ -42,15 +42,17 @@ const ctaSecondary =
     >
       <div class="my-auto">
         <div class="flex items-center gap-4">
-          <img
-            src={AVATAR}
-            alt="Mene Demestihas, MD"
-            width="320"
-            height="320"
-            decoding="async"
-            fetchpriority="high"
-            class="h-[88px] w-[88px] shrink-0 rounded-full object-cover ring-2 ring-ai-gold ring-offset-[3px] ring-offset-provider-blue-dark min-[600px]:h-[112px] min-[600px]:w-[112px]"
-          />
+          <div class="h-[100px] w-[100px] shrink-0 rounded-full border-2 border-ai-gold p-1 min-[600px]:h-[124px] min-[600px]:w-[124px]">
+            <img
+              src={AVATAR}
+              alt="Mene Demestihas, MD"
+              width="320"
+              height="320"
+              decoding="async"
+              fetchpriority="high"
+              class="h-full w-full rounded-full object-cover"
+            />
+          </div>
           <div class="min-w-0">
             <h1 class="font-heading text-[1.5rem] leading-tight font-bold text-white min-[600px]:text-[1.75rem]">
               Mene Demestihas,&nbsp;MD
@@ -61,15 +63,15 @@ const ctaSecondary =
           </div>
         </div>
 
-        <p class="mt-4 max-w-[44ch] font-body text-lg leading-relaxed text-balance text-white/85 min-[600px]:text-base">
+        <p class="mt-4 font-body text-lg leading-relaxed text-balance text-white/85 min-[600px]:text-[17px]">
           I left the bedside to fix the part of discharge no one would claim.
         </p>
 
         {/* Desktop: the QR is the primary path from a laptop to a phone, so it sits first and
             carries the gold accent; Save Contact drops to a secondary style at lg. */}
         <div class="mt-5 hidden items-center gap-4 rounded-xl bg-white p-3 ring-2 ring-ai-gold lg:flex">
-          <img src={QR} alt="QR code that opens this page on your phone" width="112" height="112" class="h-28 w-28 shrink-0" />
-          <p class="font-body text-base font-semibold text-provider-blue">Scan to save to your phone</p>
+          <img src={QR} alt="QR code that opens this page on your phone" width="148" height="148" class="h-[148px] w-[148px] shrink-0" />
+          <p class="font-body text-base font-semibold text-balance text-provider-blue">Scan to save to your phone</p>
         </div>
 
         {/* No download attribute on purpose: iOS Safari opens a text/x-vcard response with an
@@ -142,7 +144,7 @@ const ctaSecondary =
         {/* 2 — The clinical question */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
               The clinical question that didn't go away
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
@@ -166,7 +168,7 @@ const ctaSecondary =
         {/* 3 — The transition */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
               From the bedside to the systems above it
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
@@ -196,7 +198,7 @@ const ctaSecondary =
         {/* 4 — Why Metrias */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
               We built the role that was missing
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
@@ -229,7 +231,7 @@ const ctaSecondary =
         {/* 5 — What I'm working on now */}
         <section class="py-8 min-[600px]:py-10">
           <div>
-            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-black min-[600px]:text-[1.625rem]">
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
               What I'm working on right now
             </h2>
             <ul class="mt-6 space-y-4">
