@@ -1,21 +1,50 @@
 ---
 // Gated model page, served by workers/model only to viewers with a valid session cookie.
 // Built by astro.model.config.mjs into workers/model/assets/index.html.
+//
+// First pass of the visual model: the steady-state hospital flow animation, shipped as a
+// self-contained page (src/pages-model/static/steady.html, source of truth in metrias-agora
+// builds/financial-visuals/steady) and framed here under the draft banner and watermark.
+// The retired funding model (components/model/ModelPage) is no longer mounted on this page.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DraftBanner from '../components/model/DraftBanner.astro';
-import ModelPage from '../components/model/ModelPage';
 
 const OG_IMAGE = 'https://www.metriasmedical.com/images/Metrias%20Medical%20_%20Open%20Graph.png';
 ---
 
 <BaseLayout
-  title="Pre-seed round model (draft) | Metrias Medical"
-  description="Interactive pre-seed round model for invited investors and partners. Draft."
+  title="Hospital flow model (draft) | Metrias Medical"
+  description="Animated hospital flow model for invited viewers. Draft."
   ogImage={OG_IMAGE}
   chrome={false}
 >
   <meta slot="head" name="robots" content="noindex, nofollow" />
   <meta slot="head" name="referrer" content="no-referrer" />
   <DraftBanner />
-  <ModelPage client:load />
+  <iframe
+    id="model-frame"
+    src="/steady.html"
+    title="Hospital flow at steady state: patients move from pre-hospital through the ED, beds, inpatient and discharge to post-acute while beds cycle through environmental services"
+    loading="eager"
+    referrerpolicy="no-referrer"
+  ></iframe>
 </BaseLayout>
+
+<style is:global>
+  /* The banner stays sticky at the top; the animation frame fills the rest of the viewport. */
+  #main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #0a0f17;
+  }
+  #model-frame {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    border: 0;
+    background: #0a0f17;
+  }
+</style>

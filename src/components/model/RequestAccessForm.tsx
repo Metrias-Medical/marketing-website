@@ -104,9 +104,9 @@ function validateField(name: FieldName, fields: Fields, consent: boolean): strin
       if (!fields.email.trim()) return 'Work email is required.';
       return EMAIL_RE.test(fields.email.trim()) ? '' : 'Enter a valid email address.';
     case 'organization':
-      return fields.organization.trim() ? '' : 'Organization is required.';
+      return '';                                       // optional
     case 'role':
-      return fields.role.trim() ? '' : 'Role is required.';
+      return '';                                       // optional
     case 'persona':
       return (PERSONAS as readonly string[]).includes(fields.persona) ? '' : 'Choose the option that fits best.';
     case 'linkedin':
@@ -371,12 +371,12 @@ export default function RequestAccessForm() {
         />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="Organization" name="organization" required autoComplete="organization"
+            label="Organization" name="organization" optional autoComplete="organization"
             value={fields.organization} error={errors.organization}
             onChange={(v) => setField('organization', v)} onBlur={() => onBlur('organization')}
           />
           <Field
-            label="Role" name="role" required autoComplete="organization-title"
+            label="Role" name="role" optional autoComplete="organization-title"
             value={fields.role} error={errors.role}
             onChange={(v) => setField('role', v)} onBlur={() => onBlur('role')}
           />
