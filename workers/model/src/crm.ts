@@ -18,7 +18,7 @@ export async function syncPerson(env: Env, p: PersonSummary): Promise<string | n
     return null;
   }
   try {
-    const companyId = await findOrCreateCompany(cfg(env), p.organization);
+    const companyId = p.organization ? await findOrCreateCompany(cfg(env), p.organization) : null; // organization is optional
     const extra: Record<string, unknown> = {};
     if (p.persona) extra.persona_type = [{ value: p.persona }];
     if (p.linkedin) extra.linkedin = [{ value: p.linkedin }];
@@ -26,7 +26,7 @@ export async function syncPerson(env: Env, p: PersonSummary): Promise<string | n
       email: p.email,
       first_name: p.first_name,
       last_name: p.last_name,
-      job_title: p.role,
+      job_title: p.role || undefined,
       company_id: companyId,
       extra,
     });

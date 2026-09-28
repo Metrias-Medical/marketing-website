@@ -152,8 +152,7 @@ export function validateRequest(p: RequestPayload): { ok: boolean; errors: Recor
   if (!data.email) errors.email = 'Email is required.';
   else if (!isValidEmail(data.email)) errors.email = 'Enter a valid email address.';
   else if (isDisposableEmail(data.email)) errors.email = 'Please use a work email address.';
-  if (!data.organization) errors.organization = 'Organization is required.';
-  if (!data.role) errors.role = 'Role is required.';
+  // organization and role are optional (2026-09-28); the PHI guard below still screens them when present.
   const persona = PERSONAS.find((x) => x.toLowerCase() === data.persona.toLowerCase());
   if (!persona) errors.persona = 'Choose the option that best describes you.';
   else data.persona = persona;

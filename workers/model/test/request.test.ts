@@ -84,10 +84,10 @@ describe('POST /api/request validation', () => {
     expect((await errorsOf(await postRequest(missing, { ip: '198.51.100.3' }))).consent).toBeTruthy();
   });
 
-  it('requires names, organization, role and a known persona; LinkedIn is optional but must be a LinkedIn URL', async () => {
+  it('requires names and a known persona; organization, role and LinkedIn are optional, LinkedIn must be a LinkedIn URL', async () => {
     const v = validateRequest(requestBody({ first_name: '', last_name: ' ', organization: '', role: '', persona: 'Journalist' }));
     expect(v.ok).toBe(false);
-    expect(Object.keys(v.errors).sort()).toEqual(['first_name', 'last_name', 'organization', 'persona', 'role']);
+    expect(Object.keys(v.errors).sort()).toEqual(['first_name', 'last_name', 'persona']);
 
     const noLinkedIn = validateRequest(requestBody({ linkedin: '' }));
     expect(noLinkedIn.ok).toBe(true);
