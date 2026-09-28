@@ -8,6 +8,7 @@
 html,body{margin:0;height:100%;overflow:hidden;background:#0a0f17}
 body{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 #reel{display:block;height:min(calc(100vh - 48px),177.78vw);height:min(calc(100svh - 48px),177.78vw);width:min(100vw,calc((100vh - 48px)*.5625));width:min(100vw,calc((100svh - 48px)*.5625))}
+#reel.land{height:min(calc(100vh - 48px),56.25vw);height:min(calc(100svh - 48px),56.25vw);width:min(100vw,calc((100vh - 48px)*1.7778));width:min(100vw,calc((100svh - 48px)*1.7778))}
 #mode{display:flex;gap:8px;font:12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:1.5px}
 #mode button{background:none;border:1px solid var(--line);color:var(--label);padding:8px 14px;border-radius:999px;font:inherit;letter-spacing:inherit;cursor:pointer}
 #mode button.on{color:var(--patient);border-color:var(--patient)}
@@ -32,6 +33,7 @@ body{display:flex;flex-direction:column;gap:10px;align-items:center;justify-cont
 //   DISCHARGE: 2 slots x ~4.4 s -> utilisation ~0.29.  EVS: 2 slots x ~3.5 s -> ~0.23.  Nothing backs up.
 const CONFIG = {
   seed: 20260927,          // RNG seed: same seed, same film
+  orientation: 'auto',     // 'auto' | 'portrait' | 'landscape' (auto: aspect >= 1.2 lays the diagram out left to right in 1920 x 1080)
   mode: 'walkthrough',     // start mode: 'walkthrough' (one patient and one bed, repeating) or 'steady' (the running hospital); the selector above the reel switches it
   walkthroughPause: 1.2,   // s the picture rests between walkthrough repeats
   steadyWarmup: 45,        // s of simulated time run silently before STEADY STATE is shown, so it starts already populated
@@ -78,52 +80,74 @@ const C = CONFIG.colors, NS = 'http://www.w3.org/2000/svg', STEP = 1 / CONFIG.st
 document.documentElement.style.background = document.body.style.background = C.bg;
 for (const k of ['line', 'label', 'patient']) document.documentElement.style.setProperty('--' + k, C[k]);
 
-// ---- layout, viewBox 1080 x 1920 ----
-const BOX = { pre: [340, 150, 400, 130, 'top'], ed: [340, 370, 400, 300], beds: [340, 790, 400, 260],
-  evs: [64, 1000, 240, 270], ip: [776, 1000, 240, 270], dc: [340, 1200, 400, 250], pa: [340, 1580, 400, 150, 'bottom'] };
-const PATHS = { in: 'M540 -30V370', home: 'M340 640H300L40 900V1440L130 1530H460L510 1580L540 1610', admit: 'M540 670V790',
-  b2ip: 'M740 932H990V1000', ip2dc: 'M896 1270V1340H740', dc2evs: 'M340 1340H161V1270', evs2b: 'M276 1000V932H340', dc2pa: 'M540 1450V1960' };
-const grid = (n, cx, y0, px, py) => Array.from({ length: n }, (_, i) => [cx + (i % 3 - 1) * px, y0 + Math.floor(i / 3) * py]);
-const row = (n, cx, y, px) => Array.from({ length: n }, (_, i) => [cx + (i - (n - 1) / 2) * px, y]);
-const STR = grid(CONFIG.stretchers, 540, 465, 72, 78);   // dot positions on stretchers (line 13 px below)
-const EXIT = [540, 633];                                  // ED exit slot (admit hold)
-const CELL = grid(CONFIG.beds, 540, 870, 62, 62);         // BEDS positions
-const IPS = grid(CONFIG.beds, 876, 1084, 62, 62);         // INPATIENT slots
-const DCS = row(CONFIG.dischargeSlots, 540, 1320, 68);
-const EVS = row(CONFIG.evsSlots, 161, 1176, 70);
+// ---- layouts: PORTRAIT (viewBox 1080 x 1920, top to bottom) and LANDSCAPE (1920 x 1080, left to right) ----
+// grids [cx, y0, px, py, cols]; rows [cx, cy, dx, dy]; at = entry points (slots fill nearest-first)
+const PORTRAIT = { vb: [1080, 1920], flow: [0, 1],
+  box: { pre: [340, 150, 400, 130, 'top'], ed: [340, 370, 400, 300], beds: [340, 790, 400, 260],
+    evs: [64, 1000, 240, 270], ip: [776, 1000, 240, 270], dc: [340, 1200, 400, 250], pa: [340, 1580, 400, 150, 'bottom'] },
+  paths: { in: 'M540 -30V370', home: 'M340 640H300L40 900V1440L130 1530H460L510 1580L540 1610', admit: 'M540 670V790',
+    b2ip: 'M740 932H990V1000', ip2dc: 'M896 1270V1340H740', dc2evs: 'M340 1340H161V1270', evs2b: 'M276 1000V932H340', dc2pa: 'M540 1450V1960' },
+  str: [540, 465, 72, 78, 3], exit: [540, 633], cell: [540, 870, 62, 62, 3], ips: [876, 1084, 62, 62, 3], dcs: [540, 1320, 68, 0], evs: [161, 1176, 70, 0],
+  at: { str: [540, 370], cell: [540, 790], ip: [990, 1046], dc: [740, 1340], evs: [161, 1270] },
+  ipIn: [990, 1046], homeEnd: [540, 1960], evsOut: e => [276, e[1]], dcOut: (b, p) => [p.x, b.y + 74] };
+const LANDSCAPE = { vb: [1920, 1080], flow: [1, 0],
+  box: { pre: [110, 340, 200, 400, 'left'], ed: [370, 340, 300, 400], beds: [790, 340, 260, 400],
+    evs: [1000, 64, 270, 246], ip: [1000, 770, 270, 246], dc: [1200, 340, 250, 400], pa: [1580, 340, 200, 400, 'right'] },
+  paths: { in: 'M-30 540H370', home: 'M640 340V300L900 40H1440L1530 130V460L1580 510L1610 540', admit: 'M670 540H790',
+    b2ip: 'M932 740V990H1000', ip2dc: 'M1270 896H1400V740', dc2evs: 'M1400 340V185H1270', evs2b: 'M1000 280H932V340', dc2pa: 'M1450 540H1960' },
+  str: [504, 468, 78, 72, 2], exit: [633, 540], cell: [932, 478, 62, 62, 3], ips: [1162, 850, 62, 62, 3], dcs: [1320, 540, 0, 68], evs: [1196, 185, 0, 70],
+  at: { str: [370, 540], cell: [790, 540], ip: [1046, 990], dc: [1400, 740], evs: [1270, 185] },
+  ipIn: [1046, 990], homeEnd: [1960, 540], evsOut: e => [e[0], 280], dcOut: (b, p) => [b.x + 74, p.y] };
+const pickLayout = () => { const o = CONFIG.orientation; return o === 'landscape' || (o !== 'portrait' && innerWidth / innerHeight >= 1.2) ? LANDSCAPE : PORTRAIT; };
+const grid = (n, [cx, y0, px, py, c]) => Array.from({ length: n }, (_, i) => [cx + (i % c - (c - 1) / 2) * px, y0 + Math.floor(i / c) * py]);
+const row = (n, [cx, cy, dx, dy]) => Array.from({ length: n }, (_, i) => { const o = i - (n - 1) / 2; return [cx + o * dx, cy + o * dy]; });
 const order = (pts, [x, y]) => pts.map((p, i) => [Math.hypot(p[0] - x, p[1] - y), i]).sort((a, b) => a[0] - b[0]).map(a => a[1]);
-const O_STR = order(STR, [540, 370]), O_CELL = order(CELL, [540, 790]), O_IP = order(IPS, [990, 1046]), O_DC = order(DCS, [740, 1340]), O_EVS = order(EVS, [161, 1270]);
-
-// ---- static drawing ----
-let h = `<defs><radialGradient id="gl"><stop offset="0" stop-color="${C.patient}" stop-opacity=".55"/><stop offset=".4" stop-color="${C.patient}" stop-opacity=".16"/><stop offset="1" stop-color="${C.patient}" stop-opacity="0"/></radialGradient></defs>`;
-const LS = CONFIG.labelSize, CW = LS * 0.6 + 1;
-for (const k in BOX) {
-  const [x, y, w, bh, open] = BOX[k];
-  const r = 10, yb = y + bh; // open-ended source/sink boxes are drawn without their outer edge
-  h += open === 'top' ? `<path d="M${x} ${y}V${yb - r}Q${x} ${yb} ${x + r} ${yb}H${x + w - r}Q${x + w} ${yb} ${x + w} ${yb - r}V${y}"`
-    : open === 'bottom' ? `<path d="M${x} ${yb}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + w - r}Q${x + w} ${y} ${x + w} ${y + r}V${yb}"`
-    : `<rect x="${x}" y="${y}" width="${w}" height="${bh}" rx="${r}"`;
-  h += ` fill="${C.node}" stroke="${C.line}" stroke-width="2"/>`;
-  const t = CONFIG.labels[k], lines = t.length * CW > w - 28 ? t.split(' ') : [t];
-  h += `<text y="${y + 30}" font-size="${LS}" letter-spacing="1" fill="${C.label}">` + lines.map((l, i) => `<tspan x="${x + 14}" dy="${i ? LS * 1.3 : 0}">${l}</tspan>`).join('') + '</text>';
-}
-for (const k in PATHS) h += `<path id="p_${k}" d="${PATHS[k]}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 10"/>`;
-for (const [x, y] of STR) h += `<line x1="${x - 24}" y1="${y + 13}" x2="${x + 24}" y2="${y + 13}" stroke="${C.stretcher}" stroke-width="3" stroke-linecap="round"/>`;
-h += `<line x1="${EXIT[0] - 24}" y1="${EXIT[1] + 13}" x2="${EXIT[0] + 24}" y2="${EXIT[1] + 13}" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
-for (const [x, y] of IPS) h += `<rect class="ips" x="${x - HS}" y="${y - HS}" width="${S}" height="${S}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
-document.getElementById('gs').innerHTML = h;
-const IPEL = [...document.querySelectorAll('.ips')];
-const play = document.getElementById('play');
+const reel = document.getElementById('reel'), play = document.getElementById('play');
 play.firstChild.setAttribute('fill', C.bg); play.firstChild.setAttribute('fill-opacity', '.85'); play.firstChild.setAttribute('stroke', C.label);
 play.lastChild.setAttribute('fill', C.label);
+let L, STR, EXIT, CELL, IPS, DCS, EVS, O_STR, O_CELL, O_IP, O_DC, O_EVS, IPEL, PTS;
+const LS = CONFIG.labelSize, CW = LS * 0.6 + 1;
 
-// sample every path once with getPointAtLength; movement walks these polylines at one speed
-const PTS = {};
-for (const k in PATHS) {
-  const el = document.getElementById('p_' + k), L = el.getTotalLength(), n = Math.max(1, Math.ceil(L / 4)), a = [];
-  for (let i = 0; i <= n; i++) { const q = el.getPointAtLength(L * i / n); a.push([q.x, q.y]); }
-  PTS[k] = a;
+// ---- static drawing + sampled paths + position grids, from the chosen layout ----
+function build(lay) {
+  L = lay;
+  STR = grid(CONFIG.stretchers, L.str);    // dot positions on stretchers (line 13 px below)
+  EXIT = L.exit;                           // ED exit slot (admit hold)
+  CELL = grid(CONFIG.beds, L.cell);        // BEDS positions
+  IPS = grid(CONFIG.beds, L.ips);          // INPATIENT slots
+  DCS = row(CONFIG.dischargeSlots, L.dcs); EVS = row(CONFIG.evsSlots, L.evs);
+  O_STR = order(STR, L.at.str); O_CELL = order(CELL, L.at.cell); O_IP = order(IPS, L.at.ip); O_DC = order(DCS, L.at.dc); O_EVS = order(EVS, L.at.evs);
+  const land = L === LANDSCAPE;
+  reel.setAttribute('viewBox', '0 0 ' + L.vb.join(' ')); reel.classList.toggle('land', land);
+  play.setAttribute('transform', land ? 'translate(420 -420)' : 'translate(0 0)');
+  let h = `<defs><radialGradient id="gl"><stop offset="0" stop-color="${C.patient}" stop-opacity=".55"/><stop offset=".4" stop-color="${C.patient}" stop-opacity=".16"/><stop offset="1" stop-color="${C.patient}" stop-opacity="0"/></radialGradient></defs>`;
+  for (const k in L.box) {
+    const [x, y, w, bh, open] = L.box[k];
+    const r = 10, yb = y + bh, xr = x + w; // open-ended source/sink boxes are drawn without their outer edge
+    h += open === 'top' ? `<path d="M${x} ${y}V${yb - r}Q${x} ${yb} ${x + r} ${yb}H${xr - r}Q${xr} ${yb} ${xr} ${yb - r}V${y}"`
+      : open === 'bottom' ? `<path d="M${x} ${yb}V${y + r}Q${x} ${y} ${x + r} ${y}H${xr - r}Q${xr} ${y} ${xr} ${y + r}V${yb}"`
+      : open === 'left' ? `<path d="M${x} ${y}H${xr - r}Q${xr} ${y} ${xr} ${y + r}V${yb - r}Q${xr} ${yb} ${xr - r} ${yb}H${x}"`
+      : open === 'right' ? `<path d="M${xr} ${y}H${x + r}Q${x} ${y} ${x} ${y + r}V${yb - r}Q${x} ${yb} ${x + r} ${yb}H${xr}"`
+      : `<rect x="${x}" y="${y}" width="${w}" height="${bh}" rx="${r}"`;
+    h += ` fill="${C.node}" stroke="${C.line}" stroke-width="2"/>`;
+    const t = CONFIG.labels[k], lines = t.length * CW > w - 28 ? t.split(' ') : [t];
+    h += `<text y="${y + 30}" font-size="${LS}" letter-spacing="1" fill="${C.label}">` + lines.map((l, i) => `<tspan x="${x + 14}" dy="${i ? LS * 1.3 : 0}">${l}</tspan>`).join('') + '</text>';
+  }
+  for (const k in L.paths) h += `<path id="p_${k}" d="${L.paths[k]}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 10"/>`;
+  for (const [x, y] of STR) h += `<line x1="${x - 24}" y1="${y + 13}" x2="${x + 24}" y2="${y + 13}" stroke="${C.stretcher}" stroke-width="3" stroke-linecap="round"/>`;
+  h += `<line x1="${EXIT[0] - 24}" y1="${EXIT[1] + 13}" x2="${EXIT[0] + 24}" y2="${EXIT[1] + 13}" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
+  for (const [x, y] of IPS) h += `<rect class="ips" x="${x - HS}" y="${y - HS}" width="${S}" height="${S}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
+  document.getElementById('gs').innerHTML = h;
+  IPEL = [...document.querySelectorAll('.ips')];
+  // sample every path once with getPointAtLength; movement walks these polylines at one speed
+  PTS = {};
+  for (const k in L.paths) {
+    const el = document.getElementById('p_' + k), len = el.getTotalLength(), n = Math.max(1, Math.ceil(len / 4)), a = [];
+    for (let i = 0; i <= n; i++) { const q = el.getPointAtLength(len * i / n); a.push([q.x, q.y]); }
+    PTS[k] = a;
+  }
 }
+build(pickLayout());
 
 // ---- deterministic RNG ----
 let seed = CONFIG.seed >>> 0;
@@ -175,7 +199,7 @@ function spawn(forceAdmit) {
   const s = firstFree(stretch, O_STR), p = P.find(q => !q.on);
   if (s < 0 || !p) return false;
   stretch[s] = p;
-  Object.assign(p, { on: true, x: 540, y: -30, s, bed: null, st: 'toED', admit: forceAdmit || rng() < CONFIG.admitProb, rx: NaN, ro: NaN });
+  Object.assign(p, { on: true, x: PTS.in[0][0], y: PTS.in[0][1], s, bed: null, st: 'toED', admit: forceAdmit || rng() < CONFIG.admitProb, rx: NaN, ro: NaN });
   p.el.setAttribute('visibility', 'visible');
   go(p, ['in', STR[s]], () => { p.st = 'ed'; p.t = intro() ? CONFIG.intro.edDwell : CONFIG.edDwell * jit(CONFIG.edJitter); });
   return true;
@@ -188,7 +212,7 @@ function upPatient(p, dt) {
     p.t -= dt;
     if (p.t > 0) return;
     if (!p.admit) {                                    // treat-and-release: outer loop to POST-ACUTE
-      stretch[p.s] = null; p.st = 'out'; go(p, ['home', [540, 1960]], () => release(p));
+      stretch[p.s] = null; p.st = 'out'; go(p, ['home', L.homeEnd], () => release(p));
     } else if (!exitSlot) {                            // admit hold: take the single exit slot
       stretch[p.s] = null; exitSlot = p; p.st = 'toSlot'; go(p, [EXIT], () => { p.st = 'hold'; });
     }                                                  // else: stays on its stretcher until the slot frees
@@ -209,7 +233,7 @@ function upBed(b, dt) {
       const s = b.k < 1 ? -1 : firstFree(ipSlot, O_IP);
       if (s < 0) break;
       ipSlot[s] = b; cell[b.cell] = null; b.cell = -1; b.ip = s; b.st = 'toIP';
-      go(b, ['b2ip', [990, 1046], IPS[s]], () => { b.st = 'ip'; b.t = intro() ? CONFIG.intro.los : CONFIG.los * jit(CONFIG.losJitter); IPEL[s].setAttribute('visibility', 'hidden'); });
+      go(b, ['b2ip', L.ipIn, IPS[s]], () => { b.st = 'ip'; b.t = intro() ? CONFIG.intro.los : CONFIG.los * jit(CONFIG.losJitter); IPEL[s].setAttribute('visibility', 'hidden'); });
       break;
     }
     case 'ip': {                                       // length of stay
@@ -229,7 +253,7 @@ function upBed(b, dt) {
     case 'sliding': {                                  // the dot slides out of the square: the visible rate-limiting step
       b.s = Math.min(1, b.s + dt / CONFIG.separateSlide);
       const e = b.s * (2 - b.s);                       // ease-out
-      b.pt.x = b.x; b.pt.y = b.y + CONFIG.separateOffset * e;
+      b.pt.x = b.x + L.flow[0] * CONFIG.separateOffset * e; b.pt.y = b.y + L.flow[1] * CONFIG.separateOffset * e;
       if (b.s < 1) break;
       b.st = 'resting'; b.t = intro() ? CONFIG.intro.rest : CONFIG.separateRest;
       break;
@@ -238,7 +262,7 @@ function upBed(b, dt) {
       b.t -= dt;
       if (b.t > 0) break;
       const p = b.pt; b.pt = null; p.bed = null; p.st = 'out';
-      go(p, [[p.x, b.y + 74], 'dc2pa'], () => release(p));
+      go(p, [L.dcOut(b, p), 'dc2pa'], () => release(p));
       b.st = 'sep'; b.t = CONFIG.separateGap;
       break;
     }
@@ -256,7 +280,7 @@ function upBed(b, dt) {
       const c = b.k > 0 ? -1 : firstFree(cell, O_CELL);
       if (c < 0) break;
       cell[c] = b; evsSlot[b.ev] = null; b.cell = c; b.st = 'toBeds';
-      go(b, [[276, EVS[b.ev][1]], 'evs2b', CELL[c]], () => {
+      go(b, [L.evsOut(EVS[b.ev]), 'evs2b', CELL[c]], () => {
         b.st = 'clean'; b.since = T;
         if (intro()) repeatAt = T + CONFIG.walkthroughPause;   // walkthrough: rest, then play the cycle again
       });
@@ -288,7 +312,7 @@ function render() {
   for (const p of P) {
     if (!p.on) continue;
     if (p.x !== p.rx || p.y !== p.ry) { p.el.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`); p.rx = p.x; p.ry = p.y; }
-    const o = fade(p.y);
+    const o = fade(L.flow[0] ? p.x : p.y);
     if (o !== p.ro) { p.el.setAttribute('opacity', o.toFixed(2)); p.ro = o; }
   }
 }
@@ -329,8 +353,13 @@ function setMode(m) {
 modeBar.addEventListener('pointerdown', e => e.stopPropagation());
 modeBar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMode(b.dataset.mode); });
 addEventListener('pointerdown', () => setPaused(!paused));
+const relayout = () => { const n = pickLayout(); if (n !== L) { build(n); reset(); } }; // orientation flip: rebuild, restart the current mode
+addEventListener('resize', relayout); addEventListener('orientationchange', relayout);
 setMode(CONFIG.mode);
 if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Still frame of the running hospital. Walkthrough mode restarts every cycle and would never
+  // reach stillAt, so the still is always taken from steady state.
+  if (CONFIG.mode !== 'steady') setMode('steady');
   while (T < CONFIG.stillAt) step(STEP);
   setPaused(true);
 }
