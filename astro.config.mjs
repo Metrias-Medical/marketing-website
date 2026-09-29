@@ -15,6 +15,10 @@ export default defineConfig({
     // dot.card NFC tap → founder page (2026-09-28). Own slug so taps and printed-QR scans stay
     // distinguishable in PostHog and the lead Worker (slug === utm_source; same campaign).
     '/connect/dot': '/mene?utm_source=dot&utm_medium=offline&utm_campaign=biz-card-2026',
+    // NFC token tap -> founder page (2026-09-29). Separate slug from the dot.card tap and the printed
+    // card QR so each hand-off object is distinguishable in PostHog and the lead Worker's first-touch
+    // fields (slug === utm_source). Same campaign so all in-person hand-offs roll up together.
+    '/connect/token': '/mene?utm_source=token&utm_medium=offline&utm_campaign=biz-card-2026',
     // Email-signature link → founder page (MMDEV-332 cleanup 2026-06-26).
     '/connect/email-sig': '/mene?utm_source=email-sig&utm_medium=email&utm_campaign=evergreen',
     // Printed one-pager / leave-behind → hospitals (ICP buyer) page (MMDEV-332 cleanup 2026-06-26).
