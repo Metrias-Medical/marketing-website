@@ -20,15 +20,15 @@ const EMAIL = 'mene@metriasmedical.com';
 // Direct calendar link on purpose: the /connect/30min stub is for off-site placements, while
 // on-page CTAs keep PostHog attribution (see astro.config.mjs).
 const BOOKING = 'https://calendar.app.google/KQK1bpNdcZxSffkDA';
-// TODO(Mene): set once the public number is confirmed (E.164, e.g. '+14045551234'). Empty hides
-// the Text button. Add the matching TEL line to public/mene.vcf at the same time.
-const SMS_NUMBER = '';
+// Public number confirmed by Mene 2026-09-29 (toll-free main line, also the vCard TEL). Empty hides
+// the Text button.
+const SMS_NUMBER = '+18444916867';
 const AVATAR = '/images/team/mene-headshot-v1-320.webp';
 const HEADSHOT = '/images/team/mene-headshot-v1.webp';
 const QR = '/images/qr/mene-c-qr.svg';
 
 const actionClass =
-  'flex min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg border border-white/30 bg-white/12 px-3 py-2 font-body text-[13px] font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+  'flex h-full min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg border border-white/30 bg-white/12 px-1 py-2 text-center font-body text-[13px] leading-tight font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 const ctaSecondary =
   'inline-flex min-h-12 items-center justify-center rounded-lg border-2 border-white/80 px-6 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 ---
@@ -64,7 +64,8 @@ const ctaSecondary =
         </div>
 
         <p class="mt-4 font-body text-lg leading-relaxed text-balance text-white/85 min-[600px]:text-[17px]">
-          I left the bedside to fix the part of discharge no one would claim.
+          I left bedside teaching to fix the hospital throughput problems caused by discharge
+          bottlenecks.
         </p>
 
         {/* Desktop: the QR is the primary path from a laptop to a phone, so it sits first and
@@ -91,7 +92,7 @@ const ctaSecondary =
           Tip: open in Safari for one-tap save.
         </p>
 
-        <ul class:list={['mt-4 grid gap-2', SMS_NUMBER ? 'grid-cols-[1fr_1fr_1fr_1.35fr]' : 'grid-cols-[1fr_1fr_1.35fr]']} role="list">
+        <ul class:list={['mt-4 grid gap-2', SMS_NUMBER ? 'grid-cols-4' : 'grid-cols-[1fr_1fr_1.35fr]']} role="list">
           {SMS_NUMBER && (
             <li>
               <a href={`sms:${SMS_NUMBER}`} data-action="contact_action" data-channel="sms" class={actionClass}>
@@ -141,25 +142,18 @@ const ctaSecondary =
     {/* Story: the full founder narrative, below the fold on phones */}
     <div id="story" class="mx-auto w-full max-w-[640px] px-5 pt-10 pb-16 min-[600px]:px-6 lg:mx-0 lg:max-w-none lg:px-0 lg:pt-0 lg:pb-20">
       <div class="lg:max-w-[640px] [&>section:first-child]:pt-0">
-        {/* 2 — The clinical question */}
+        {/* 2 — The story everyone knows */}
         <section class="py-8 min-[600px]:py-10">
           <div>
             <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
-              The clinical question that didn't go away
+              The story that everyone who works in a hospital knows
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
               <p>
-                I would walk into a room and find someone dressed, bag packed, sitting on the edge of a
-                made bed. Medically, they were done. There was no order left to write. They were ready to
-                go home, and they were still there the next morning, and the morning after that. Not for
-                any reason I could treat. Because someone hadn't finished the phone calls.
+                We have all walked into a room and found someone dressed, bag packed, sitting on the edge of a made bed. Clinically, their care was complete. There was no order left to write, no decisions left to be made. They were ready to go home, and they were still there hours later or the next morning. Not for any reason that depended on clinical care. Because the phone calls weren't done, and often this was because other clinical care had overwhelmed our ability to do these tasks.
               </p>
               <p>
-                The hold was always administrative. A skilled nursing facility that hadn't called back. A
-                SNF that reviewed the chart and said no. A prior auth still pending. An insurance approval
-                that never came through. Transport nobody had booked. The patient was ready and the system
-                around them was not, and the gap had nothing to do with medicine. It was coordination work
-                that simply hadn't been done by anyone.
+                The hold was always something administrative. A skilled nursing facility that hadn't called back. A SNF that reviewed the chart and said no. A payer's prior auth still pending. An insurance approval that never came through. Transport needed to be booked. The patient was ready and the system around them was not, and the blocker had nothing to do with medicine. It was coordination work that simply hadn't been done by anyone.
               </p>
             </div>
           </div>
@@ -169,27 +163,17 @@ const ctaSecondary =
         <section class="py-8 min-[600px]:py-10">
           <div>
             <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
-              From the bedside to the systems above it
+              From bedside care to the systems around it
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
               <p>
-                What made it a clinical problem, not just something I carried home, was the bed itself. A
-                bed held by a patient who is ready to leave is a bed the next person can't have. The delay
-                doesn't only sit on the person in the room. It lands on the patient downstairs, waiting on
-                a stretcher for the bed that won't open. I was watching one person's discharge friction
-                become another person's delayed care.
+                What made this a problem for the clinical team was the bed itself. A bed held by a patient who is ready to leave is a bed the next person can't use to get their care. The delay isn't only for the person in that room. It is felt in many places, and we saw it even in the patient in the ED, waiting on a stretcher for the bed that won't open. We have all watched one person's discharge delays become another person's obstacle to timely care.
               </p>
               <p>
-                When I moved into operator roles, I expected to find a team that needed fixing. Instead I
-                found the same pattern on every unit and across the whole system. Not one slow floor. A
-                structural gap, work everyone quietly assumed belonged to someone else. Nationally,
-                case-manager vacancies run around twenty percent, and the people still in the seats spend
-                much of the day on work that never needed a clinical license. You can't make an empty seat
-                more efficient. The work just isn't getting done.
+                When I moved into operator roles, I expected to find difficult and nuanced reasons why this had not been fixed. Instead I found the same pattern on every unit and across the whole system. Not one slow floor. A structural hole that led to systemic instability, work everyone quietly assumed belonged to someone else. Nationally, case-manager vacancies run around twenty percent, and the people still in the seats spend much of the day on work that never needed a clinical license. You can't make an empty seat more efficient. The work just isn't getting done.
               </p>
               <p>
-                I didn't go looking for a problem to build a company around. I lived this one, from inside
-                the room. So I left the bedside to fix the part of it no one would claim.
+                I didn't go looking for a problem to build a company around. I lived this one, from inside the room. So I left the bedside to fix the part of it no one would claim.
               </p>
             </div>
           </div>
@@ -203,26 +187,13 @@ const ctaSecondary =
             </h2>
             <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
               <p>
-                So I built what was missing at the bedside: a person to actually do the work. Metrias puts
-                a dedicated, remote, non-clinical discharge specialist onto the care team, an expeditor
-                whose only job is the coordination that holds patients in beds. The phone tag with SNFs,
-                the rejections, the prior auths, the transport, the insurance holds. Not a tool that tells
-                already-stretched staff what to do next. A person who picks up the calls and finishes
-                them, and who stays out of the clinical staff's way on purpose. That's the role I'd have
-                wanted on my floor.
+                Metrias built what was missing at the bedside: a role with the person who has the bandwidth and is optimized to do the work. We put a dedicated, remote, non-clinical discharge expeditor onto the care team, whose only job is the coordination that holds patients in beds. The phone tag with SNFs, the rejections, the prior auths, the transport, the insurance holds. Not a tool that tells already-stretched staff what to do next. A person who picks up the calls and finishes them, and who works around the clinical staff but always in sync with the team. That's the role I'd have wanted on my floor.
               </p>
               <p>
-                While the expeditor works, the software quietly records what actually happens: every call
-                placed, every SNF that says no, and where each hold lands. You get a real, structured
-                picture of where patients actually get stuck, not just what eventually got typed into a
-                chart. Most tools read what already got written down and tell staff what to do. We do the
-                work and measure the friction itself: data the EHR can't see.
+                While the expeditor works, the software quietly records what actually happens: every call placed, every SNF that says no, and where each hold lands. You get a real, structured picture of where patients actually get stuck and what moved them, not just what eventually got typed into a chart. Most tools read what already got written down and tell staff what to do. We do the work and manage the friction itself, all with the data the EHR doesn't see.
               </p>
               <p>
-                The work comes first. The data is what the work leaves behind, and over time it becomes
-                the thing the EHR never could, a map of where care actually stalls. That map is what
-                eventually tells us what to automate, because we measured it instead of guessing. The
-                person is the wedge. Everything after that follows from the work getting done.
+                Showing the work must come first. The data is what the work leaves behind, and over time it becomes the thing an EHR doesn't have, a map of where care actually stalls. That map begins to show what works and what to automate, because we measured and worked the problem with the hospital team instead of guessing. The expeditor is the wedge and what makes this solution unique. Everything after that follows from the work getting done.
               </p>
             </div>
           </div>
@@ -238,23 +209,19 @@ const ctaSecondary =
               <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
                 <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
                 <span>
-                  Building the expeditor role around the calls care teams actually dread: the hard,
-                  unglamorous coordination work, not the parts that are easy to put in a pitch.
+                  Building the expeditor role around the calls care teams actually dread: the hard, unglamorous coordination work, not the parts that are easy to put in a pitch.
                 </span>
               </li>
               <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
                 <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
                 <span>
-                  Turning the captured friction into a clear read on where patients actually get held up,
-                  the picture a hospital can't pull from its EHR.
+                  Turning the captured friction into a clear read on where patients actually get held up and what moved, the picture a hospital can't easily pull from its EHR.
                 </span>
               </li>
               <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
                 <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
                 <span>
-                  Keeping the build honest to the bedside. The deliverable is the finished work, not
-                  another piece of software that points at the problem and tells staff what to do. Out of
-                  clinical staff's way, by design.
+                  Keeping the build honest to the bedside. The deliverable is the finished work, not another piece of software that points at the problem and tells staff what to do.
                 </span>
               </li>
             </ul>

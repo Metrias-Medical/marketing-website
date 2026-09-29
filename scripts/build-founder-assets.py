@@ -11,9 +11,8 @@ Run:  python3 scripts/build-founder-assets.py        (pip install pillow segno)
 vCard notes
 - Only the PHOTO property is regenerated; every other property is carried over from the committed
   file, so edits to name/org/links are made in public/mene.vcf directly.
-- TODO(Mene): TEL is intentionally absent until the public number is confirmed. When it is, add
-  a `TEL;type=CELL;type=VOICE:+1...` line to public/mene.vcf and set SMS_NUMBER in
-  src/components/mene/FounderPage.astro so the Text button appears.
+- TEL is the public toll-free main line (confirmed 2026-09-29); it is edited directly in
+  public/mene.vcf and mirrored by SMS_NUMBER in src/components/mene/FounderPage.astro.
 - GitHub Pages cannot set Content-Disposition; the .vcf is served inline as text/x-vcard on
   purpose (iOS Safari then offers "Add to Contacts" directly instead of saving to Files).
 """
