@@ -5,6 +5,10 @@ interface Props {
   canonicalUrl?: string;
   ogImage?: string;
   ogType?: string;
+  /** Emit robots noindex (used by alias routes that duplicate a canonical page). */
+  noindex?: boolean;
+  /** Add viewport-fit=cover so env(safe-area-inset-*) resolves on notched phones. */
+  viewportFitCover?: boolean;
 }
 
 const {
@@ -13,18 +17,25 @@ const {
   canonicalUrl = Astro.url.href,
   ogImage = '/images/Metrias Medical _ Open Graph.png',
   ogType = 'website',
+  noindex = false,
+  viewportFitCover = false,
 } = Astro.props;
+
+const viewport = viewportFitCover
+  ? 'width=device-width, initial-scale=1, viewport-fit=cover'
+  : 'width=device-width, initial-scale=1';
 
 const siteName = 'Metrias Medical';
 ---
 
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content={viewport} />
 <meta name="generator" content={Astro.generator} />
 
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />

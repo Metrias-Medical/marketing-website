@@ -1,0 +1,333 @@
+---
+// Founder contact page ("tap-to-share"). Rendered at /mene and at /c/mene, the NFC/QR entry alias
+// that must preserve query params, so it serves this page instead of redirecting.
+//
+// Copy is the live page copy (VPstrategy.agent handoff 2026-06-06, GREEN-tier, QA-passed) and is
+// intentionally em-dash-free (voice choice, do not "fix").
+//
+// Layout (RM.agent feature_build handoff 2026-09-28):
+//   phone   <600px   full-bleed identity block sized to the first screen (100svh minus the 56px
+//                    logo strip); the bio starts below the fold
+//   tablet  600-1023 identity card centred (max 520px, 112px avatar); bio in a 640px column below
+//   desktop >=1024   sticky identity card left (420px) with the "scan to save" QR; bio on the right
+//
+// Assets come from scripts/build-founder-assets.py (vCard photo, 320px avatar, QR svg).
+// OPEN decisions are listed in the PR: public phone number (Text button + vCard TEL), trust strip,
+// v2 reciprocal lead capture (the existing "Leave a note" modal stays, below the fold).
+
+const LINKEDIN = 'https://www.linkedin.com/in/menedemestihas/';
+const EMAIL = 'mene@metriasmedical.com';
+// Direct calendar link on purpose: the /connect/30min stub is for off-site placements, while
+// on-page CTAs keep PostHog attribution (see astro.config.mjs).
+const BOOKING = 'https://calendar.app.google/KQK1bpNdcZxSffkDA';
+// Public number confirmed by Mene 2026-09-29 (Google Voice line, SMS-capable; also the vCard TEL).
+// Empty hides the Text button.
+const SMS_NUMBER = '+14044458820';
+const AVATAR = '/images/team/mene-headshot-v1-320.webp';
+const HEADSHOT = '/images/team/mene-headshot-v1.webp';
+const QR = '/images/qr/mene-c-qr.svg';
+
+const actionClass =
+  'flex h-full min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg border border-white/30 bg-white/12 px-1 py-2 text-center font-body text-[13px] leading-tight font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+const ctaSecondary =
+  'inline-flex min-h-12 items-center justify-center rounded-lg border-2 border-white/80 px-6 font-body text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+---
+
+<div class="bg-off-white">
+  <div class="mx-auto max-w-[1188px] lg:grid lg:grid-cols-[420px_minmax(0,1fr)] lg:items-start lg:gap-16 lg:px-8 lg:pt-10">
+    {/* Identity card: the whole first screen on phones, a card on tablet, sticky on desktop */}
+    <aside
+      class="contact-card flex flex-col bg-provider-blue-dark text-white min-[600px]:mx-auto min-[600px]:my-10 min-[600px]:w-full min-[600px]:max-w-[520px] min-[600px]:rounded-2xl min-[600px]:shadow-lg lg:sticky lg:top-8 lg:my-0 lg:max-w-[420px]"
+      aria-label="Contact card"
+    >
+      <div class="my-auto">
+        <div class="flex items-center gap-4">
+          <div class="h-[100px] w-[100px] shrink-0 rounded-full border-2 border-ai-gold p-1 min-[600px]:h-[124px] min-[600px]:w-[124px]">
+            <img
+              src={AVATAR}
+              alt="Mene Demestihas, MD"
+              width="320"
+              height="320"
+              decoding="async"
+              fetchpriority="high"
+              class="h-full w-full rounded-full object-cover"
+            />
+          </div>
+          <div class="min-w-0">
+            <h1 class="font-heading text-[1.5rem] leading-tight font-bold text-white min-[600px]:text-[1.75rem]">
+              Mene Demestihas,&nbsp;MD
+            </h1>
+            <p class="mt-1 font-body text-sm font-semibold text-ai-gold min-[600px]:text-base lg:text-sm">
+              Founder &amp; CEO, Metrias&nbsp;Medical
+            </p>
+          </div>
+        </div>
+
+        <p class="mt-4 font-body text-lg leading-relaxed text-balance text-white/85 min-[600px]:text-[17px]">
+          I left bedside teaching to fix the hospital throughput problems caused by discharge
+          bottlenecks.
+        </p>
+
+        {/* Desktop: the QR is the primary path from a laptop to a phone, so it sits first and
+            carries the gold accent; Save Contact drops to a secondary style at lg. */}
+        <div class="mt-5 hidden items-center gap-4 rounded-xl bg-white p-3 ring-2 ring-ai-gold lg:flex">
+          <img src={QR} alt="QR code that opens this page on your phone" width="148" height="148" class="h-[148px] w-[148px] shrink-0" />
+          <p class="font-body text-base font-semibold text-balance text-provider-blue">Scan to save to your phone</p>
+        </div>
+
+        {/* No download attribute on purpose: iOS Safari opens a text/x-vcard response with an
+            "Add to Contacts" sheet, which is what a card-scanner wants. download= saves it to
+            Files instead and buries the contact. GitHub Pages serves .vcf as text/x-vcard. */}
+        <a
+          href="/mene.vcf"
+          data-action="save_contact"
+          class="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-lg bg-ai-gold font-body text-base font-semibold text-provider-blue transition-colors hover:bg-ai-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:border-2 lg:border-white/80 lg:bg-transparent lg:text-white lg:hover:bg-white/10"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+          </svg>
+          Save Contact
+        </a>
+        <p id="ios-chrome-hint" class="mt-2 text-center font-body text-xs text-white/75" hidden>
+          Tip: open in Safari for one-tap save.
+        </p>
+
+        <ul class:list={['mt-4 grid gap-2', SMS_NUMBER ? 'grid-cols-4' : 'grid-cols-[1fr_1fr_1.35fr]']} role="list">
+          {SMS_NUMBER && (
+            <li>
+              <a href={`sms:${SMS_NUMBER}`} data-action="contact_action" data-channel="sms" class={actionClass}>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                </svg>
+                Text
+              </a>
+            </li>
+          )}
+          <li>
+            <a href={`mailto:${EMAIL}`} data-action="contact_action" data-channel="email" class={actionClass}>
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              Email
+            </a>
+          </li>
+          <li>
+            <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" data-action="contact_action" data-channel="linkedin" class={actionClass}>
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a href={BOOKING} target="_blank" rel="noopener noreferrer" data-action="contact_action" data-channel="calendar" class={actionClass}>
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              Book a meeting
+            </a>
+          </li>
+        </ul>
+
+      </div>
+
+      <a
+        href="#story"
+        class="mt-auto self-center rounded-lg px-5 py-3 font-body text-[15px] font-medium text-white underline-offset-4 transition-colors hover:bg-white/10 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white min-[600px]:hidden"
+      >
+        Read the story &darr;
+      </a>
+    </aside>
+
+    {/* Story: the full founder narrative, below the fold on phones */}
+    <div id="story" class="mx-auto w-full max-w-[640px] px-5 pt-10 pb-16 min-[600px]:px-6 lg:mx-0 lg:max-w-none lg:px-0 lg:pt-0 lg:pb-20">
+      <div class="lg:max-w-[640px] [&>section:first-child]:pt-0">
+        {/* 2 — The story everyone knows */}
+        <section class="py-8 min-[600px]:py-10">
+          <div>
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
+              The story that everyone who works in a hospital knows
+            </h2>
+            <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
+              <p>
+                We have all walked into a room and found someone dressed, bag packed, sitting on the edge of a made bed. Clinically, their care was complete. There was no order left to write, no decisions left to be made. They were ready to go home, and they were still there hours later or the next morning. Not for any reason that depended on clinical care. Because the phone calls weren't done, and often this was because other clinical care had overwhelmed our ability to do these tasks.
+              </p>
+              <p>
+                The hold was always something administrative. A skilled nursing facility that hadn't called back. A SNF that reviewed the chart and said no. A payer's prior auth still pending. An insurance approval that never came through. Transport needed to be booked. The patient was ready and the system around them was not, and the blocker had nothing to do with medicine. It was coordination work that simply hadn't been done by anyone.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 3 — The transition */}
+        <section class="py-8 min-[600px]:py-10">
+          <div>
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
+              From bedside care to the systems around it
+            </h2>
+            <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
+              <p>
+                What made this a problem for the clinical team was the bed itself. A bed held by a patient who is ready to leave is a bed the next person can't use to get their care. The delay isn't only for the person in that room. It is felt in many places, and we saw it even in the patient in the ED, waiting on a stretcher for the bed that won't open. We have all watched one person's discharge delays become another person's obstacle to timely care.
+              </p>
+              <p>
+                When I moved into operator roles, I expected to find difficult and nuanced reasons why this had not been fixed. Instead I found the same pattern on every unit and across the whole system. Not one slow floor. A structural hole that led to systemic instability, work everyone quietly assumed belonged to someone else. Nationally, case-manager vacancies run around twenty percent, and the people still in the seats spend much of the day on work that never needed a clinical license. You can't make an empty seat more efficient. The work just isn't getting done.
+              </p>
+              <p>
+                I didn't go looking for a problem to build a company around. I lived this one, from inside the room. So I left the bedside to fix the part of it no one would claim.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 4 — Why Metrias */}
+        <section class="py-8 min-[600px]:py-10">
+          <div>
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
+              We built the role that was missing
+            </h2>
+            <div class="mt-6 space-y-5 font-body text-lg leading-relaxed text-payer-slate">
+              <p>
+                Metrias built what was missing at the bedside: a role, and a person in it, with the bandwidth and the mandate to do the work. We put a dedicated, remote, non-clinical discharge expediter onto the care team, whose only job is the coordination that holds patients in beds. The phone tag with SNFs, the rejections, the prior auths, the transport, the insurance holds. Not a tool that tells already-stretched staff what to do next. A person who picks up the calls and finishes them, and who works around the clinical staff but always in sync with the team. That's the role I'd have wanted on my floor.
+              </p>
+              <p>
+                While the expediter works, the software quietly records what actually happens: every call placed, every SNF that says no, and where each hold lands. You get a real, structured picture of where patients actually get stuck and what moved them, not just what eventually got typed into a chart. Most tools read what already got written down and tell staff what to do. We do the work and manage the friction itself, all with the data the EHR doesn't see.
+              </p>
+              <p>
+                Showing the work must come first. The data is what the work leaves behind, and over time it becomes the thing an EHR doesn't have, a map of where care actually stalls. That map begins to show what works and what to automate, because we measured and worked the problem with the hospital team instead of guessing. The expediter is the wedge and what makes this solution unique. Everything after that follows from the work getting done.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 5 — What I'm working on now */}
+        <section class="py-8 min-[600px]:py-10">
+          <div>
+            <h2 class="font-heading text-[1.5rem] leading-tight font-bold text-balance text-provider-blue-dark min-[600px]:text-[1.625rem] lg:text-[1.5rem]">
+              What I'm working on right now
+            </h2>
+            <ul class="mt-6 space-y-4">
+              <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
+                <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+                <span>
+                  Building the expediter role around the calls care teams actually dread: the hard, unglamorous coordination work, not the parts that are easy to put in a pitch.
+                </span>
+              </li>
+              <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
+                <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+                <span>
+                  Turning the captured friction into a clear read on where patients actually get held up and what moved, the picture a hospital can't easily pull from its EHR.
+                </span>
+              </li>
+              <li class="flex gap-3 font-body text-lg leading-relaxed text-payer-slate">
+                <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+                <span>
+                  Keeping the build honest to the bedside. The deliverable is the finished work, not another piece of software that points at the problem and tells staff what to do.
+                </span>
+              </li>
+            </ul>
+          </div>
+        </section>
+        {/* Closing CTA: keeps the existing "leave a note" lead capture, below the fold */}
+        <section class="mt-6 rounded-2xl bg-provider-blue-dark px-6 py-8 text-center text-white">
+          <h2 class="font-heading text-[1.75rem] leading-tight font-bold">Reach me directly</h2>
+          <p class="mx-auto mt-3 max-w-md font-body text-base text-white/80">
+            Scanned my card, or found me on LinkedIn? Save my details, or leave a note and I'll get
+            back to you.
+          </p>
+          <div class="mt-6 flex flex-col items-center justify-center gap-3 min-[600px]:flex-row">
+            <a href="/mene.vcf" data-action="save_contact" class={ctaSecondary}>Save my contact</a>
+            <button type="button" data-lead-trigger data-lead-intent="mene" class={ctaSecondary}>
+              Leave a note
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Phone first screen: fill the viewport below the 56px logo strip, honour notch/home-bar insets.
+     svh (not vh) so the mobile URL bar never pushes the action row off screen. */
+  .contact-card {
+    min-height: calc(100svh - 3.5rem);
+    padding: 1.25rem;
+    padding-top: clamp(1.5rem, 7svh, 4rem);
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    overflow-x: clip;
+  }
+  @media (min-width: 600px) {
+    .contact-card {
+      min-height: 0;
+      padding: 2rem;
+    }
+  }
+</style>
+
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Mene Demestihas',
+    jobTitle: 'Founder & CEO',
+    email: EMAIL,
+    image: `https://www.metriasmedical.com${HEADSHOT}`,
+    url: 'https://www.metriasmedical.com/mene',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Metrias Medical',
+      url: 'https://www.metriasmedical.com',
+    },
+    sameAs: [LINKEDIN],
+  })}
+/>
+
+{/* PostHog (existing site install, BaseLayout). New events per the tap-to-share spec:
+    save_contact_click and contact_action_click {channel}, both carrying the landing UTMs.
+    The legacy mene_vcard_saved / mene_page_cta_clicked events keep firing so existing insights
+    stay intact. Successful form submits are captured server-side by the lead Worker. */}
+<script is:inline>
+  (function () {
+    if (/CriOS/.test(navigator.userAgent || '')) {
+      var hint = document.getElementById('ios-chrome-hint');
+      if (hint) hint.hidden = false;
+    }
+    function attribution() {
+      var q = new URLSearchParams(location.search);
+      var out = { landing_path: location.pathname };
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+        out[k] = q.get(k) || null;
+      });
+      try {
+        var first = JSON.parse(sessionStorage.getItem('mm_first_touch') || 'null');
+        if (first) {
+          Object.keys(first).forEach(function (k) {
+            if (k.indexOf('utm_') === 0 && first[k] && !out[k]) out['first_touch_' + k] = first[k];
+          });
+        }
+      } catch (e) {}
+      return out;
+    }
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest || !window.posthog) return;
+      var el = t.closest('[data-action]');
+      if (el) {
+        var kind = el.getAttribute('data-action');
+        var props = attribution();
+        if (kind === 'save_contact') {
+          window.posthog.capture('save_contact_click', props);
+          window.posthog.capture('mene_vcard_saved');
+        } else if (kind === 'contact_action') {
+          props.channel = el.getAttribute('data-channel');
+          window.posthog.capture('contact_action_click', props);
+        }
+      }
+      if (t.closest('[data-lead-trigger]')) window.posthog.capture('mene_page_cta_clicked');
+    });
+  })();
+</script>

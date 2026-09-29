@@ -1,0 +1,25 @@
+---
+// Slim logo strip (56px) for the founder contact page, where the first phone screen has to fit
+// the identity card, Save Contact and the action row inside 100svh. Static (not fixed) so the
+// page can size its first screen as calc(100svh - 3.5rem). All other pages keep <Navbar />.
+---
+
+<header class="h-14 border-b border-border-gray bg-white">
+  <div class="mx-auto flex h-full max-w-[1188px] items-center justify-between px-5 min-[600px]:max-w-[640px] min-[600px]:px-6 lg:max-w-[1188px] lg:px-8">
+    <a href="/" class="shrink-0" aria-label="Metrias Medical home">
+      <img
+        src="/images/Metrias Medical _ Stacled-edge-OG.png"
+        alt="Metrias Medical"
+        width="90"
+        height="36"
+        class="h-9 w-auto"
+      />
+    </a>
+    <a
+      href="/about"
+      class="font-body text-sm font-semibold text-payer-slate transition-colors hover:text-provider-blue"
+    >
+      About Metrias &rarr;
+    </a>
+  </div>
+</header>

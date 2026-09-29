@@ -1,0 +1,18 @@
+---
+// /c/mene: the NFC / QR entry point for the founder contact page. Serves the same page as /mene
+// (canonical) rather than redirecting, so utm_* query params survive for PostHog and the lead
+// Worker's first-touch capture. noindex keeps the alias out of search results.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FounderPage from '../../components/mene/FounderPage.astro';
+---
+
+<BaseLayout
+  title="Mene Demestihas — Founder of Metrias Medical | Metrias Medical"
+  description="Physician, operator, founder of Metrias Medical. The story of why Metrias exists and what we're solving in hospital discharge coordination."
+  canonicalUrl="https://www.metriasmedical.com/mene"
+  noindex
+  compactHeader
+  viewportFitCover
+>
+  <FounderPage />
+</BaseLayout>
