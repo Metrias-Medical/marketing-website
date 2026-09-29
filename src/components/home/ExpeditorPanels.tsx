@@ -11,7 +11,7 @@ const panels: PanelData[] = [
   {
     title: 'Real people handling the work that matters',
     description:
-      'Our remote expeditors integrate with your discharge team, handling insurance verifications, prior authorizations, DME coordination, and facility placements — so your clinical staff can focus on patient care.',
+      'Our remote expediters integrate with your discharge team, handling insurance verifications, prior authorizations, DME coordination, and facility placements — so your clinical staff can focus on patient care.',
     image: '/images/Gemini_Generated_Image_ (2).png',
     imagePosition: 'center center',
   },
@@ -50,7 +50,7 @@ export default function ExpeditorPanels() {
           className="mt-6 max-w-3xl text-[32px] leading-tight font-bold text-black md:text-[44px] md:leading-tight"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          Expeditor bandwidth on demand.
+          Expediter bandwidth on demand.
         </h2>
 
         <div className="mt-16 flex flex-col gap-6 md:flex-row">
