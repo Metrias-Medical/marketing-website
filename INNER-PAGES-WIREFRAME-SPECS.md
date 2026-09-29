@@ -64,7 +64,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 
 1. **Add skip-to-content link** in BaseLayout before Navbar: `<a href="#main-content" class="sr-only focus:not-sr-only ...">Skip to content</a>` and add `id="main-content"` to `<main>`.
 2. **Add Manrope Bold (700)** woff2 font-face to global.css for completeness.
-3. **ExpeditorPanels mobile fallback:** Show description text always-visible on screens below `md` breakpoint (remove hover dependency).
+3. **ExpediterPanels mobile fallback:** Show description text always-visible on screens below `md` breakpoint (remove hover dependency).
 
 ---
 
@@ -79,7 +79,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 #### 1.1 PageHero
 - **Badge:** "For Hospitals" (PATIENT_MOSS bg, white text)
 - **Heading:** "Discharge delays are costing you millions. We fix that." (text-h1, white)
-- **Subtitle:** "Metrias deploys remote discharge expeditors backed by AI — reducing excess length of stay, recovering lost revenue, and freeing your clinical staff." (text-body, white/80)
+- **Subtitle:** "Metrias deploys remote discharge expediters backed by AI — reducing excess length of stay, recovering lost revenue, and freeing your clinical staff." (text-body, white/80)
 - **CTA:** "See How It Works" → scrolls to section 1.3
 - **BG:** PROVIDER_BLUE_DARK solid
 
@@ -95,7 +95,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 #### 1.3 How It Works (3-step flow)
 - **Layout:** Horizontal 3-step process with connecting line/arrows
 - **Steps:**
-  1. Icon: 📋 | "We embed" | "Remote discharge expeditors integrate into your EHR and rounding workflows — no onsite FTEs required."
+  1. Icon: 📋 | "We embed" | "Remote discharge expediters integrate into your EHR and rounding workflows — no onsite FTEs required."
   2. Icon: ⚡ | "AI accelerates" | "Our platform learns from every discharge, identifies bottlenecks in real-time, and prioritizes the highest-impact actions."
   3. Icon: 📈 | "You see results" | "Reduced LOS, faster throughput, recovered revenue — measurable within the first 30 days."
 - **Design:** Each step is a card with number badge (1/2/3 in PROVIDER_BLUE circle), icon, title (text-h4, DM Sans), description (text-body-sm, Manrope). Connected by a thin line (BORDER_GRAY) between cards.
@@ -111,7 +111,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 #### 1.5 What You Get (FeatureGrid 2x2)
 - **Heading:** "What your team gets"
 - **Grid items:**
-  1. "Dedicated Expeditors" — Remote discharge specialists trained on your protocols
+  1. "Dedicated Expediters" — Remote discharge specialists trained on your protocols
   2. "Real-Time Dashboard" — Live bottleneck visibility across all units
   3. "EHR Integration" — Works with Epic, Cerner, Meditech — no IT project required
   4. "Monthly ROI Reports" — Transparent metrics showing financial and operational impact
@@ -143,7 +143,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 #### 2.1 PageHero
 - **Badge:** "For Investors" (AI_GOLD bg, BLACK text)
 - **Heading:** "The $49B discharge delay problem has a solution." (text-h1, white)
-- **Subtitle:** "Metrias Medical is building the operating system for hospital discharge operations — starting with remote expeditors powered by AI." (text-body, white/80)
+- **Subtitle:** "Metrias Medical is building the operating system for hospital discharge operations — starting with remote expediters powered by AI." (text-body, white/80)
 - **CTA:** "Request Data Room Access" → mailto or Calendly
 - **BG:** PROVIDER_BLUE_DARK
 
@@ -160,7 +160,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 - **Layout:** Left text, right: simple timeline or Mermaid-rendered visual
 - **Heading:** "Three forces converging"
 - **Content (3 items, NOT a bullet list — use numbered blocks):**
-  1. **Staffing crisis** — Hospitals can't hire enough case managers. Remote expeditors solve the labor gap.
+  1. **Staffing crisis** — Hospitals can't hire enough case managers. Remote expediters solve the labor gap.
   2. **AI inflection** — LLMs can now parse clinical documentation and recommend next-best-action in discharge workflows.
   3. **Value-based care pressure** — CMS penalties for readmissions and excess LOS make discharge optimization a P&L priority, not a nice-to-have.
 - **BG:** WHITE
@@ -257,7 +257,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 #### 4.1 PageHero
 - **Badge:** "Product" (PROVIDER_BLUE bg, white text)
 - **Heading:** "The discharge operations platform." (text-h1, white)
-- **Subtitle:** "Remote expeditors + AI intelligence + real-time visibility — in one unified workflow." (text-body, white/80)
+- **Subtitle:** "Remote expediters + AI intelligence + real-time visibility — in one unified workflow." (text-body, white/80)
 - **CTA Row:** "Request Demo" (AI_GOLD) + "Client Portal Login →" (text link, white underline, links to external portal URL)
 - **BG:** PROVIDER_BLUE_DARK
 
@@ -269,7 +269,7 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
   - Title (text-h3)
   - Description (text-body-sm, 3-4 lines)
 - **Cards:**
-  1. 🧑‍⚕️ "Remote Expeditors" — "Trained discharge specialists work remotely inside your EHR, handling the administrative work that bogs down your nurses and case managers."
+  1. 🧑‍⚕️ "Remote Expediters" — "Trained discharge specialists work remotely inside your EHR, handling the administrative work that bogs down your nurses and case managers."
   2. 🤖 "AI Engine" — "Our platform learns from every discharge — identifying patterns, predicting bottlenecks, and recommending the next-best-action for each patient."
   3. 📊 "Live Dashboard" — "Real-time visibility into discharge status, bottleneck hotspots, and throughput metrics — accessible to your ops team 24/7."
 - **BG:** OFF_WHITE
@@ -280,8 +280,8 @@ All sections use `py-24 lg:py-32` (section-gap-lg) by default. Container: `max-w
 - **Layout:** Vertical step flow with alternating left/right content (zigzag pattern)
 - **Steps:**
   1. "Connect" — "We integrate with your EHR and configure discharge protocols. No IT project — typically live in under 2 weeks."
-  2. "Deploy" — "Remote expeditors begin working your discharge queue, following your protocols and escalation paths."
-  3. "Learn" — "The AI layer analyzes every action, identifies delay patterns, and surfaces recommendations to expeditors and your team."
+  2. "Deploy" — "Remote expediters begin working your discharge queue, following your protocols and escalation paths."
+  3. "Learn" — "The AI layer analyzes every action, identifies delay patterns, and surfaces recommendations to expediters and your team."
   4. "Optimize" — "Monthly reviews with your ops team. Continuous protocol refinement. Measurable ROI reporting."
 - **Design:** Each step has a large step number (text-display size, AI_GOLD, 20% opacity as background decoration), a heading (text-h3), and 2-line description. Alternating: odd steps = content left + decorative right, even steps = decorative left + content right.
 - **BG:** WHITE

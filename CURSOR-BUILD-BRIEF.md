@@ -175,9 +175,9 @@ Follow 8px grid. Key spacings from Figma: 16, 24, 32, 48, 64, 80, 128px section 
   - Descriptions: DM Sans Bold 22px, white
   - Sources: Manrope Light 16px, white
 
-#### Section 5: How It Works — Expeditor Bandwidth (`10214:66978`)
+#### Section 5: How It Works — Expediter Bandwidth (`10214:66978`)
 - Tag: "Solution"
-- Heading: "Expeditor bandwidth on demand."
+- Heading: "Expediter bandwidth on demand."
 - **INTERACTION: Hover-expand panels** — Two side-by-side panels. Default: 50/50 split. On hover, hovered panel expands to 66%, other shrinks to 34%. Smooth CSS transition (~300ms ease-out) using `flex-grow` or Framer Motion `layout` prop.
   - Left panel: "Real people handling the work that matters" — image card with overlay text
   - Right panel: "AI learns from every action taken" — image card with overlay text
@@ -270,7 +270,7 @@ Follow 8px grid. Key spacings from Figma: 16, 24, 32, 48, 64, 80, 128px section 
 |-------------|---------|----------------|
 | Grainient animated background | Hero + CTA (shared) | ReactBits `<Grainient>` as React island in Astro |
 | Bounce scroll reveal | Hero → CTA transition | CSS `scroll-snap` or IntersectionObserver + CSS animation |
-| Hover-expand panels | Expeditor Bandwidth | CSS `flex-grow` transition on `:hover` with `~` sibling selector |
+| Hover-expand panels | Expediter Bandwidth | CSS `flex-grow` transition on `:hover` with `~` sibling selector |
 | Sticky navbar with scroll shadow | All pages | `position: sticky` + IntersectionObserver for shadow class |
 | Scroll-triggered fade-in | All content sections | IntersectionObserver + CSS `opacity`/`transform` transitions |
 | Video player | Product page | YouTube/Vimeo embed or `<video>` tag with custom controls |
@@ -309,7 +309,7 @@ metrias-marketing/
 │   │   ├── home/
 │   │   │   ├── HeroGrainient.tsx      # React island
 │   │   │   ├── ProblemStats.astro
-│   │   │   ├── ExpeditorPanels.tsx    # React island (hover expand)
+│   │   │   ├── ExpediterPanels.tsx    # React island (hover expand)
 │   │   │   ├── FounderSection.astro
 │   │   │   └── BottomCTA.astro
 │   │   ├── shared/
@@ -343,7 +343,7 @@ metrias-marketing/
 Export from Figma using the Figma MCP `get_design_context` tool for each section. Key images needed:
 
 - Hero background photo (healthcare worker)
-- Expeditor panel images (2)
+- Expediter panel images (2)
 - Founder/About section photo
 - Bottom CTA background (hospital hallway)
 - Team headshots (About page)
@@ -381,7 +381,7 @@ Each page needs:
 2. **SENSOCEL webapp URL** — `app.metriasmedical.com` (confirmed)
 3. **Team photos** — Mene has them. Drop into `assets/team-photos/` in the handoff folder.
 4. **Partner logos** — No hospital partners yet. Include: **Mohara**, **AWS**. Use as credibility signals. Drop SVGs/PNGs into `assets/partner-logos/`.
-5. **Job listings** — Static content. Stub two roles: **Fractional Ops Consultant** and **Pilot Expeditor**.
+5. **Job listings** — Static content. Stub two roles: **Fractional Ops Consultant** and **Pilot Expediter**.
 6. **LinkedIn embed** — Use LinkedIn API (MCP access available) to pull recent posts dynamically. Fall back to static cards with post screenshots if API rate-limits are an issue.
 7. **Analytics** — Keep PostHog + UptimeRobot (both active). No additions needed unless we want heatmaps (PostHog has this built in).
 
