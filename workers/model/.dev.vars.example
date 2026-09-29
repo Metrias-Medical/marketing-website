@@ -1,0 +1,11 @@
+# Copy to .dev.vars (gitignored) and fill in local values. Names only here, never values.
+# For local testing set EMAIL_TRANSPORT=log so the magic link prints to the wrangler console
+# instead of sending, and ALLOWED_ORIGIN=http://localhost:8787 so the link points at wrangler dev.
+EMAIL_TRANSPORT=
+ALLOWED_ORIGIN=
+ATTIO_API_TOKEN=
+POSTHOG_API_KEY=
+RESEND_API_KEY=
+CSRF_SECRET=
+SESSION_SECRET=
+ADMIN_TOKEN=

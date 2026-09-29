@@ -1,0 +1,47 @@
+name = "metrias-model"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+
+# Dedicated subdomain via Workers Custom Domain (same Path B as metrias-lead). Deploy creates the
+# proxied DNS record and edge certificate for model.metriasmedical.com and leaves the GitHub Pages
+# www and apex records untouched.
+[[routes]]
+pattern = "model.metriasmedical.com"
+custom_domain = true
+
+# KV: magic-link nonces (ml:), link tombstones (mlx:), current link per email (mlcur:), person
+# summaries (person:), revocations (revoked:), rate-limit windows (rl:), MX cache (mx:).
+# The ids below are PLACEHOLDERS. Create the namespaces and paste the printed ids:
+#   npx wrangler kv namespace create MODEL_KV
+#   npx wrangler kv namespace create MODEL_KV --preview
+[[kv_namespaces]]
+binding = "MODEL_KV"
+id = "00000000000000000000000000000000"
+preview_id = "11111111111111111111111111111111"
+
+# Static assets: the gated page, built by `npm run build:model` at the repo root into ./assets
+# (gitignored). run_worker_first sends every request through the Worker so nothing is served
+# without a valid session cookie, assets included.
+[assets]
+directory = "./assets"
+binding = "ASSETS"
+run_worker_first = true
+
+[vars]
+POSTHOG_HOST = "https://us.i.posthog.com"
+ALLOWED_ORIGIN = "https://model.metriasmedical.com"
+EMAIL_FROM = "access@metriasmedical.com"
+EMAIL_TRANSPORT = "resend"
+LINK_TTL_SECONDS = "900"
+SESSION_TTL_SECONDS = "2592000"
+
+# Secrets (NEVER commit). Set each with `npx wrangler secret put <NAME>`:
+#   ATTIO_API_TOKEN   Attio API token with people, companies and list read-write scopes
+#   POSTHOG_API_KEY   PostHog project API key (server-side capture)
+#   RESEND_API_KEY    Resend API key with sending access for the metriasmedical.com domain
+#   CSRF_SECRET       long random string (openssl rand -hex 32)
+#   SESSION_SECRET    long random string (openssl rand -hex 32); signs links and session cookies
+#   ADMIN_TOKEN       long random string (openssl rand -hex 32); guards /api/revoke
+# See docs/model-gate/RUNBOOK.md.

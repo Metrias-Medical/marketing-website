@@ -8,6 +8,8 @@
 	"scripts": {
 		"dev": "astro dev",
 		"build": "astro build",
+		"build:model": "astro build --config astro.model.config.mjs",
+		"dev:model": "astro dev --config astro.model.config.mjs --port 4322",
 		"preview": "astro preview",
 		"astro": "astro"
 	},
