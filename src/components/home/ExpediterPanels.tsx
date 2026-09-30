@@ -24,7 +24,7 @@ const panels: PanelData[] = [
   },
 ];
 
-export default function ExpeditorPanels() {
+export default function ExpediterPanels() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
