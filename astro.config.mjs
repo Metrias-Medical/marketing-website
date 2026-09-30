@@ -15,6 +15,9 @@ export default defineConfig({
     // dot.card NFC tap → founder page (2026-09-28). Own slug so taps and printed-QR scans stay
     // distinguishable in PostHog and the lead Worker (slug === utm_source; same campaign).
     '/connect/dot': '/mene?utm_source=dot&utm_medium=offline&utm_campaign=biz-card-2026',
+    // Ceramic NFC ring worn at conferences (2026-09-30). Own slug so ring taps are distinguishable
+    // from the dot.card and the printed QR (slug === utm_source; same campaign).
+    '/connect/ring': '/mene?utm_source=ring&utm_medium=offline&utm_campaign=biz-card-2026',
     // NFC token tap -> founder page (2026-09-29). Separate slug from the dot.card tap and the printed
     // card QR so each hand-off object is distinguishable in PostHog and the lead Worker's first-touch
     // fields (slug === utm_source). Same campaign so all in-person hand-offs roll up together.
