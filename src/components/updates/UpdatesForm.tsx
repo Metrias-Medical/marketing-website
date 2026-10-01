@@ -20,8 +20,8 @@ export default function UpdatesForm() {
   const csrf = useRef<string | null>(null);
   const honeypot = useRef<HTMLInputElement>(null);
 
-  async function ensureCsrf() {
-    if (csrf.current) return;
+  async function ensureCsrf(force = false) {
+    if (csrf.current && !force) return;
     try {
       const r = await fetch(LEAD_ENDPOINT, { method: 'GET' });
       if (r.ok) csrf.current = (await r.json()).csrf_token ?? null;
@@ -70,17 +70,27 @@ export default function UpdatesForm() {
     setStatus('submitting');
     await ensureCsrf();
     try {
-      const r = await fetch(LEAD_ENDPOINT, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          ...fields,
-          _csrf_token: csrf.current,
-          _honeypot: honeypot.current?.value || '',
-          _source_slug: SOURCE_SLUG,
-          ...getAttribution(),
-        }),
-      });
+      const post = () =>
+        fetch(LEAD_ENDPOINT, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            ...fields,
+            _csrf_token: csrf.current,
+            _honeypot: honeypot.current?.value || '',
+            _source_slug: SOURCE_SLUG,
+            ...getAttribution(),
+          }),
+        });
+      let r = await post();
+      // The token is fetched on mount and signed with a 2h TTL, so a tab left open past that (or a
+      // token fetch that failed on mount) submits a stale or missing token and gets a 403. The Worker
+      // checks CSRF before the rate limit, so re-issue the token once and retry instead of making the
+      // visitor reload the page.
+      if (r.status === 403) {
+        await ensureCsrf(true);
+        r = await post();
+      }
       if (r.ok) {
         const attr = getAttribution() as Record<string, string>;
         // Same client-side conversion event the modal fires, keyed on the browser's own distinct_id
