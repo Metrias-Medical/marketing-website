@@ -3,38 +3,93 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Steady state</title>
+<title>Hospital flow model</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#0a0f17}
 body{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
-#reel{display:block;height:min(calc(100vh - 48px),177.78vw);height:min(calc(100svh - 48px),177.78vw);width:min(100vw,calc((100vh - 48px)*.5625));width:min(100vw,calc((100svh - 48px)*.5625))}
-#reel.land{height:min(calc(100vh - 48px),56.25vw);height:min(calc(100svh - 48px),56.25vw);width:min(100vw,calc((100vh - 48px)*1.7778));width:min(100vw,calc((100svh - 48px)*1.7778))}
-#mode{display:flex;gap:8px;font:12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:1.5px}
-#mode button{background:none;border:1px solid var(--line);color:var(--label);padding:8px 14px;border-radius:999px;font:inherit;letter-spacing:inherit;cursor:pointer}
+#reel{display:block;height:min(calc(100vh - var(--chrome)),calc(var(--w)*1.7778));height:min(calc(100svh - var(--chrome)),calc(var(--w)*1.7778));width:min(var(--w),calc((100vh - var(--chrome))*.5625));width:min(var(--w),calc((100svh - var(--chrome))*.5625))}
+#reel.land{height:min(calc(100vh - var(--chrome)),calc(var(--w)*.5625));height:min(calc(100svh - var(--chrome)),calc(var(--w)*.5625));width:min(var(--w),calc((100vh - var(--chrome))*1.7778));width:min(var(--w),calc((100svh - var(--chrome))*1.7778))}
+#mode{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:6px min(8px,1.5vw);max-width:var(--w);font:min(12px,3.2vw)/1 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:min(1.5px,.25vw)}
+#mode button,#drawer .p button{background:none;border:1px solid var(--line);color:var(--label);padding:8px min(14px,2vw);border-radius:999px;font:inherit;letter-spacing:inherit;cursor:pointer}
+#mode .g{display:flex;align-items:center;gap:min(6px,1.2vw);padding:4px;border:1px solid var(--line);border-radius:999px}
 #mode button.on{color:var(--patient);border-color:var(--patient)}
 #mode button:focus-visible{outline:1px solid var(--patient);outline-offset:2px}
+#mode #reset,#mode #gear{padding:6px min(11px,2vw);font-size:1.3em;line-height:1;color:var(--patient);border-color:var(--patient)}
+#mode button[hidden],#drawer[hidden]{display:none}
+#mode #mbtn{color:var(--label)}#mode #mbtn.on{color:var(--metrias);border-color:var(--metrias)}
+#drawer{position:fixed;z-index:2;top:0;right:0;bottom:0;width:340px;box-sizing:border-box;overflow-y:auto;padding:12px 16px 18px;border-left:1px solid var(--line);color:var(--label);font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;cursor:default;accent-color:var(--patient)}
+@media (max-width:899px){#drawer{top:auto;left:0;width:auto;max-height:55vh;border:0;border-top:1px solid var(--line)}}
+#drawer>*{width:100%;max-width:308px;margin-left:auto;margin-right:auto;box-sizing:border-box}
+#drawer h4{margin:14px 0 4px;font:inherit;font-size:10px;letter-spacing:2px;text-align:center}
+#drawer .r{display:grid;grid-template-columns:86px minmax(0,1fr) 86px;gap:10px;align-items:center;min-height:26px}
+#drawer .r span{text-align:right;white-space:nowrap;font-size:11px}
+#drawer b{font-weight:400;color:var(--patient);text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}
+#drawer input{width:100%;min-width:0;margin:0;cursor:pointer}
+#drawer .n{font-size:10px;text-align:center}
+#ro{display:grid;grid-template-columns:auto auto auto auto;justify-content:center;gap:3px 12px;white-space:nowrap}
+#ro span{text-align:right}
+#drawer .p{display:flex;justify-content:center;gap:8px;margin-top:14px;letter-spacing:1.5px}
 #reel text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+#txt{margin:10px 0 4px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;color:var(--label);font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all;text-align:center;-webkit-user-select:text;user-select:text;cursor:text}
+#txt[hidden]{display:none}
+:root{--chrome:118px;--w:100vw}
+@media (min-width:900px){.dr{--w:calc(100vw - 340px)}.dr body{box-sizing:border-box;padding-right:340px}}
+#dash{display:grid;grid-template-columns:repeat(6,auto);gap:4px 22px;align-items:start;box-sizing:border-box;max-width:var(--w);padding:0 16px;color:var(--label);font:10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:1.2px;cursor:default}
+#dash .t{display:flex;flex-direction:column;gap:3px;min-width:0}
+#dash b{font-weight:400;font-size:17px;letter-spacing:0;color:var(--patient);font-variant-numeric:tabular-nums;white-space:nowrap}
+#dash i{font-style:normal;font-size:9px;letter-spacing:.6px;opacity:.8;white-space:nowrap}
+#dash u{text-decoration:none}#dash .o{color:var(--bed)}#dash .w{color:var(--wait)}#dash .r{color:var(--stretcher)}
+#dash #d_mt{display:none}.mt #dash #d_mt{display:flex}.mt #dash{grid-template-columns:repeat(7,auto)}#dash .m b,#dash .m span{color:var(--metrias)}
+#drawer .tg{min-width:0;padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:none;color:var(--label);font:inherit;font-size:10px;letter-spacing:.5px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drawer .tg.on{color:var(--metrias);border-color:var(--metrias)}#drawer .tg.on+b{color:var(--metrias)}
+#pop{position:fixed;z-index:4;top:0;left:0;bottom:0;width:var(--w);box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:16px;background:#0a0f1799;cursor:default}
+#pop[hidden]{display:none}
+#card{position:relative;box-sizing:border-box;width:min(100%,460px);max-height:100%;overflow-y:auto;padding:16px 18px 18px;border:1px solid var(--line);border-radius:12px;background:#0a0f17;color:var(--label);font:10px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:1.2px}
+#pt{margin:0 28px 6px 0;font:inherit;font-size:13px;letter-spacing:2px;color:var(--wait)}#pt.n{color:var(--label)}
+#ps{margin:0 0 14px;font-size:12px;line-height:1.45;letter-spacing:0}
+#pg{display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:start}#pg.c{grid-template-columns:1fr auto auto}
+#pg i{display:block;margin-top:2px;font-style:normal;font-size:9px;letter-spacing:.6px;opacity:.8}
+#pg b{display:block;font-weight:400;font-size:16px;letter-spacing:0;color:var(--patient);font-variant-numeric:tabular-nums;white-space:nowrap}
+#pg div,#pg u{text-align:right;text-decoration:none}
+#pop .m,#pop .m b{color:var(--metrias)}
+#px{position:absolute;top:8px;right:10px;padding:4px 6px;background:none;border:0;color:var(--label);font:18px/1 ui-monospace,Menlo,monospace;cursor:pointer}
+#pb{display:block;width:100%;margin-top:16px;padding:10px 12px;background:none;border:1px solid var(--line);border-radius:999px;color:var(--label);font:inherit;font-size:11px;line-height:1.35;letter-spacing:1px;cursor:pointer}#pb.m{border-color:var(--metrias)}
+@media (max-width:760px){#dash,.mt #dash{grid-template-columns:repeat(3,auto);gap:8px 18px}#dash b{font-size:15px}#pg b{font-size:14px}#pt{letter-spacing:1px}}
 </style>
 </head>
 <body>
-<div id="mode" role="group" aria-label="Mode"><button type="button" data-mode="walkthrough">WALKTHROUGH</button><button type="button" data-mode="steady">STEADY STATE</button></div>
+<div id="mode" role="group" aria-label="Mode"><span class="g"><button type="button" data-mode="walkthrough">WALKTHROUGH</button><button type="button" data-mode="steady">STEADY STATE</button></span><span class="g"><button type="button" data-mode="custom">CUSTOM</button><button type="button" id="reset" aria-label="Reset" title="Reset" hidden>&#8635;</button><button type="button" id="gear" aria-label="Controls" title="Controls" aria-expanded="false" hidden>&#9881;&#xFE0E;</button><button type="button" id="mbtn" aria-pressed="false" hidden>+ METRIAS</button></span></div>
+<div id="drawer" hidden><div id="ro"></div><div id="kn"></div><div class="p"><button type="button" id="def">DEFAULTS</button><button type="button" id="link">COPY SETTINGS</button></div><pre id="txt" hidden></pre></div>
 <svg id="reel" viewBox="0 0 1080 1920" role="img" aria-label="A hospital at steady state: patients flow from pre-hospital through the ED, beds, inpatient and discharge to post-acute while beds cycle through environmental services">
 <g id="gs"></g><g id="gb"></g><g id="gp"></g>
 <g id="play" visibility="hidden"><circle cx="540" cy="960" r="58" stroke-width="2"/><path d="M522 930L566 960L522 990Z"/></g>
 </svg>
+<div id="dash" aria-label="Dashboard">
+<div class="t"><span>TIME</span><b id="d_t">0 s</b></div>
+<div class="t"><span>PATIENTS SEEN</span><b id="d_seen">0</b><i id="d_split">0 admitted &middot; 0 home</i></div>
+<div class="t"><span>DISCHARGES</span><b id="d_out">0</b></div>
+<div class="t"><span>BEDS</span><b><u class="o" id="d_occ">0</u> &middot; <u class="w" id="d_tied">0</u> &middot; <u class="r" id="d_ready">0</u></b><i>occupied &middot; tied up &middot; ready</i></div>
+<div class="t"><span>BOARDING TIME</span><b id="d_board">0 s</b></div>
+<div class="t"><span>BED TIME LOST AT DISCHARGE</span><b id="d_lost">0 s</b></div>
+<div class="t m" id="d_mt"><span>TIME SAVED</span><b id="d_saved">0 s</b><i>+ Metrias, at discharge</i></div>
+</div>
+<div id="pop" hidden><div id="card" role="dialog" aria-modal="true" aria-labelledby="pt"><button type="button" id="px" aria-label="Close">&times;</button><h4 id="pt"></h4><p id="ps"></p><div id="pg"></div><button type="button" id="pb"></button></div></div>
 <script>
 'use strict';
 // ============================== CONFIG (edit by hand) ==============================
 // Steady-state arithmetic at these defaults:
 //   arrivals 1/3 per s; admits 0.4 x 1/3 = 0.133 per s.
 //   ED: 6 stretchers, ~5.6 s each (dwell + walk) -> ~1.9 in use, utilisation ~0.31.
-//   Bed cycle: close 0.5 + travel ~0.7 + LOS 24 + ~0.6 + discharge ~3.6 (3 hold + 0.6 slide, then both leave at once) + ~0.7 + EVS 0.4 + open 0.3 + ~0.7 ~= 31 s
+//   Bed cycle: close 0.5 + travel ~0.7 + LOS 5-15 + ~0.6 + discharge ~3.6 (3 hold + 0.6 slide, then both leave at once) + ~0.7 + EVS 0.4 + open 0.3 + ~0.7 ~= 12-22 s
 //     -> 0.133 x 40 ~= 5.4 of 9 beds busy, utilisation ~0.60 (about 3-4 clean U's waiting in BEDS on average).
-//   DISCHARGE: 2 slots x ~4.4 s -> utilisation ~0.29.  EVS: 2 slots x ~3.5 s -> ~0.23.  Nothing backs up.
+//   DISCHARGE: 2 separations x ~4.4 s -> utilisation ~0.29.  EVS: 2 slots x ~3.5 s -> ~0.23.  Nothing backs up.
+// CUSTOM (CONFIG.custom): admits 0.5 / 1.2 = 0.42 per s, but DISCHARGE separates 2 per ~15 s = 0.13 per s:
+//   squares pile up inside DISCHARGE, beds stop coming back, admit holds wait on their stretchers (amber), and
+//   arrivals queue on the way in. LOS is the same in every mode.
 const CONFIG = {
   seed: 20260927,          // RNG seed: same seed, same film
   orientation: 'auto',     // 'auto' | 'portrait' | 'landscape' (auto: aspect >= 1.2 lays the diagram out left to right in 1920 x 1080)
-  mode: 'walkthrough',     // start mode: 'walkthrough' (one patient and one bed, repeating) or 'steady' (the running hospital); the selector above the reel switches it
+  mode: 'walkthrough',     // start mode: 'walkthrough' (one patient and one bed, repeating), 'steady' (the running hospital) or 'custom' (DISCHARGE as the bottleneck; plays once, then freezes); the selector above the reel switches it
   walkthroughPause: 1.2,   // s the picture rests between walkthrough repeats
   steadyWarmup: 45,        // s of simulated time run silently before STEADY STATE is shown, so it starts already populated
   speed: 900,              // ONE travel speed for every movement, viewBox px per second (~0.5-0.8 s per leg; was 300)
@@ -42,35 +97,58 @@ const CONFIG = {
   maxFrameDt: 0.1,         // cap on real time per frame, s (tab switches never jump the film)
   stretchers: 6,           // ED stretchers (rows of 3; layout drawn for 6)
   beds: 9,                 // beds = BEDS grid positions = INPATIENT slots (rows of 3; layout drawn for 9)
-  dischargeSlots: 2,       // beds DISCHARGE can separate at once
+  dischargeSlots: 2,       // squares DISCHARGE separates at once; the rest wait in its 3 x 3 grid, dot inside
   evsSlots: 2,             // beds EVS can clean at once
+  holdShowAfter: 0.4,      // s an admit hold must have waited before its stretcher turns amber (avoids a flicker when beds are free)
+  entryQueue: 10,          // arrivals that can wait on the way in when every stretcher is taken (runs back past PRE-HOSPITAL)
   arrivalEvery: 3,         // s between arrivals at PRE-HOSPITAL
   arrivalJitter: 0.2,      // +/- fraction on each arrival gap
   edDwell: 5,              // s a patient lies on a stretcher
   edJitter: 0.2,           // +/- fraction on ED dwell
   admitProb: 0.4,          // share admitted (admit hold); the rest go home via the outer loop
-  los: 24,                 // s length of stay in INPATIENT
-  losJitter: 0.15,         // +/- fraction on LOS
+  los: 10,                 // s length of stay in INPATIENT, centre of the range
+  losJitter: 0.5,          // +/- fraction: 0.5 gives a uniform random stay of 5 to 15 s
   close: 0.5,              // s for a clean U to close around an admitted dot
   discharge: 3,            // s the full square rests in DISCHARGE with the dot still inside: the rate-limiting delay
   separateSlide: 0.6,      // s the dot takes to slide out of the square (the visible separation)
-  separateOffset: 60,      // viewBox px the dot slides down, out of the square
+  separateOffset: 44,      // viewBox px the dot slides along the flow, out of the square (was 60: that landed it inside the next grid cell)
   separateRest: 0,         // s dot and empty square rest side by side before they part (0: leave at once)
   separateGap: 0,          // s the empty square waits after the dot leaves, before heading to EVS (0: leave at once)
   evs: 0.4,                // s EVS spends on a dirty square before it opens (minimal)
   open: 0.3,               // s for the square to open back into a clean U
   intro: { start: 0.6, edDwell: 0.6, los: 1.0, discharge: 1.2, rest: 0, evs: 0.3 }, // s; one patient + one bed walk the full cycle alone (~16 s), then steady state
   stillAt: 75,             // s of simulated time shown as the still frame under prefers-reduced-motion
+  custom: {           // CUSTOM mode: these override the values above while it runs (the ⚙ drawer edits them live)
+    arrivalEvery: 0.8,     // s between arrivals
+    admitProb: 0.35,       // share admitted
+    los: 15,               // s length of stay in this mode, centre of the range (7.5 to 22.5 s with the jitter above)
+    speed: 1100,           // travel speed in this mode, viewBox px per second
+    edDwell: 3,            // s on a stretcher in this mode
+    edJitter: 0.5,         // +/- fraction on that dwell (1.5 to 4.5 s)
+    discharge: 4,          // s the full square holds in DISCHARGE with the dot still inside; congestion below makes it the bottleneck
+    warmup: 12,            // s of simulated time run silently before it is shown (from an empty hospital)
+    endAt: 600,            // s of simulated time at which it freezes, at the latest
+    endQueue: 8,           // ...or as soon as this many arrivals wait in the entry queue
+    congestAt: 3,          // squares in DISCHARGE at which a starting hold lasts congestHold instead of discharge (0: off)
+    congestHold: 6,        // s, that congested hold
+    metrias: 0,            // + Metrias (1 = on): a shorter discharge hold and more congestion tolerance, both illustrative
+    metriasHold: 0.25,     // with + Metrias on, every discharge hold is multiplied by this (0.25 = a quarter as long)
+    metriasTol: 3,         // with + Metrias on, the congested hold applies at this many times congestAt
+    separateSlide: 0.2,    // s for the dot to slide out of the square in this mode
+    seed: 11               // random seed for this mode. Runs near capacity vary a lot by seed: over seeds 1 to 10 at these defaults the freeze comes at a median ~53 s off and ~376 s with + Metrias; 11 is a hard day for + Metrias (off 60 s, on 83 s)
+  },
   labelSize: 20,           // label font size, viewBox px
   colors: {
     bg: '#0a0f17',         // near-black navy background (page + reel)
     node: '#0e141e',       // node fill, a shade above the background
     line: '#273040',       // node outlines
-    path: '#3a4557',       // dotted paths, exit slot, empty inpatient slots
+    path: '#3a4557',       // dotted paths, exit slot
     label: '#76829a',      // labels and play affordance
     stretcher: '#566378',  // ED stretcher lines
     bed: '#c3ccd8',        // beds (U / full square), pale slate
-    patient: '#74d6f4'     // patient dots, cyan glow
+    patient: '#74d6f4',    // patient dots, cyan glow
+    metrias: '#b39dff',    // violet: the + Metrias toggle and the TIME SAVED tile
+    wait: '#f2b866'        // amber: waiting. An INPATIENT slot whose bed is tied up, or a stretcher holding an admitted patient
   },
   labels: { pre: 'PRE-HOSPITAL', ed: 'ED', beds: 'BEDS', ip: 'INPATIENT', dc: 'DISCHARGE', evs: 'ENVIRONMENTAL SERVICES', pa: 'POST-ACUTE' } // exactly these seven
 };
@@ -78,46 +156,54 @@ const CONFIG = {
 
 const C = CONFIG.colors, NS = 'http://www.w3.org/2000/svg', STEP = 1 / CONFIG.stepHz, S = 44, HS = S / 2, PERIM = 4 * S;
 document.documentElement.style.background = document.body.style.background = C.bg;
-for (const k of ['line', 'label', 'patient']) document.documentElement.style.setProperty('--' + k, C[k]);
+for (const k of ['line', 'label', 'patient', 'bed', 'wait', 'stretcher', 'metrias']) document.documentElement.style.setProperty('--' + k, C[k]);
 
 // ---- layouts: PORTRAIT (viewBox 1080 x 1920, top to bottom) and LANDSCAPE (1920 x 1080, left to right) ----
 // grids [cx, y0, px, py, cols]; rows [cx, cy, dx, dy]; at = entry points (slots fill nearest-first)
 const PORTRAIT = { vb: [1080, 1920], flow: [0, 1],
   box: { pre: [340, 150, 400, 130, 'top'], ed: [340, 370, 400, 300], beds: [340, 790, 400, 260],
-    evs: [64, 1000, 240, 270], ip: [776, 1000, 240, 270], dc: [340, 1200, 400, 250], pa: [340, 1580, 400, 150, 'bottom'] },
+    evs: [64, 1000, 240, 270], ip: [770, 1000, 260, 260], dc: [340, 1200, 400, 250], pa: [340, 1580, 400, 150, 'bottom'] },
   paths: { in: 'M540 -30V370', home: 'M340 640H300L40 900V1440L130 1530H460L510 1580L540 1610', admit: 'M540 670V790',
     b2ip: 'M740 932H990V1000', ip2dc: 'M896 1270V1340H740', dc2evs: 'M340 1340H161V1270', evs2b: 'M276 1000V932H340', dc2pa: 'M540 1450V1960' },
-  str: [540, 465, 72, 78, 3], exit: [540, 633], cell: [540, 870, 62, 62, 3], ips: [876, 1084, 62, 62, 3], dcs: [540, 1320, 68, 0], evs: [161, 1176, 70, 0],
+  str: [540, 465, 72, 78, 3], exit: [540, 633], cell: [540, 870, 62, 62, 3], ips: [900, 1068, 62, 62, 3], evs: [161, 1176, 70, 0],
   at: { str: [540, 370], cell: [540, 790], ip: [990, 1046], dc: [740, 1340], evs: [161, 1270] },
   ipIn: [990, 1046], homeEnd: [540, 1960], evsOut: e => [276, e[1]], dcOut: (b, p) => [p.x, b.y + 74] };
 const LANDSCAPE = { vb: [1920, 1080], flow: [1, 0],
   // Main row keeps the tall boxes; INPATIENT (above) and EVS (below) are wide and short, so the bed
   // cycle runs clockwise: BEDS -> up to INPATIENT -> down into DISCHARGE -> down to EVS -> up into BEDS.
   box: { pre: [110, 340, 200, 400, 'left'], ed: [370, 340, 300, 400], beds: [790, 340, 260, 400],
-    ip: [880, 64, 500, 236], evs: [880, 780, 500, 236], dc: [1200, 340, 250, 400], pa: [1580, 340, 200, 400, 'right'] },
-  paths: { in: 'M-30 540H370', home: 'M640 340V300L900 40H1440L1530 130V460L1580 510L1610 540', admit: 'M670 540H790',
-    b2ip: 'M932 340V300', ip2dc: 'M1330 300V340', dc2evs: 'M1330 740V780', evs2b: 'M932 780V740', dc2pa: 'M1450 540H1960' },
-  str: [504, 468, 78, 72, 2], exit: [633, 540], cell: [932, 478, 62, 62, 3], ips: [1130, 150, 62, 62, 3], dcs: [1320, 540, 0, 68], evs: [1000, 900, 70, 0],
-  at: { str: [370, 540], cell: [790, 540], ip: [932, 300], dc: [1330, 340], evs: [1330, 780] },
-  ipIn: [932, 300], homeEnd: [1960, 540], evsOut: e => [e[0], 780], dcOut: (b, p) => [b.x + 74, p.y] };
+    ip: [1000, 40, 260, 260], evs: [880, 780, 500, 236], dc: [1200, 340, 250, 400], pa: [1580, 340, 200, 400, 'right'] },
+  paths: { in: 'M-30 540H370', home: 'M640 340V300L900 20H1440L1530 110V460L1580 510L1610 540', admit: 'M670 540H790',
+    b2ip: 'M1030 340V300', ip2dc: 'M1230 300V340', dc2evs: 'M1330 740V780', evs2b: 'M932 780V740', dc2pa: 'M1450 540H1960' },
+  str: [504, 468, 78, 72, 2], exit: [633, 540], cell: [932, 478, 62, 62, 3], ips: [1130, 108, 62, 62, 3], evs: [1000, 900, 70, 0],
+  at: { str: [370, 540], cell: [790, 540], ip: [1030, 300], dc: [1230, 340], evs: [1330, 780] },
+  ipIn: [1030, 300], homeEnd: [1960, 540], evsOut: e => [e[0], 780], dcOut: (b, p) => [b.x + 74, p.y] };
 const pickLayout = () => { const o = CONFIG.orientation; return o === 'landscape' || (o !== 'portrait' && innerWidth / innerHeight >= 1.2) ? LANDSCAPE : PORTRAIT; };
 const grid = (n, [cx, y0, px, py, c]) => Array.from({ length: n }, (_, i) => [cx + (i % c - (c - 1) / 2) * px, y0 + Math.floor(i / c) * py]);
 const row = (n, [cx, cy, dx, dy]) => Array.from({ length: n }, (_, i) => { const o = i - (n - 1) / 2; return [cx + o * dx, cy + o * dy]; });
 const order = (pts, [x, y]) => pts.map((p, i) => [Math.hypot(p[0] - x, p[1] - y), i]).sort((a, b) => a[0] - b[0]).map(a => a[1]);
+// n queue places `gap` apart, stepping straight back from a sampled path's end against its final segment
+// (first one gap/2 out), past the path's start and off-frame if need be
+function lineBack(pts, n, gap) {
+  const e = pts[pts.length - 1], f = pts[pts.length - 2], l = Math.hypot(f[0] - e[0], f[1] - e[1]);
+  return Array.from({ length: n }, (_, i) => [e[0] + (f[0] - e[0]) / l * gap * (i + .5), e[1] + (f[1] - e[1]) / l * gap * (i + .5)]);
+}
 const reel = document.getElementById('reel'), play = document.getElementById('play');
 play.firstChild.setAttribute('fill', C.bg); play.firstChild.setAttribute('fill-opacity', '.85'); play.firstChild.setAttribute('stroke', C.label);
 play.lastChild.setAttribute('fill', C.label);
-let L, STR, EXIT, CELL, IPS, DCS, EVS, O_STR, O_CELL, O_IP, O_DC, O_EVS, IPEL, PTS;
+let L, STR, EXIT, CELL, IPS, DCS, EVS, O_STR, O_CELL, O_IP, O_DC, O_EVS, IPEL, STREL, SLOOK, PTS, EQ;
 const LS = CONFIG.labelSize, CW = LS * 0.6 + 1;
 
 // ---- static drawing + sampled paths + position grids, from the chosen layout ----
 function build(lay) {
   L = lay;
   STR = grid(CONFIG.stretchers, L.str);    // dot positions on stretchers (line 13 px below)
-  EXIT = L.exit;                           // ED exit slot (admit hold)
+  EXIT = L.exit;                           // where admitted patients leave the ED (a waypoint, not drawn)
   CELL = grid(CONFIG.beds, L.cell);        // BEDS positions
   IPS = grid(CONFIG.beds, L.ips);          // INPATIENT slots
-  DCS = row(CONFIG.dischargeSlots, L.dcs); EVS = row(CONFIG.evsSlots, L.evs);
+  const [dx, dy, dw, dh] = L.box.dc;
+  DCS = grid(9, [dx + dw / 2, dy + dh / 2 - 62, 62, 62, 3]);   // DISCHARGE: 3 x 3 waiting grid centred in the box
+  EVS = row(CONFIG.evsSlots, L.evs);
   O_STR = order(STR, L.at.str); O_CELL = order(CELL, L.at.cell); O_IP = order(IPS, L.at.ip); O_DC = order(DCS, L.at.dc); O_EVS = order(EVS, L.at.evs);
   const land = L === LANDSCAPE;
   reel.setAttribute('viewBox', '0 0 ' + L.vb.join(' ')); reel.classList.toggle('land', land);
@@ -130,17 +216,20 @@ function build(lay) {
       : open === 'bottom' ? `<path d="M${x} ${yb}V${y + r}Q${x} ${y} ${x + r} ${y}H${xr - r}Q${xr} ${y} ${xr} ${y + r}V${yb}"`
       : open === 'left' ? `<path d="M${x} ${y}H${xr - r}Q${xr} ${y} ${xr} ${y + r}V${yb - r}Q${xr} ${yb} ${xr - r} ${yb}H${x}"`
       : open === 'right' ? `<path d="M${xr} ${y}H${x + r}Q${x} ${y} ${x} ${y + r}V${yb - r}Q${x} ${yb} ${x + r} ${yb}H${xr}"`
-      : `<rect x="${x}" y="${y}" width="${w}" height="${bh}" rx="${r}"`;
+      : `<rect id="box_${k}" x="${x}" y="${y}" width="${w}" height="${bh}" rx="${r}"`;
     h += ` fill="${C.node}" stroke="${C.line}" stroke-width="2"/>`;
     const t = CONFIG.labels[k], lines = t.length * CW > w - 28 ? t.split(' ') : [t];
     h += `<text y="${y + 30}" font-size="${LS}" letter-spacing="1" fill="${C.label}">` + lines.map((l, i) => `<tspan x="${x + 14}" dy="${i ? LS * 1.3 : 0}">${l}</tspan>`).join('') + '</text>';
   }
   for (const k in L.paths) h += `<path id="p_${k}" d="${L.paths[k]}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 10"/>`;
-  for (const [x, y] of STR) h += `<line x1="${x - 24}" y1="${y + 13}" x2="${x + 24}" y2="${y + 13}" stroke="${C.stretcher}" stroke-width="3" stroke-linecap="round"/>`;
-  h += `<line x1="${EXIT[0] - 24}" y1="${EXIT[1] + 13}" x2="${EXIT[0] + 24}" y2="${EXIT[1] + 13}" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
-  for (const [x, y] of IPS) h += `<rect class="ips" x="${x - HS}" y="${y - HS}" width="${S}" height="${S}" fill="none" stroke="${C.path}" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 8"/>`;
+  for (const [x, y] of STR) h += `<line class="str" x1="${x - 24}" y1="${y + 13}" x2="${x + 24}" y2="${y + 13}" stroke="${C.stretcher}" stroke-width="3" stroke-linecap="round"/>`;
+  for (const [x, y] of IPS) h += `<g class="ips" transform="translate(${x} ${y})">` +          // one home slot per bed
+    `<path d="M${-HS} ${-HS}V${HS}H${HS}V${-HS}" fill="none" stroke="${C.stretcher}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>` +   // available: a U ghost
+    `<g visibility="hidden"><rect x="${-HS}" y="${-HS}" width="${S}" height="${S}" fill="${C.wait}" fill-opacity=".1" stroke="${C.wait}" stroke-width="3" stroke-opacity=".8"/>` +
+    `<path d="M${-HS} ${HS}L${HS} ${-HS}" stroke="${C.wait}" stroke-width="3" stroke-opacity=".8"/></g></g>`;   // unavailable: amber, slashed
   document.getElementById('gs').innerHTML = h;
   IPEL = [...document.querySelectorAll('.ips')];
+  STREL = [...document.querySelectorAll('.str')]; SLOOK = STREL.map(() => 0);
   // sample every path once with getPointAtLength; movement walks these polylines at one speed
   PTS = {};
   for (const k in L.paths) {
@@ -148,6 +237,8 @@ function build(lay) {
     for (let i = 0; i <= n; i++) { const q = el.getPointAtLength(len * i / n); a.push([q.x, q.y]); }
     PTS[k] = a;
   }
+  // entry queue, derived from the sampled path (same code for both layouts)
+  EQ = lineBack(PTS.in, CONFIG.entryQueue, 55);             // arrivals waiting on the way in, head at the ED entrance
 }
 build(pickLayout());
 
@@ -162,21 +253,28 @@ const GB = document.getElementById('gb'), GP = document.getElementById('gp');
 const P = Array.from({ length: 48 }, () => {
   const el = mk('g', { visibility: 'hidden' }, GP);
   mk('circle', { r: 20, fill: 'url(#gl)' }, el); mk('circle', { r: 7, fill: C.patient }, el);
-  return { el, on: false, x: 0, y: -99, st: '', t: 0, mv: null, bed: null, s: -1, admit: false, rx: NaN, ry: NaN, ro: NaN };
+  return { el, on: false, x: 0, y: -99, st: '', t: 0, mv: null, bed: null, s: -1, qi: -1, t0: 0, admit: false, rx: NaN, ry: NaN, ro: NaN };
 });
 const BED_D = `M0 ${-HS}H${HS}V${HS}H${-HS}V${-HS}Z`;
 const cell = new Array(CELL.length).fill(null), ipSlot = new Array(IPS.length).fill(null),
   dcSlot = new Array(DCS.length).fill(null), evsSlot = new Array(EVS.length).fill(null), stretch = new Array(STR.length).fill(null);
-let exitSlot = null;
+const eq = new Array(CONFIG.entryQueue).fill(null);
 const B = Array.from({ length: CONFIG.beds }, (_, i) => {
   const c = O_CELL[i];
   const b = { el: mk('path', { d: BED_D, fill: 'none', stroke: C.bed, 'stroke-width': 3 }, GB), x: CELL[c][0], y: CELL[c][1],
-    st: 'clean', since: i - 1e3, k: 0, t: 0, mv: null, cell: c, ip: -1, dc: -1, ev: -1, pt: null, rx: NaN, ry: NaN, rk: NaN };
+    st: 'clean', since: i - 1e3, k: 0, t: 0, mv: null, cell: c, ip: -1, dc: -1, ev: -1, pt: null, home: O_IP[i], rx: NaN, ry: NaN, rk: NaN, rl: NaN };
   cell[c] = b; return b;
 });
+// A bed's home slot in INPATIENT shows its state: occupied (the square is there), available (U ghost), or
+// unavailable while the bed is tied up in DISCHARGE or EVS (amber, slashed).
+const TIED = new Set(['toDC', 'dcWait', 'dc', 'sliding', 'resting', 'sep', 'toEVS', 'evs', 'opening']);
+const slotLook = b => b.st === 'ip' ? 0 : TIED.has(b.st) ? 2 : 1;
 const firstFree = (arr, ord) => { for (const i of ord) if (!arr[i]) return i; return -1; };
+const nop = () => {};
+const tail = (q, n) => { let i = q.length; while (i && !q[i - 1]) i--; return i < Math.min(n, q.length) ? i : -1; };   // join behind the last one waiting
+const shift = (q, pos) => { for (let i = 0; i + 1 < q.length; i++) { const e = q[i + 1]; if (!q[i] && e && !e.mv) { q[i] = e; q[i + 1] = null; e.qi = i; go(e, [pos[i]], nop); } } }; // step up into a gap
 
-// ---- movement: polyline at CONFIG.speed ----
+// ---- movement: polyline at K.speed (read every step, so a change applies to everything in motion) ----
 function go(e, parts, done) {
   const pts = [[e.x, e.y]];
   for (const p of parts) if (typeof p === 'string') pts.push(...PTS[p]); else pts.push(p);
@@ -186,7 +284,7 @@ function go(e, parts, done) {
 }
 function advance(e, dt) {
   const m = e.mv, L = m.cum[m.cum.length - 1];
-  m.d += CONFIG.speed * dt;
+  m.d += K.speed * dt;
   if (m.d >= L) { const p = m.pts[m.pts.length - 1]; e.x = p[0]; e.y = p[1]; e.mv = null; m.done(); return; }
   while (m.cum[m.i + 1] < m.d) m.i++;
   const a = m.pts[m.i], b = m.pts[m.i + 1], s = m.cum[m.i + 1] - m.cum[m.i], t = s ? (m.d - m.cum[m.i]) / s : 0;
@@ -194,36 +292,43 @@ function advance(e, dt) {
 }
 
 // ---- simulation ----
-let T = 0, phase = 'intro', introSpawned = false, nextArr = 0, repeatAt = null;
+const DASH = { t0: 0, seen: 0, adm: 0, home: 0, out: 0, board: 0, lost: 0, saved: 0, cong: 0, door: 0 };   // the strip under the reel, plus two counts for the end-of-run breakdown
+let T = 0, phase = 'intro', introSpawned = false, nextArr = 0, repeatAt = null, K = CONFIG, head = null, ended = false, warming = false, arrived = 0, dischd = 0; // K: CONFIG with the mode's overrides
 const intro = () => phase === 'intro';
 
 function spawn(forceAdmit) {
-  const s = firstFree(stretch, O_STR), p = P.find(q => !q.on);
-  if (s < 0 || !p) return false;
-  stretch[s] = p;
-  Object.assign(p, { on: true, x: PTS.in[0][0], y: PTS.in[0][1], s, bed: null, st: 'toED', admit: forceAdmit || rng() < CONFIG.admitProb, rx: NaN, ro: NaN });
+  const s = eq.some(Boolean) ? -1 : firstFree(stretch, O_STR), q = s < 0 ? tail(eq, K.entryQueue) : -1, p = P.find(e => !e.on);
+  if ((s < 0 && q < 0) || !p) return false;
+  arrived++; Object.assign(p, { on: true, x: PTS.in[0][0], y: PTS.in[0][1], s: -1, qi: -1, bed: null, admit: forceAdmit || rng() < K.admitProb, rx: NaN, ro: NaN });
   p.el.setAttribute('visibility', 'visible');
-  go(p, ['in', STR[s]], () => { p.st = 'ed'; p.t = intro() ? CONFIG.intro.edDwell : CONFIG.edDwell * jit(CONFIG.edJitter); });
+  if (s >= 0) toED(p, s, ['in', STR[s]]);
+  else { if (!DASH.door) DASH.door = T; eq[q] = p; p.qi = q; p.st = 'eq'; go(p, [EQ[q]], nop); }   // every stretcher taken: waits on the way in (door: when the first one did)
   return true;
+}
+function toED(p, s, route) {
+  stretch[s] = p; p.s = s; p.st = 'toED'; DASH.seen++; p.admit ? DASH.adm++ : DASH.home++;
+  go(p, route, () => { p.st = 'ed'; p.t = intro() ? CONFIG.intro.edDwell : K.edDwell * jit(K.edJitter); });
 }
 function release(p) { p.on = false; p.st = ''; p.el.setAttribute('visibility', 'hidden'); }
 
 function upPatient(p, dt) {
   if (p.mv) advance(p, dt);
-  if (p.st === 'ed') {
+  if (p.st === 'eq') {                                 // entry queue: the head takes the next free stretcher
+    const s = p.mv || p.qi ? -1 : firstFree(stretch, O_STR);
+    if (s >= 0) { eq[0] = null; p.qi = -1; toED(p, s, [L.at.str, STR[s]]); }
+  } else if (p.st === 'ed') {
     p.t -= dt;
     if (p.t > 0) return;
     if (!p.admit) {                                    // treat-and-release: outer loop to POST-ACUTE
       stretch[p.s] = null; p.st = 'out'; go(p, ['home', L.homeEnd], () => release(p));
-    } else if (!exitSlot) {                            // admit hold: take the single exit slot
-      stretch[p.s] = null; exitSlot = p; p.st = 'toSlot'; go(p, [EXIT], () => { p.st = 'hold'; });
-    }                                                  // else: stays on its stretcher until the slot frees
-  } else if (p.st === 'hold') {                        // traverse ED -> BEDS only when a clean U is free
+    } else { p.st = 'hold'; p.t0 = T; }                // admit hold: stays on its stretcher (drawn amber) until a bed is free
+  } else if (p.st === 'hold') {                        // the longest-waiting hold traverses ED -> BEDS only when a clean U is free
+    if (p !== head) return;
     let b = null;
     for (const q of B) if (q.st === 'clean' && (!b || q.since < b.since)) b = q;
     if (!b) return;
-    b.st = 'reserved'; exitSlot = null; p.bed = b; p.st = 'toBed';
-    go(p, ['admit', [b.x, b.y]], () => { p.st = 'ride'; b.pt = p; b.st = 'closing'; });
+    b.st = 'reserved'; stretch[p.s] = null; head = null; p.bed = b; p.st = 'toBed';
+    go(p, [EXIT, 'admit', [b.x, b.y]], () => { p.st = 'ride'; b.pt = p; b.st = 'closing'; });
   } else if (p.st === 'ride') { p.x = p.bed.x; p.y = p.bed.y; }
 }
 
@@ -231,19 +336,19 @@ function upBed(b, dt) {
   if (b.mv) advance(b, dt);
   switch (b.st) {
     case 'closing': {                                  // U closes into a full square around the dot
-      b.k = Math.min(1, b.k + dt / CONFIG.close);
-      const s = b.k < 1 ? -1 : firstFree(ipSlot, O_IP);
+      b.k = Math.min(1, b.k + dt / K.close);
+      const s = b.k < 1 ? -1 : b.home;
       if (s < 0) break;
       ipSlot[s] = b; cell[b.cell] = null; b.cell = -1; b.ip = s; b.st = 'toIP';
-      go(b, ['b2ip', L.ipIn, IPS[s]], () => { b.st = 'ip'; b.t = intro() ? CONFIG.intro.los : CONFIG.los * jit(CONFIG.losJitter); IPEL[s].setAttribute('visibility', 'hidden'); });
+      go(b, ['b2ip', L.ipIn, IPS[s]], () => { b.st = 'ip'; b.t = intro() ? CONFIG.intro.los : K.los * jit(K.losJitter); });
       break;
     }
-    case 'ip': {                                       // length of stay
+    case 'ip': {                                       // length of stay, then straight into DISCHARGE's grid (9 places: never full)
       b.t -= dt;
       const s = b.t > 0 ? -1 : firstFree(dcSlot, O_DC);
       if (s < 0) break;
-      dcSlot[s] = b; ipSlot[b.ip] = null; IPEL[b.ip].setAttribute('visibility', 'visible'); b.dc = s; b.st = 'toDC';
-      go(b, ['ip2dc', DCS[s]], () => { b.st = 'dc'; b.t = intro() ? CONFIG.intro.discharge : CONFIG.discharge; });
+      dcSlot[s] = b; ipSlot[b.ip] = null; b.dc = s; b.st = 'toDC';
+      go(b, ['ip2dc', DCS[s]], () => { b.t0 = T; if (dcBusy() || B.some(q => q.st === 'dcWait')) b.st = 'dcWait'; else dcStart(b); });
       break;
     }
     case 'dc': {                                       // discharge: hold, then the dot separates from the bed
@@ -253,7 +358,7 @@ function upBed(b, dt) {
       break;
     }
     case 'sliding': {                                  // the dot slides out of the square: the visible rate-limiting step
-      b.s = Math.min(1, b.s + dt / CONFIG.separateSlide);
+      b.s = Math.min(1, b.s + dt / K.separateSlide);
       const e = b.s * (2 - b.s);                       // ease-out
       b.pt.x = b.x + L.flow[0] * CONFIG.separateOffset * e; b.pt.y = b.y + L.flow[1] * CONFIG.separateOffset * e;
       if (b.s < 1) break;
@@ -263,7 +368,7 @@ function upBed(b, dt) {
     case 'resting': {                                  // dot and empty square rest side by side, then part
       b.t -= dt;
       if (b.t > 0) break;
-      const p = b.pt; b.pt = null; p.bed = null; p.st = 'out';
+      const p = b.pt; b.pt = null; p.bed = null; dischd++; DASH.out++; DASH.cong += b.cg; p.st = 'out';
       go(p, [L.dcOut(b, p), 'dc2pa'], () => release(p));
       b.st = 'sep'; b.t = CONFIG.separateGap;
       break;
@@ -273,12 +378,12 @@ function upBed(b, dt) {
       const s = b.t > 0 ? -1 : firstFree(evsSlot, O_EVS);
       if (s < 0) break;
       evsSlot[s] = b; dcSlot[b.dc] = null; b.ev = s; b.st = 'toEVS';
-      go(b, ['dc2evs', EVS[s]], () => { b.st = 'evs'; b.t = intro() ? CONFIG.intro.evs : CONFIG.evs; });
+      go(b, ['dc2evs', EVS[s]], () => { b.st = 'evs'; b.t = intro() ? CONFIG.intro.evs : K.evs; });
       break;
     }
     case 'evs': b.t -= dt; if (b.t <= 0) b.st = 'opening'; break;
     case 'opening': {                                  // square opens back into a clean U, returns to BEDS
-      b.k = Math.max(0, b.k - dt / CONFIG.open);
+      b.k = Math.max(0, b.k - dt / K.open);
       const c = b.k > 0 ? -1 : firstFree(cell, O_CELL);
       if (c < 0) break;
       cell[c] = b; evsSlot[b.ev] = null; b.cell = c; b.st = 'toBeds';
@@ -291,13 +396,32 @@ function upBed(b, dt) {
   }
 }
 
+// DISCHARGE separates at most dischargeSlots squares at once; the others wait in the grid ('dcWait'), dot inside
+const dcBusy = () => B.filter(b => b.st === 'dc' || b.st === 'sliding' || b.st === 'resting').length >= K.dischargeSlots;
+const dcCount = () => B.filter(b => /^(dcWait|dc|sliding|resting|sep)$/.test(b.st)).length;   // squares in DISCHARGE
+function dcStart(b) {
+  b.st = 'dc'; b.cg = 0;
+  if (intro()) { b.t = CONFIG.intro.discharge; return; }
+  const n = dcCount(), at = K.congestAt, without = at && n >= at ? K.congestHold : K.discharge;   // congested: the longer hold
+  b.t = K.metrias ? (at && n >= K.metriasTol * at ? K.congestHold : K.discharge) * K.metriasHold : without;   // + Metrias: more tolerance, shorter hold
+  DASH.saved += without - b.t;                                                                   // hold seconds this discharge avoided
+  b.cg = b.t > K.discharge * (K.metrias ? K.metriasHold : 1);                                    // this hold is longer than an uncrowded one: counted when the discharge completes
+}
+
 function step(dt) {
+  for (const p of P) if (p.on && p.st === 'hold') DASH.board += dt;       // admitted, waiting on a stretcher for a bed
+  for (const b of B) if (TIED.has(b.st)) DASH.lost += dt;                   // bed in DISCHARGE or EVS, not usable
   if (repeatAt !== null && T + dt >= repeatAt) { reset(); return; }
   T += dt;
   if (intro()) { if (!introSpawned && T >= CONFIG.intro.start) introSpawned = spawn(true); }
-  else if (T >= nextArr && spawn(false)) nextArr = T + CONFIG.arrivalEvery * jit(CONFIG.arrivalJitter);
+  else if (T >= nextArr && spawn(false)) nextArr = T + K.arrivalEvery * jit(K.arrivalJitter);
+  shift(eq, EQ);
+  while (!dcBusy()) { let w = null; for (const b of B) if (b.st === 'dcWait' && (!w || b.t0 < w.t0)) w = b; if (!w) break; dcStart(w); } // longest-waiting next
+  head = null; for (const p of P) if (p.st === 'hold' && (!head || p.t0 < head.t0)) head = p;   // longest-waiting hold
   for (const b of B) upBed(b, dt);
   for (const p of P) if (p.on) upPatient(p, dt);
+  if (phase === 'custom') REC.push(snap());   // one record per simulated step, warm-up included; the last one is the end of the run
+  if (!warming && phase === 'custom' && (T >= K.endAt || eq.filter(e => e && !e.mv).length >= K.endQueue)) { ended = true; endRun(); } // freeze on the backlog
 }
 
 // ---- render: write only what changed ----
@@ -310,6 +434,17 @@ function render() {
       b.el.setAttribute('stroke-dasharray', b.k >= 1 ? 'none' : `0 ${(g / 2).toFixed(2)} ${(PERIM - g).toFixed(2)} ${(g / 2).toFixed(2)}`);
       b.rk = b.k;
     }
+    const look = slotLook(b);
+    if (look !== b.rl) {
+      const g = IPEL[b.home];
+      g.firstChild.setAttribute('visibility', look === 1 ? 'visible' : 'hidden');
+      g.lastChild.setAttribute('visibility', look === 2 ? 'visible' : 'hidden');
+      b.rl = look;
+    }
+  }
+  for (let i = 0; i < STREL.length; i++) {             // a stretcher turns amber while its patient waits for a bed
+    const q = stretch[i], w = q && q.st === 'hold' && T - q.t0 > CONFIG.holdShowAfter ? 1 : 0;
+    if (w !== SLOOK[i]) { STREL[i].setAttribute('stroke', w ? C.wait : C.stretcher); STREL[i].setAttribute('stroke-width', w ? 5 : 3); SLOOK[i] = w; }
   }
   for (const p of P) {
     if (!p.on) continue;
@@ -324,39 +459,156 @@ let paused = false, last = null, acc = 0;
 function setPaused(v) { paused = v; play.setAttribute('visibility', v ? 'visible' : 'hidden'); last = null; }
 function frame(now) {
   requestAnimationFrame(frame);
-  if (paused) return;
+  if (paused || ended) return;
   const dt = last === null ? 0 : Math.min((now - last) / 1000, CONFIG.maxFrameDt);
   last = now; acc += dt;
-  while (acc >= STEP) { step(STEP); acc -= STEP; }
+  while (acc >= STEP && !ended) { step(STEP); acc -= STEP; }
   render();
 }
 // ---- modes: reset the whole picture, then either walk one patient through or warm up to steady state ----
 function reset() {
-  T = 0; seed = CONFIG.seed >>> 0; introSpawned = false; repeatAt = null; exitSlot = null; acc = 0; last = null;
-  phase = CONFIG.mode === 'steady' ? 'steady' : 'intro'; nextArr = 0.6;
-  for (const a of [stretch, cell, ipSlot, dcSlot, evsSlot]) a.fill(null);
-  for (const p of P) { p.on = false; p.st = ''; p.mv = null; p.bed = null; p.y = -99; p.rx = p.ry = p.ro = NaN; p.el.setAttribute('visibility', 'hidden'); }
+  Object.assign(DASH, { t0: 0, seen: 0, adm: 0, home: 0, out: 0, board: 0, lost: 0, saved: 0, cong: 0, door: 0 });   // the strip counts from the true start, warm-up included
+  REC = []; mixed = 0; pop.hidden = true;
+  T = 0; arrived = dischd = 0; seed = (CONFIG.mode === 'custom' ? CONFIG.custom.seed : CONFIG.seed) >>> 0; introSpawned = false; repeatAt = null; ended = false; head = null; acc = 0; last = null;
+  phase = CONFIG.mode === 'walkthrough' ? 'intro' : CONFIG.mode; nextArr = 0.6;
+  K = phase === 'custom' ? { ...CONFIG, ...CONFIG.custom } : CONFIG;
+  for (const a of [stretch, cell, ipSlot, dcSlot, evsSlot, eq]) a.fill(null);
+  for (const p of P) { p.on = false; p.st = ''; p.mv = null; p.bed = null; p.qi = -1; p.y = -99; p.rx = p.ry = p.ro = NaN; p.el.setAttribute('visibility', 'hidden'); }
   B.forEach((b, i) => {
     const c = O_CELL[i];
-    Object.assign(b, { x: CELL[c][0], y: CELL[c][1], st: 'clean', since: i - 1e3, k: 0, s: 0, t: 0, mv: null, cell: c, ip: -1, dc: -1, ev: -1, pt: null, rx: NaN, ry: NaN, rk: NaN });
+    Object.assign(b, { x: CELL[c][0], y: CELL[c][1], st: 'clean', since: i - 1e3, k: 0, s: 0, t: 0, mv: null, cell: c, ip: -1, dc: -1, ev: -1, pt: null, home: O_IP[i], rx: NaN, ry: NaN, rk: NaN, rl: NaN });
     cell[c] = b;
   });
   for (const el of IPEL) el.setAttribute('visibility', 'visible');
-  if (phase === 'steady') while (T < CONFIG.steadyWarmup) step(STEP);
+  if (phase !== 'intro') {                         // start already populated; the warm-up never ends the run, and stops early once a backlog starts
+    const w = K.warmup ?? CONFIG.steadyWarmup; warming = true;
+    while (T < w && !(phase === 'custom' && eq.some(Boolean))) step(STEP);
+    warming = false;
+  }
   render();
 }
-const modeBar = document.getElementById('mode');
+const modeBar = document.getElementById('mode'), gear = document.getElementById('gear'), mbtn = document.getElementById('mbtn'), drawer = document.getElementById('drawer');
+function metriasLook() {                           // everything that shows + Metrias is on: both buttons, the TIME SAVED tile, the DISCHARGE outline
+  const on = CONFIG.mode === 'custom' && !!CONFIG.custom.metrias, dc = document.getElementById('box_dc'), k = document.getElementById('k_metrias');
+  mbtn.classList.toggle('on', on); mbtn.setAttribute('aria-pressed', on);
+  if (k) { k.classList.toggle('on', on); k.setAttribute('aria-pressed', on); }
+  document.documentElement.classList.toggle('mt', on); fit();
+  if (dc) { dc.setAttribute('stroke', on ? C.metrias : C.line); dc.setAttribute('stroke-width', on ? 3 : 2); }
+}
 function setMode(m) {
   CONFIG.mode = m;
-  for (const b of modeBar.querySelectorAll('button')) b.classList.toggle('on', b.dataset.mode === m);
-  reset();
-  if (paused && !matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(false);
+  for (const b of modeBar.querySelectorAll('button[data-mode]')) b.classList.toggle('on', b.dataset.mode === m);
+  document.getElementById('reset').hidden = gear.hidden = mbtn.hidden = m !== 'custom';   // CUSTOM's reset, ⚙ and + METRIAS sub-buttons
+  if (gear.hidden) openDrawer(false);
+  reset(); metriasLook();
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still && m === 'custom') { while (!ended) step(STEP); render(); }   // reduced motion: CUSTOM shows its end frame
+  if (paused && !still) setPaused(false);
+  fit();
 }
+// the picture's height is what the bar and the dashboard leave free, however the bar wraps
+function fit() { document.documentElement.style.setProperty('--chrome', modeBar.offsetHeight + document.getElementById('dash').offsetHeight + 38 + 'px'); }
 modeBar.addEventListener('pointerdown', e => e.stopPropagation());
-modeBar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMode(b.dataset.mode); });
-addEventListener('pointerdown', () => setPaused(!paused));
-const relayout = () => { const n = pickLayout(); if (n !== L) { build(n); reset(); } }; // orientation flip: rebuild, restart the current mode
+modeBar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) b === gear ? openDrawer(drawer.hidden) : b === mbtn ? toggleMetrias() : setMode(b.id === 'reset' ? 'custom' : b.dataset.mode); });
+addEventListener('pointerdown', () => ended ? setMode('custom') : setPaused(!paused)); // frozen CUSTOM: a tap plays it again
+const relayout = () => { const n = pickLayout(); if (n !== L) { build(n); reset(); metriasLook(); } fit(); }; // orientation flip: rebuild, restart the current mode
 addEventListener('resize', relayout); addEventListener('orientationchange', relayout);
+// ---- CUSTOM control drawer (⚙): each knob writes K (live, going forward) and CONFIG.custom (kept by ↻) ----
+const KN = [['METRIAS'], ['metrias', '+ Metrias', 0, 1, 1, 'tog'], ['metriasHold', 'hold \u00d7', .25, 1, .05, 'x'], ['metriasTol', 'tolerance \u00d7', 1, 4, .5, 'x'], ['ARRIVALS'], ['arrivalEvery', 'every', .4, 5, .1, 's'], ['arrivalJitter', 'jitter', 0, .5, .05, '±'], ['admitProb', 'admit', 0, 1, .05, '%'],
+  ['ED'], ['edDwell', 'dwell', 1, 15, .5, 's'], ['edJitter', 'jitter', 0, .5, .05, '±'],
+  ['INPATIENT'], ['los', 'stay', 2, 30, .5, 's'], ['losJitter', 'jitter', 0, .9, .05, '±'],
+  ['DISCHARGE'], ['discharge', 'hold', .5, 30, .5, 's'], ['dischargeSlots', 'slots', 1, 9, 1, ''], ['separateSlide', 'slide', .2, 2, .1, 's'],
+  ['congestAt', 'congest at', 0, 9, 1, ''], ['congestHold', 'congest hold', 1, 30, .5, 's'],
+  ['BEDS &amp; EVS'], ['evs', 'evs', 0, 10, .1, 's'], ['open', 'open', .1, 2, .1, 's'], ['close', 'close', .1, 2, .1, 's'],
+  ['MOTION'], ['speed', 'speed', 200, 1500, 50, 'px/s'],
+  ['BACKLOG'], ['entryQueue', 'entry queue', 1, 10, 1, ''],
+  ['ENDING'], ['endQueue', 'end queue', 1, 10, 1, ''], ['endAt', 'end at', 30, 600, 5, 's'], ['warmup', 'warmup', 0, 60, 1, 's'],
+  ['RANDOM'], ['seed', 'seed', 1, 99, 1, '']];
+const KR = KN.filter(r => r[1]), DEF = { ...CONFIG, ...CONFIG.custom }, OV = () => ({ ...CONFIG, ...CONFIG.custom }), $ = id => document.getElementById(id);
+const fmt = ([k, , , , , u], v) => u === 'tog' ? (v ? 'on' : 'off') : u === 'x' ? '\u00d7' + +v.toFixed(2) : u === '%' ? Math.round(v * 100) + '%' : u === '±' ? '±' + Math.round(v * 100) + '%' : k === 'congestAt' && !v ? 'off' : +v.toFixed(2) + (u && ' ' + u);
+$('kn').innerHTML = KN.map(([k, l, a, b, s, u]) => !l ? `<h4>${k}</h4>` : u === 'tog' ? `<div class="r"><span>${l}</span><button type="button" class="tg" id="k_${k}">shorter hold, more tolerance</button><b id="v_${k}"></b></div>` : `<label class="r" title="${k}"><span>${l}</span><input type="range" id="k_${k}" min="${a}" max="${b}" step="${s}"><b id="v_${k}"></b></label>`
+  + (k === 'losJitter' ? '<div class="n" id="stay"></div>' : k === 'warmup' ? '<div class="n">warmup applies at the next &#8635;</div>' : k === 'seed' ? '<div class="n">a different seed is a different day; applies at the next &#8635;</div>' : '')).join('');
+function paint() {
+  const o = OV(); for (const r of KR) $('v_' + r[0]).textContent = fmt(r, o[r[0]]);
+  $('stay').textContent = `stay ${+(o.los * (1 - o.losJitter)).toFixed(1)}–${+(o.los * (1 + o.losJitter)).toFixed(1)} s`;
+}
+function sync() {
+  const o = OV(); for (const [k] of KR) $('k_' + k).value = o[k]; paint();
+  metriasLook();
+}
+const put = (k, v) => { CONFIG.custom[k] = v; if (phase === 'custom' && !ended) { if (K[k] !== v) mixed = 1; K[k] = v; } };   // frozen: store only, ↻ applies
+const cnt = (a, f = Boolean) => a.filter(f).length;
+function readouts() {
+  $('ro').innerHTML = [['sim t', T.toFixed(1) + ' s'], ['arrived', arrived], ['at entry', cnt(eq)], ['stretchers', cnt(stretch)],
+    ['holds', cnt(P, p => p.on && p.st === 'hold')], ['free U', cnt(B, b => b.st === 'clean')], ['inpatient', cnt(ipSlot)],
+    ['dc wait/sep', cnt(B, b => b.st === 'dcWait') + '/' + cnt(B, b => /^(dc|sliding|resting)$/.test(b.st))], ['discharged', dischd]]
+    .map(([a, b]) => `<span>${a}</span><b>${b}</b>`).join('');
+}
+const dtx = (id, v) => { const e = document.getElementById(id); if (e.textContent !== v) e.textContent = v; };
+function dash() {
+  let occ = 0, tied = 0, ready = 0; for (const b of B) { const k = slotLook(b); k === 0 ? occ++ : k === 2 ? tied++ : ready++; }
+  dtx('d_t', Math.floor(T - DASH.t0) + ' s'); dtx('d_seen', '' + DASH.seen); dtx('d_split', DASH.adm + ' admitted \u00b7 ' + DASH.home + ' home');
+  dtx('d_out', '' + DASH.out); dtx('d_occ', '' + occ); dtx('d_tied', '' + tied); dtx('d_ready', '' + ready);
+  dtx('d_board', Math.round(DASH.board) + ' s'); dtx('d_lost', Math.round(DASH.lost) + ' s'); dtx('d_saved', Math.round(DASH.saved) + ' s');
+}
+setInterval(() => { dash(); if (!drawer.hidden) readouts(); }, 250);
+function openDrawer(v) { drawer.hidden = !v; document.documentElement.classList.toggle('dr', v);   // .dr: the picture moves into the space beside the drawer
+  gear.setAttribute('aria-expanded', v); if (v) { sync(); readouts(); } }
+drawer.style.background = C.bg + 'e6';   // semi-opaque page navy
+drawer.addEventListener('pointerdown', e => e.stopPropagation());
+drawer.addEventListener('input', e => { put(e.target.id.slice(2), +e.target.value); paint(); });
+function toggleMetrias() { put('metrias', OV().metrias ? 0 : 1); sync(); }   // live: applies from the next discharge that starts
+$('k_metrias').onclick = toggleMetrias;
+$('def').onclick = () => { for (const [k] of KR) put(k, DEF[k]); sync(); };
+$('link').onclick = e => {   // COPY SETTINGS: every value as readable text (changed ones marked), plus a link that loads them
+  const o = OV(), c = navigator.clipboard;
+  history.replaceState(null, '', '#ov=' + KR.map(([k]) => k + ':' + o[k]).join(','));
+  const s = 'Hospital flow playground: CUSTOM settings\n' + KN.map(r => !r[1] ? '\n' + r[0].replace('&amp;', '&')
+    : '  ' + r[1] + ': ' + fmt(r, o[r[0]]) + (o[r[0]] !== DEF[r[0]] ? '   (default ' + fmt(r, DEF[r[0]]) + ')' : '')).join('\n') + '\n\nOpen with these settings:\n' + location.href;
+  $('txt').textContent = s; $('txt').hidden = false;          // also shown in the drawer, selectable, in case the clipboard is refused
+  if (c) c.writeText(s).catch(nop);
+  e.target.textContent = 'COPIED'; setTimeout(() => { e.target.textContent = 'COPY SETTINGS'; }, 1200);
+};
+// ---- end of a CUSTOM run: the breakdown pop-up, and the same run again with or without + Metrias ----
+const pop = $('pop'), RUN = [];                    // RUN[0]: the last finished run without + Metrias, RUN[1]: with
+let REC = [], mixed = 0;                           // REC: this run's record, one entry per step; mixed: a setting moved while it played
+const snap = () => ({ ...DASH, t: T, q: cnt(eq, e => e && !e.mv), h: cnt(P, p => p.on && p.st === 'hold' && T - p.t0 > CONFIG.holdShowAfter), tied: cnt(B, b => TIED.has(b.st)) });
+const ROWS = [['PATIENTS SEEN', 'admitted \u00b7 home', s => s.seen, s => s.adm + ' \u00b7 ' + s.home],
+  ['DISCHARGES', 'slowed by a crowded DISCHARGE', s => s.out, s => s.cong],
+  ['BED TIME LOST AT DISCHARGE', 'beds tied up, on average', s => Math.round(s.lost) + ' s', s => (s.lost / s.t).toFixed(1) + ' of ' + CONFIG.beds],
+  ['BOARDING TIME', 'admits waiting, on average', s => Math.round(s.board) + ' s', s => (s.board / s.t).toFixed(1)],
+  ['WAITING AT THE DOOR', 'first wait at', s => s.q, s => s.door ? Math.floor(s.door) + ' s' : 'none'],
+  ['TIME SAVED', '+ Metrias, at discharge', s => Math.round(s.saved) + ' s', () => '']];
+function endRun() {
+  const m = K.metrias ? 1 : 0, s = snap();
+  RUN[m] = { s, rec: REC, cap: s.q < K.endQueue, sig: !mixed && (L === PORTRAIT) + KR.map(([k]) => k === 'metrias' ? '' : K[k]).join() };
+  setTimeout(() => ended && showPop(m), 800);   // the frozen picture registers first
+}
+function showPop(m) {
+  const a = RUN[m], o = RUN[1 - m], c = a.sig && o && o.sig === a.sig, k = c && Math.min(a.rec.length, o.rec.length) - 1, cols = c ? [RUN[0], RUN[1]] : [a];
+  const at = r => c ? r.rec[k] : r.s;              // compared at one clock: both runs are read at the step where the shorter one ended
+  const st = r => (r.cap ? 'reached the time limit at ' : 'backed up at ') + Math.floor(r.s.t) + ' s', pb = $('pb');
+  $('pt').textContent = (m ? '+ METRIAS \u00b7 ' : '') + st(a).slice(0, -1).toUpperCase() + 's'; $('pt').className = m ? 'm' : a.cap ? 'n' : '';
+  $('ps').textContent = c ? `Same seed, same settings. Without Metrias: ${st(RUN[0])}. With Metrias: ${st(RUN[1])}.`
+    : `Stretchers holding admitted patients who waited for a bed: ${a.s.h} of ${CONFIG.stretchers}. Beds tied up in discharge or cleaning: ${a.s.tied} of ${CONFIG.beds}.` + (o ? ' Not compared with the other run: settings changed.' : '');
+  $('pg').className = c ? 'c' : '';
+  $('pg').innerHTML = (c ? `<span>BOTH AT ${Math.floor(Math.min(a.s.t, o.s.t))} s</span><u>WITHOUT</u><u class="m">+ METRIAS</u>` : '')
+    + ROWS.slice(0, c || m ? 6 : 5).map(([l, d, f, g], i) => `<span${i > 4 ? ' class="m"' : ''}>${l}<i>${d}</i></span>`
+      + cols.map(r => `<div${r === RUN[1] ? ' class="m"' : ''}><b>${f(at(r))}</b><i>${g(at(r))}</i></div>`).join('')).join('');
+  pb.textContent = m ? 'SEE IT AGAIN WITHOUT METRIAS' : 'SEE IT AGAIN WITH METRIAS DISCHARGE EXPEDITERS?'; pb.className = m ? '' : 'm';
+  pb.onclick = () => { put('metrias', m ? 0 : 1); sync(); setMode('custom'); };   // same seed, same settings, + Metrias flipped
+  dash(); pop.hidden = false; pb.focus();
+}
+let downBg = false;                                // a tap outside the card closes it and does not replay; closing on click keeps the touch from reaching the pill underneath
+pop.addEventListener('pointerdown', e => { e.stopPropagation(); downBg = e.target === pop; });
+pop.addEventListener('click', e => { if (downBg && e.target === pop) pop.hidden = true; });
+$('px').onclick = () => { pop.hidden = true; };
+addEventListener('keydown', e => { if (e.key === 'Escape') pop.hidden = true; });
+const hm = location.hash.match(/^#ov=(.*)/);   // a shared link: apply its values and open in CUSTOM
+if (hm) {
+  for (const kv of hm[1].split(',')) { const [k, v] = kv.split(':'), r = KR.find(q => q[0] === k); if (r && v && isFinite(v)) CONFIG.custom[k] = Math.min(r[3], Math.max(r[2], +v)); }
+  CONFIG.mode = 'custom';
+}
 setMode(CONFIG.mode);
 if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
   // Still frame of the running hospital. Walkthrough mode restarts every cycle and would never
