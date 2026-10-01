@@ -5,6 +5,9 @@
  *   POST /api/lead       validate → anti-spam → upsert Attio Person + Note → PostHog event → notify
  *   GET  /api/lead       issue a CSRF token (stateless, HMAC-signed)
  *
+ *   A submission with `_source_slug: 'updates'` (the /updates sign-up page) runs the same chain and
+ *   additionally asserts the person into the Attio people-list named by UPDATES_LIST_SLUG.
+ *
  * Hard rule: this endpoint collects NO PHI. See validation below.
  */
 
@@ -17,6 +20,10 @@ export interface Env {
   ALLOWED_ORIGIN: string;
   RATE_LIMIT_PER_HOUR: string;
   NOTIFY_WEBHOOK_URL?: string;
+  // Attio people-list (api_slug) that /updates sign-ups are asserted into. Defaults to the
+  // "Update Subscribers" list (update_subscribers). Set in [vars] of wrangler.toml; point it at
+  // another people-list slug to change where sign-ups land without a code change.
+  UPDATES_LIST_SLUG?: string;
   // LinkedIn Conversions API (server-side TLA/sponsored-content attribution). Optional — the
   // conversion push is a no-op until both the access token and rule id are set. (MMDEV-332)
   LINKEDIN_CAPI_ACCESS_TOKEN?: string;
@@ -26,6 +33,19 @@ export interface Env {
 
 const ATTIO_BASE = 'https://api.attio.com/v2';
 const CSRF_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+// `_source_slug` sent by the /updates sign-up form. These submissions skip nothing in the anti-spam
+// chain; the only differences are the Attio list entry, the note wording, and the notify text.
+const UPDATES_SOURCE_SLUG = 'updates';
+const DEFAULT_UPDATES_LIST_SLUG = 'update_subscribers';
+
+function isUpdatesSignup(meta: LeadPayload): boolean {
+  return meta._source_slug === UPDATES_SOURCE_SLUG;
+}
+
+function updatesListSlug(env: Env): string {
+  return env.UPDATES_LIST_SLUG || DEFAULT_UPDATES_LIST_SLUG;
+}
 
 // Small disposable-email blocklist (extend as needed).
 const DISPOSABLE_DOMAINS = new Set([
@@ -209,9 +229,29 @@ async function upsertPerson(env: Env, d: ValidationResult['data'], companyId: st
   return id;
 }
 
+/**
+ * Assert (create-or-update) the person's entry in a people list. Attio matches on the parent record,
+ * so a repeat sign-up updates the existing entry instead of duplicating it. Needs the API token
+ * scopes list_entry:read-write and list_configuration:read. Throws on hard failure so the caller
+ * can queue the lead for replay.
+ */
+async function assertListEntry(env: Env, listSlug: string, personId: string): Promise<void> {
+  const r = await attioFetch(env, `/lists/${encodeURIComponent(listSlug)}/entries`, {
+    method: 'PUT',
+    body: JSON.stringify({ data: { parent_record_id: personId, parent_object: 'people', entry_values: {} } }),
+  });
+  if (r.ok) return;
+  const text = await r.text();
+  // Already on the list more than once (hand-added duplicates): nothing to assert, do not queue.
+  if (r.status < 500 && text.includes('MULTIPLE_MATCH_RESULTS')) return;
+  throw new Error(`attio list entry assert failed (${listSlug}): ${r.status} ${text}`);
+}
+
 async function createNote(env: Env, personId: string, d: ValidationResult['data'], meta: LeadPayload): Promise<void> {
+  const updates = isUpdatesSignup(meta);
   const lines = [
-    `New website lead (auto_logged: true)`,
+    updates ? `Signed up for the Metrias update via /updates (auto_logged: true)` : `New website lead (auto_logged: true)`,
+    updates ? `Attio list: ${updatesListSlug(env)}` : null,
     d.company ? `Company: ${d.company}` : null,
     d.role ? `Role: ${d.role}` : null,
     d.message ? `\nMessage:\n${d.message}` : null,
@@ -226,7 +266,7 @@ async function createNote(env: Env, personId: string, d: ValidationResult['data'
       data: {
         parent_object: 'people',
         parent_record_id: personId,
-        title: `Website inquiry — ${d.first_name} ${d.last_name}`,
+        title: `${updates ? 'Update sign-up' : 'Website inquiry'} — ${d.first_name} ${d.last_name}`,
         format: 'plaintext',
         content: lines.join('\n'),
       },
@@ -284,14 +324,16 @@ async function linkedinCapiConversion(env: Env, emailSha256: string, happenedAtM
   }
 }
 
-async function notify(env: Env, d: ValidationResult['data']): Promise<void> {
+async function notify(env: Env, d: ValidationResult['data'], meta: LeadPayload): Promise<void> {
   if (!env.NOTIFY_WEBHOOK_URL) return;
   try {
     await fetch(env.NOTIFY_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        text: `New lead: ${d.first_name} ${d.last_name}${d.company ? ` from ${d.company}` : ''} (${d.email})`,
+        text: isUpdatesSignup(meta)
+          ? `New update subscriber: ${d.first_name} ${d.last_name} (${d.email})`
+          : `New lead: ${d.first_name} ${d.last_name}${d.company ? ` from ${d.company}` : ''} (${d.email})`,
       }),
     });
   } catch {
@@ -370,6 +412,9 @@ async function handleLead(request: Request, env: Env, ctx: ExecutionContext): Pr
   try {
     const companyId = await findOrCreateCompany(env, v.data.company);
     const personId = await upsertPerson(env, v.data, companyId);
+    // /updates sign-ups land on the subscriber list BEFORE the note is queued, so a list failure
+    // throws into the KV replay queue (replay re-upserts and re-asserts; both are idempotent).
+    if (isUpdatesSignup(payload)) await assertListEntry(env, updatesListSlug(env), personId);
     ctx.waitUntil(createNote(env, personId, v.data, payload));
   } catch (err) {
     await env.LEADS_KV.put(`queue:${Date.now()}:${distinctId}`, JSON.stringify({ data: v.data, meta: payload }), {
@@ -380,7 +425,7 @@ async function handleLead(request: Request, env: Env, ctx: ExecutionContext): Pr
   // 7) Analytics + notification (non-blocking)
   ctx.waitUntil(posthogCapture(env, distinctId, phProps));
   ctx.waitUntil(linkedinCapiConversion(env, distinctId, Date.now()));
-  ctx.waitUntil(notify(env, v.data));
+  ctx.waitUntil(notify(env, v.data, payload));
 
   return json({ ok: true }, 200, env);
 }
@@ -395,6 +440,7 @@ async function replayQueue(env: Env): Promise<void> {
       const { data, meta } = JSON.parse(raw) as { data: ValidationResult['data']; meta: LeadPayload };
       const companyId = await findOrCreateCompany(env, data.company);
       const personId = await upsertPerson(env, data, companyId);
+      if (isUpdatesSignup(meta)) await assertListEntry(env, updatesListSlug(env), personId);
       await createNote(env, personId, data, meta);
       await env.LEADS_KV.delete(key.name);
     } catch {

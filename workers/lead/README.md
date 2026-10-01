@@ -7,6 +7,12 @@ Flow: `POST /api/lead` → validate → anti-spam (honeypot · CSRF · IP rate-l
 MX check) → upsert Attio Person + log Note → server-side PostHog `lead_captured` → optional notify.
 `GET /api/lead` issues a stateless HMAC-signed CSRF token.
 
+Update sign-ups: the `/updates` page posts the same payload with `_source_slug: 'updates'` (first
+name, last name, email only). The Worker runs the identical anti-spam chain, upserts the Person, then
+asserts them into the Attio people-list named by `UPDATES_LIST_SLUG` (`[vars]` in `wrangler.toml`,
+default `update_subscribers` = "Update Subscribers"). Repeat sign-ups update the existing entry
+rather than duplicating it. The API token needs `list_entry:read-write` + `list_configuration:read`.
+
 **This endpoint collects no PHI.** A defensive marker check rejects obvious patient-data fields.
 
 ## Endpoints
@@ -41,6 +47,13 @@ wrangler secret put NOTIFY_WEBHOOK_URL     # optional
 
 # 4. Route: uncomment [[routes]] in wrangler.toml (zone must be on this CF account), then
 wrangler deploy
+```
+
+## Redeploy after a code change
+```bash
+cd workers/lead
+npm ci && npm run typecheck
+npm run deploy                    # wrangler deploy — needs `wrangler login` or CLOUDFLARE_API_TOKEN
 ```
 
 ## Acceptance (per ClickUp Phase 4)
