@@ -23,6 +23,10 @@ preview_id = "99229744a4944eb3b04942e704ec8f56"
 POSTHOG_HOST = "https://us.i.posthog.com"
 ALLOWED_ORIGIN = "https://www.metriasmedical.com"
 RATE_LIMIT_PER_HOUR = "5"
+# Attio people-list (api_slug) that /updates sign-ups are asserted into. "Update Subscribers" was
+# created 2026-10-01 for self-serve sign-ups from the monthly update. Point this at another
+# people-list slug (e.g. the curated send list) to change where sign-ups land — no code change.
+UPDATES_LIST_SLUG = "update_subscribers"
 
 # NOTE: Attio-outage replay cron deferred — the schedules API rejected the trigger on this
 # account/plan. The scheduled() handler stays in code; on outage, leads queue to KV and can be

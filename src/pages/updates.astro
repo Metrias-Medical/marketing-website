@@ -1,0 +1,58 @@
+---
+/**
+ * /updates — self-serve sign-up for the monthly Metrias update (2026-10-01).
+ *
+ * Linked from the newsletter itself so a forwarded issue has a way onto the list. Three required
+ * fields only (first name, last name, email). The form posts to the lead Worker with
+ * `_source_slug: 'updates'`, which upserts the Person in Attio and asserts them into the
+ * "Update Subscribers" list (see workers/lead). No PHI is collected here.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UpdatesForm from '../components/updates/UpdatesForm';
+
+const TITLE = 'Get the Metrias update — Metrias Medical';
+const DESCRIPTION =
+  'One short email a month from Mene Demestihas, MD on what Metrias Medical is learning and building to clear hospital discharge bottlenecks. Sign up with your name and email.';
+
+const topics = [
+  'What we are seeing inside hospital discharge operations',
+  'Progress on the discharge expediter model and our pilots',
+  'Where Metrias is headed next, and where we could use a hand',
+];
+---
+
+<BaseLayout title={TITLE} description={DESCRIPTION}>
+  <section class="bg-provider-blue-dark py-16 md:py-24">
+    <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[1.1fr_1fr] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-8 lg:px-16">
+      <div class="lg:col-start-1 lg:row-start-1">
+        <span class="mb-6 inline-block rounded-full bg-payer-slate px-4 py-1.5 font-body text-sm font-semibold text-white">
+          Monthly update
+        </span>
+        <h1 class="max-w-xl font-heading text-[2rem] leading-tight font-bold text-white md:text-[3rem] md:leading-tight">
+          Get the Metrias update.
+        </h1>
+        <p class="mt-6 max-w-xl font-body text-lg text-white/80">
+          One short email a month from Mene: what we are learning about hospital discharge
+          bottlenecks, what we are building, and what comes next.
+        </p>
+        <p class="mt-4 max-w-xl font-body text-lg text-white/80">
+          Had one forwarded to you? Sign up here and the next one comes straight to you.
+        </p>
+      </div>
+
+      {/* DOM order puts the form right after the intro on phones; on lg it takes the right column. */}
+      <div class="rounded-2xl bg-white p-6 shadow-2xl md:p-8 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-start">
+        <UpdatesForm client:load />
+      </div>
+
+      <ul class="space-y-3 lg:col-start-1 lg:row-start-2">
+        {topics.map((t) => (
+          <li class="flex gap-3 font-body text-base text-white/85">
+            <span class="mt-[0.55rem] h-1.5 w-1.5 shrink-0 rounded-full bg-ai-gold" aria-hidden="true"></span>
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
